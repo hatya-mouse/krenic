@@ -14,4 +14,14 @@ impl RegionMeta {
             duration,
         }
     }
+
+    // --- REGION MODIFICATION ---
+
+    pub fn move_region(&mut self, new_start: Beats) {
+        self.start = new_start;
+    }
+
+    pub fn set_duration(&mut self, new_duration: Beats) {
+        self.duration = new_duration;
+    }
 }

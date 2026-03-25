@@ -2,12 +2,17 @@ mod track_row;
 
 use crate::{app::KnodiqApp, colors};
 use eframe::egui;
+use std::sync::atomic::Ordering;
 
 impl KnodiqApp {
     pub(crate) fn track_edit_panel(&mut self, ui: &mut egui::Ui) {
         egui::Frame::new()
             .fill(colors::tertiary_bg(ui.visuals().dark_mode))
             .show(ui, |ui| {
+                // Draw the playhead
+                self.playhead(ui);
+
+                // Draw each tracks
                 let track_height = self.ui_state.track_height;
                 let available = ui.available_rect_before_wrap();
 
@@ -36,5 +41,40 @@ impl KnodiqApp {
                     self.track_row(ui, track_id, row_rect);
                 }
             });
+    }
+
+    fn playhead(&mut self, ui: &mut egui::Ui) {
+        let playhead_sample = self.thread_handle.playhead.load(Ordering::Acquire);
+        let available = ui.available_rect_before_wrap();
+        let painter = ui.painter();
+
+        if self.ui_state.last_playhead != playhead_sample {
+            // Calculate the new playhead position if the playhead sample has been changed
+            let playhead_beats = self.project.tempo_map.samples_to_beats(playhead_sample);
+            let playhead_x = self.ui_state.pixels_per_beat * playhead_beats.0 as f32;
+            painter.vline(
+                playhead_x,
+                egui::Rangef {
+                    min: available.min.y,
+                    max: available.max.y,
+                },
+                egui::Stroke::new(1.0, colors::primary_fg(ui.visuals().dark_mode)),
+            );
+
+            ui.ctx().request_repaint();
+
+            self.ui_state.last_playhead = playhead_sample;
+            self.ui_state.last_playhead_x = playhead_x;
+        } else {
+            // Use the last playhead position as the x position of the playhead
+            painter.vline(
+                self.ui_state.last_playhead_x,
+                egui::Rangef {
+                    min: available.min.y,
+                    max: available.max.y,
+                },
+                egui::Stroke::new(1.0, colors::primary_fg(ui.visuals().dark_mode)),
+            );
+        }
     }
 }

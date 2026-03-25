@@ -34,7 +34,7 @@ impl TrackMeta {
         self.regions.get(id)
     }
 
-    pub fn get_region_meta(&mut self, id: &RegionID) -> Option<&mut RegionMeta> {
+    pub fn get_region_mut(&mut self, id: &RegionID) -> Option<&mut RegionMeta> {
         self.regions.get_mut(id)
     }
 }

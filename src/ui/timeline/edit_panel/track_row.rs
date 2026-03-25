@@ -1,6 +1,6 @@
-use crate::{app::KnodiqApp, ui_state::dialog_state::TrackType};
+use crate::{app::KnodiqApp, colors, ui_state::dialog_state::TrackType};
 use eframe::egui;
-use knodiq_engine::{data_types::Beats, mixer::TrackID};
+use knodiq_engine::{data_types::Beats, mixer::TrackID, track::RegionID};
 
 impl KnodiqApp {
     pub(super) fn track_row(
@@ -13,27 +13,73 @@ impl KnodiqApp {
         self.add_region_menu(ui, track_id, row_rect);
     }
 
-    fn draw_regions(&self, ui: &mut egui::Ui, track_id: &TrackID, row_rect: egui::Rect) {
+    fn draw_regions(&mut self, ui: &mut egui::Ui, track_id: &TrackID, row_rect: egui::Rect) {
+        // Get the track metadata
         let Some(track_meta) = self.project_meta.get_track(track_id) else {
             return;
         };
-        let ppb = self.ui_state.pixels_per_beat;
-        let painter = ui.painter();
 
-        for region_meta in track_meta.regions.values() {
+        let ppb = self.ui_state.pixels_per_beat;
+        let region_ids: Vec<RegionID> = track_meta.regions.keys().copied().collect();
+
+        // Loop through the regions in the track and draw them
+        for region_id in region_ids {
+            // Get the region metadata
+            let Some(region_meta) = self
+                .project_meta
+                .get_track(track_id)
+                .and_then(|t| t.regions.get(&region_id))
+            else {
+                continue;
+            };
+
+            // Calculate where to put the region
             let x = row_rect.min.x + region_meta.start.0 as f32 * ppb;
-            let w = region_meta.duration.0 as f32 * ppb;
+            let w = (region_meta.duration.0 as f32 * ppb).max(8.0);
             let region_rect = egui::Rect::from_min_size(
                 egui::pos2(x, row_rect.min.y + 2.0),
                 egui::vec2(w, row_rect.height() - 4.0),
             );
 
-            let region_painter = painter.with_clip_rect(region_rect);
+            // Get gestures on the region
+            let response = ui.allocate_rect(region_rect, egui::Sense::drag());
 
-            region_painter.rect_filled(region_rect, 0.0, track_meta.color.gamma_multiply(0.8));
+            // Drag to move
+            if response.dragged() {
+                let delta_beats = Beats((response.drag_delta().x / ppb) as f64);
+                if let Some(region) = self
+                    .project_meta
+                    .get_track_mut(track_id)
+                    .and_then(|track| track.regions.get_mut(&region_id))
+                {
+                    region.move_region(Beats((region.start.0 + delta_beats.0).max(0.0)));
+                }
+            } else if response.drag_stopped()
+                && let Some(new_start) = self
+                    .project_meta
+                    .get_track_mut(track_id)
+                    .and_then(|track| track.regions.get_mut(&region_id))
+                    .map(|region| region.start)
+            {
+                self.move_region(track_id, &region_id, new_start);
+            }
 
-            // Name label
-            region_painter.text(
+            // Draw the region box and the name
+            let Some(track_meta) = self.project_meta.get_track(track_id) else {
+                continue;
+            };
+            let Some(region_meta) = track_meta.regions.get(&region_id) else {
+                continue;
+            };
+            let painter = ui.painter().with_clip_rect(region_rect);
+            painter.rect(
+                region_rect,
+                4.0,
+                track_meta.color.gamma_multiply(0.8),
+                egui::Stroke::new(1.0, colors::region_stroke(ui.visuals().dark_mode)),
+                egui::StrokeKind::Inside,
+            );
+            painter.text(
                 egui::pos2(region_rect.min.x + 4.0, region_rect.min.y + 2.0),
                 egui::Align2::LEFT_TOP,
                 &region_meta.name,
