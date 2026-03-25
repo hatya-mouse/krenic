@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-eframe = "0.33.3"
-egui_extras = { version = "*", features = ["all_loaders"] }
 kasl_node = { git = "https://github.com/hatya-mouse/kasl_node", version = "0.1.0" }
 knodiq_engine = { git = "https://github.com/hatya-mouse/knodiq_engine", version = "0.3.10" }
+makepad-widgets = "1.0.0"
