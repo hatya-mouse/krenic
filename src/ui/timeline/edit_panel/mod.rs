@@ -33,7 +33,7 @@ impl KnodiqApp {
                         egui::Stroke::new(1.0, egui::Color32::from_gray(30)),
                     );
 
-                    self.track_row(ui, *track_id, row_rect);
+                    self.track_row(ui, track_id, row_rect);
                 }
             });
     }

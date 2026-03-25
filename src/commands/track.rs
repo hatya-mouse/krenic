@@ -14,7 +14,7 @@ impl KnodiqApp {
         let track_id = self.project.add_track(track);
 
         // Register the metadata
-        let track_meta = TrackMeta::new(name, color);
+        let track_meta = TrackMeta::new(name, color, track_type);
         self.project_meta.add_track(track_id, track_meta);
 
         // Update the project on the audio thread
