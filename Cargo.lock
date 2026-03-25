@@ -2104,7 +2104,7 @@ dependencies = [
 [[package]]
 name = "kasl_node"
 version = "0.1.0"
-source = "git+https://github.com/hatya-mouse/kasl_node#cfe4512ee6ce1ac8731d715cd5983faaa0c35bc4"
+source = "git+https://github.com/hatya-mouse/kasl_node#4967a77c9e7d93ac737edfac2a801282a608c3e0"
 dependencies = [
  "kasl",
  "knodiq_engine",
@@ -2140,7 +2140,7 @@ dependencies = [
 [[package]]
 name = "knodiq_engine"
 version = "0.3.10"
-source = "git+https://github.com/hatya-mouse/knodiq_engine#2531615d91c910841a96dc8e380580ec80d2b3f0"
+source = "git+https://github.com/hatya-mouse/knodiq_engine#42de59e29fc0fcbffecd1cadb3bbb62e1f8c8ceb"
 dependencies = [
  "cpal",
  "ringbuf",

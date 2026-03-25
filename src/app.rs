@@ -1,11 +1,10 @@
 use crate::{metadata::ProjectMeta, ui_state::KnodiqUIState};
-use eframe::egui::{self, FontData, FontDefinitions, FontFamily};
+use eframe::egui;
 use knodiq_engine::{
     audio_thread::{AudioThread, AudioThreadHandle, error::AudioError},
     data_types::{AudioContext, Beats},
     mixer::Project,
 };
-use std::sync::Arc;
 
 pub struct KnodiqApp {
     /// A master source of the project.
@@ -49,38 +48,6 @@ impl KnodiqApp {
             project_meta: ProjectMeta::new("Project".to_string()),
             ui_state: KnodiqUIState::default(),
         }
-    }
-
-    fn setup_fonts(ctx: &egui::Context) {
-        // Set up the fonts
-        let mut fonts = FontDefinitions::default();
-        fonts.font_data.insert(
-            "Inter".to_owned(),
-            Arc::new(FontData::from_static(include_bytes!(
-                "../assets/fonts/Inter.ttf"
-            ))),
-        );
-        fonts.font_data.insert(
-            "NotoSansJP".to_owned(),
-            Arc::new(FontData::from_static(include_bytes!(
-                "../assets/fonts/NotoSansJP.ttf"
-            ))),
-        );
-
-        // Set the font data
-        fonts
-            .families
-            .entry(FontFamily::Proportional)
-            .or_default()
-            .insert(0, "Inter".to_owned());
-        fonts
-            .families
-            .entry(FontFamily::Proportional)
-            .or_default()
-            .push("NotoSansJP".to_owned());
-
-        // Set the fonts to the specified fonts
-        ctx.set_fonts(fonts);
     }
 
     fn base_style(ctx: &egui::Context) {

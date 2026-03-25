@@ -5,6 +5,7 @@ pub(crate) mod metadata;
 pub(crate) mod ui_state;
 
 mod app;
+mod fonts;
 mod ui;
 
 use app::KnodiqApp;

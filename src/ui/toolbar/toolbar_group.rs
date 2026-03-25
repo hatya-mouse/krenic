@@ -1,9 +1,9 @@
-use crate::colors::button_bg;
+use crate::colors;
 use eframe::egui;
 
 pub(super) fn toolbar_group(ui: &mut egui::Ui, add_contents: impl FnOnce(&mut egui::Ui)) {
     egui::Frame::new()
-        .fill(button_bg(ui))
+        .fill(colors::button_bg(ui.visuals().dark_mode))
         .corner_radius(6)
         .inner_margin(1)
         .show(ui, |ui| {

@@ -1,19 +1,28 @@
 pub(crate) mod timeline;
 pub(crate) mod toolbar;
 
-use crate::app::KnodiqApp;
+use crate::{app::KnodiqApp, colors};
 use eframe::{App, egui};
 
 impl App for KnodiqApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::TopBottomPanel::top("toolbar")
+            .frame(
+                egui::Frame::new()
+                    .fill(colors::tertiary_bg(ctx.style().visuals.dark_mode))
+                    .inner_margin(egui::Margin::symmetric(12, 0)),
+            )
             .exact_height(44.0)
             .show(ctx, |ui| {
                 self.toolbar(ui);
             });
 
         egui::CentralPanel::default()
-            .frame(egui::Frame::new().inner_margin(0))
+            .frame(
+                egui::Frame::new()
+                    .fill(colors::primary_bg(ctx.style().visuals.dark_mode))
+                    .inner_margin(0),
+            )
             .show(ctx, |ui| {
                 self.timeline(ui);
             });
