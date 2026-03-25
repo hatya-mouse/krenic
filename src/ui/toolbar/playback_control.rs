@@ -13,7 +13,10 @@ impl KnodiqApp {
             )
             .clicked()
             {
-                println!("Backward");
+                let command = AudioCommand::Seek(self.project.range_start);
+                if self.thread_handle.command_tx.send(command.clone()).is_err() {
+                    self.errors.push(AudioError::CommandFailed(command));
+                }
             }
 
             if icon_button(
@@ -23,14 +26,9 @@ impl KnodiqApp {
             .clicked()
                 && !self.is_playing
             {
-                if self
-                    .thread_handle
-                    .command_tx
-                    .send(AudioCommand::Play)
-                    .is_err()
-                {
-                    self.errors
-                        .push(AudioError::CommandFailed(AudioCommand::Play));
+                let command = AudioCommand::Play;
+                if self.thread_handle.command_tx.send(command.clone()).is_err() {
+                    self.errors.push(AudioError::CommandFailed(command));
                 } else {
                     self.is_playing = true;
                 }
@@ -43,14 +41,9 @@ impl KnodiqApp {
             .clicked()
                 && self.is_playing
             {
-                if self
-                    .thread_handle
-                    .command_tx
-                    .send(AudioCommand::Pause)
-                    .is_err()
-                {
-                    self.errors
-                        .push(AudioError::CommandFailed(AudioCommand::Pause));
+                let command = AudioCommand::Pause;
+                if self.thread_handle.command_tx.send(command.clone()).is_err() {
+                    self.errors.push(AudioError::CommandFailed(command));
                 } else {
                     self.is_playing = false;
                 }
@@ -62,7 +55,11 @@ impl KnodiqApp {
             )
             .clicked()
             {
-                println!("Forward");
+                let command =
+                    AudioCommand::Seek(self.project.range_start + self.project.range_duration);
+                if self.thread_handle.command_tx.send(command.clone()).is_err() {
+                    self.errors.push(AudioError::CommandFailed(command));
+                }
             }
         });
     }
