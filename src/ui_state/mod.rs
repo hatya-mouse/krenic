@@ -14,6 +14,9 @@ pub struct KnodiqUIState {
 
     /// Scroll amount of the timeline.
     pub timeline_scroll_y: f32,
+
+    /// Pixels per beat.
+    pub pixels_per_beat: f32,
 }
 
 impl Default for KnodiqUIState {
@@ -23,6 +26,7 @@ impl Default for KnodiqUIState {
             track_height: 50.0,
             track_list_width: 250.0,
             timeline_scroll_y: 0.0,
+            pixels_per_beat: 80.0,
         }
     }
 }
