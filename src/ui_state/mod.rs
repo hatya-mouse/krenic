@@ -3,6 +3,12 @@ pub mod dialog_state;
 use crate::ui_state::dialog_state::DialogState;
 
 pub struct KnodiqUIState {
+    /// The latest playhead samples received from the audio thread.
+    pub last_playhead: usize,
+
+    /// The last playhead x position.
+    pub last_playhead_x: f32,
+
     /// The current dialog state.
     pub dialog_state: DialogState,
 
@@ -22,6 +28,8 @@ pub struct KnodiqUIState {
 impl Default for KnodiqUIState {
     fn default() -> Self {
         Self {
+            last_playhead: 0,
+            last_playhead_x: 0.0,
             dialog_state: DialogState::None,
             track_height: 50.0,
             track_list_width: 250.0,

@@ -43,15 +43,20 @@ impl KnodiqApp {
             });
     }
 
-    fn playhead(&self, ui: &mut egui::Ui) {
+    fn playhead(&mut self, ui: &mut egui::Ui) {
         let playhead_sample = self.thread_handle.playhead.load(Ordering::Acquire);
         let available = ui.available_rect_before_wrap();
 
-        let playhead_beats = self.project.tempo_map.samples_to_beats(playhead_sample);
-        let playhead_x = available.min.x + self.ui_state.pixels_per_beat * playhead_beats.0 as f32;
+        // Calculate if the playhead sample has changed
+        if self.ui_state.last_playhead != playhead_sample {
+            let playhead_beats = self.project.tempo_map.samples_to_beats(playhead_sample);
+            self.ui_state.last_playhead_x =
+                available.min.x + self.ui_state.pixels_per_beat * playhead_beats.0 as f32;
+            self.ui_state.last_playhead = playhead_sample;
+        }
 
         ui.painter().vline(
-            playhead_x,
+            self.ui_state.last_playhead_x,
             egui::Rangef {
                 min: available.min.y,
                 max: available.max.y,
@@ -59,7 +64,6 @@ impl KnodiqApp {
             egui::Stroke::new(1.0, colors::primary_fg(ui.visuals().dark_mode)),
         );
 
-        // Request repeint if it is playing
         if self.is_playing {
             ui.ctx().request_repaint();
         }
