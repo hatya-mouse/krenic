@@ -1,0 +1,49 @@
+use crate::{app::KnodiqApp, components::icon_button::icon_button};
+use eframe::egui;
+use knodiq_engine::audio_thread::AudioCommand;
+
+impl KnodiqApp {
+    pub(super) fn playback_control(&mut self, ui: &mut egui::Ui) {
+        self.toolbar_group(ui, |ui| {
+            if icon_button(
+                ui,
+                egui::Image::new(egui::include_image!("../../../assets/icons/backward.png")),
+            )
+            .clicked()
+            {
+                println!("Backward");
+            }
+
+            if icon_button(
+                ui,
+                egui::Image::new(egui::include_image!("../../../assets/icons/play.png")),
+            )
+            .clicked()
+                && !self.is_playing
+            {
+                self.thread_handle.command_tx.send(AudioCommand::Play);
+                self.is_playing = true;
+            }
+
+            if icon_button(
+                ui,
+                egui::Image::new(egui::include_image!("../../../assets/icons/pause.png")),
+            )
+            .clicked()
+                && self.is_playing
+            {
+                self.thread_handle.command_tx.send(AudioCommand::Pause);
+                self.is_playing = false;
+            }
+
+            if icon_button(
+                ui,
+                egui::Image::new(egui::include_image!("../../../assets/icons/forward.png")),
+            )
+            .clicked()
+            {
+                println!("Forward");
+            }
+        });
+    }
+}

@@ -1,4 +1,7 @@
 mod app;
+pub(crate) mod colors;
+pub(crate) mod components;
+mod ui;
 
 use app::KnodiqApp;
 use eframe::egui::ViewportBuilder;
@@ -12,6 +15,6 @@ fn main() -> eframe::Result<()> {
     eframe::run_native(
         "Knodiq",
         options,
-        Box::new(|_| Ok(Box::new(KnodiqApp::default()))),
+        Box::new(|cc| Ok(Box::new(KnodiqApp::new(cc)))),
     )
 }
