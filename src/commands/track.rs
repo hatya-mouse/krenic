@@ -18,6 +18,6 @@ impl KnodiqApp {
         self.project_meta.add_track(track_id, track_meta);
 
         // Update the project on the audio thread
-        self.update_project();
+        self.modified_project();
     }
 }

@@ -1,32 +1,22 @@
 pub mod dialog_state;
+pub mod timeline_state;
 
-use crate::ui_state::dialog_state::DialogState;
+use crate::ui_state::{dialog_state::DialogState, timeline_state::TimelineState};
 use knodiq_engine::{mixer::TrackID, track::RegionID};
+use std::time::Instant;
 
 pub struct KnodiqUIState {
     /// The current dialog state.
     pub dialog_state: DialogState,
 
-    /// The latest playhead samples received from the audio thread.
-    pub last_playhead: usize,
+    /// The current timeline state.
+    pub timeline_state: TimelineState,
 
-    /// The last playhead x position.
-    pub last_playhead_x: f32,
-
-    /// The x scroll amount of the timeline.
-    pub timeline_scroll_x: f32,
+    /// An instant to track the last edited time for project updating.
+    pub last_edit_time: Option<Instant>,
 
     /// An ID of the currently selected region.
     pub selected_region: Option<(TrackID, RegionID)>,
-
-    /// The height of each track in the timeline.
-    pub track_height: f32,
-
-    /// The width of the track list.
-    pub track_list_width: f32,
-
-    /// Scroll amount of the timeline.
-    pub timeline_scroll_y: f32,
 
     /// Pixels per beat.
     pub pixels_per_beat: f32,
@@ -35,14 +25,10 @@ pub struct KnodiqUIState {
 impl Default for KnodiqUIState {
     fn default() -> Self {
         Self {
-            last_playhead: 0,
-            last_playhead_x: 0.0,
-            timeline_scroll_x: 0.0,
             dialog_state: DialogState::None,
+            timeline_state: TimelineState::default(),
+            last_edit_time: None,
             selected_region: None,
-            track_height: 50.0,
-            track_list_width: 250.0,
-            timeline_scroll_y: 0.0,
             pixels_per_beat: 80.0,
         }
     }

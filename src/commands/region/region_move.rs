@@ -20,7 +20,7 @@ impl KnodiqApp {
             region_meta.move_region(new_start);
         }
 
-        self.update_project();
+        self.modified_project();
     }
 
     pub(crate) fn set_region_duration(
@@ -41,6 +41,6 @@ impl KnodiqApp {
             region_meta.set_duration(new_duration);
         }
 
-        self.update_project();
+        self.modified_project();
     }
 }

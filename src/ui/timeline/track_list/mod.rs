@@ -18,7 +18,7 @@ impl KnodiqApp {
                         ui.horizontal(|ui| {
                             // Draw track color
                             let (rect, _) = ui.allocate_exact_size(
-                                egui::vec2(4.0, self.ui_state.track_height),
+                                egui::vec2(4.0, self.ui_state.timeline_state.track_height),
                                 egui::Sense::hover(),
                             );
                             ui.painter().rect_filled(rect, 0.0, track_meta.color);

@@ -42,5 +42,8 @@ impl App for KnodiqApp {
 
         // Show dialogs
         self.track_dialog(ctx);
+
+        // Check for project updating
+        self.update_project();
     }
 }

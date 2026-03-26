@@ -54,7 +54,7 @@ impl KnodiqApp {
             }
 
             // Update the project on the audio thread
-            self.update_project();
+            self.modified_project();
         }
     }
 
@@ -89,7 +89,7 @@ impl KnodiqApp {
             }
 
             // Update the project on the audio thread
-            self.update_project();
+            self.modified_project();
         }
     }
 }

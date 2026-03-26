@@ -13,7 +13,7 @@ impl KnodiqApp {
                 self.playhead(ui, edit_rect);
 
                 // Draw each tracks
-                let track_height = self.ui_state.track_height;
+                let track_height = self.ui_state.timeline_state.track_height;
                 let available = ui.available_rect_before_wrap();
 
                 let track_order = self.project_meta.track_order.clone();
@@ -44,10 +44,11 @@ impl KnodiqApp {
         let available = ui.available_rect_before_wrap();
 
         // Calculate if the playhead sample has changed
-        if self.ui_state.last_playhead != playhead_sample {
+        if self.ui_state.timeline_state.last_playhead != playhead_sample {
             let playhead_beats = self.project.tempo_map.samples_to_beats(playhead_sample);
-            self.ui_state.last_playhead_x = self.ui_state.pixels_per_beat * playhead_beats.0 as f32;
-            self.ui_state.last_playhead = playhead_sample;
+            self.ui_state.timeline_state.last_playhead_x =
+                self.ui_state.pixels_per_beat * playhead_beats.0 as f32;
+            self.ui_state.timeline_state.last_playhead = playhead_sample;
         }
 
         // Create a new painter to draw on the foreground layer
@@ -59,7 +60,7 @@ impl KnodiqApp {
 
         // let painter = ui.painter_at(edit_rect);
         painter.vline(
-            available.min.x + self.ui_state.last_playhead_x,
+            available.min.x + self.ui_state.timeline_state.last_playhead_x,
             egui::Rangef {
                 min: available.min.y,
                 max: available.max.y,
