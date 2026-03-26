@@ -51,13 +51,11 @@ impl KnodiqApp {
 
         // Test project by adding some tracks and nodes
         Self::setup_project(&mut project, &mut project_meta, &audio_ctx);
-        project.prepare().unwrap();
-        let project_clone = project.clone();
 
-        let thread_handle = AudioThread::spawn(audio_ctx, project);
+        let thread_handle = AudioThread::spawn(audio_ctx, project.clone()).unwrap();
 
         Self {
-            project: project_clone,
+            project,
             is_playing: false,
             thread_handle,
             errors: Vec::new(),
@@ -229,13 +227,13 @@ impl KnodiqApp {
         let mut lib_paths = Vec::new();
 
         // Save the generated kasl library to temporary directory
-        let temp_dir =
-            tempfile::tempdir().expect("Could not retrieve the temporary directory path");
-        let kasl_path = temp_dir.path().join("knodiq.kasl");
-        std::fs::write(&kasl_path, knodiq_lib).expect("Failed to write the knodiq library");
-        if let Some(path_str) = temp_dir.path().to_str() {
-            lib_paths.push(path_str.to_string());
-        }
+        let app_data = dirs::data_dir()
+            .expect("Could not get data dir")
+            .join("knodiq");
+        std::fs::create_dir_all(&app_data).unwrap();
+        let kasl_path = app_data.join("knodiq.kasl");
+        std::fs::write(&kasl_path, knodiq_lib).expect("Failed to write knodiq.kasl");
+        lib_paths.push(app_data.to_str().unwrap().to_string());
 
         // Add the standard library directory
         if let Some(mut home_dir) = dirs::home_dir() {

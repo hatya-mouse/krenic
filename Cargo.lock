@@ -2107,7 +2107,7 @@ dependencies = [
 [[package]]
 name = "kasl"
 version = "0.1.0"
-source = "git+https://github.com/hatya-mouse/kasl#da5014b599ecfb21f2c6ed80d67d097040208127"
+source = "git+https://github.com/hatya-mouse/kasl#76dd28685f68be30079fd743f91882d30ceb91ed"
 dependencies = [
  "cranelift",
  "cranelift-codegen",
@@ -2125,7 +2125,7 @@ dependencies = [
 [[package]]
 name = "kasl_node"
 version = "0.1.0"
-source = "git+https://github.com/hatya-mouse/kasl_node#4967a77c9e7d93ac737edfac2a801282a608c3e0"
+source = "git+https://github.com/hatya-mouse/kasl_node#f03199f7fe34e8ba036f8ee98118d08c0b31d005"
 dependencies = [
  "kasl",
  "knodiq_engine",
@@ -2164,7 +2164,7 @@ dependencies = [
 [[package]]
 name = "knodiq_engine"
 version = "0.3.10"
-source = "git+https://github.com/hatya-mouse/knodiq_engine#42b38d5a0a01ab3655df02e3aadfa9d0804f1aab"
+source = "git+https://github.com/hatya-mouse/knodiq_engine#e445c073a0d5cc0a3863707b45bc44de85e1a36e"
 dependencies = [
  "cpal",
  "ringbuf",
@@ -2825,9 +2825,9 @@ dependencies = [
 
 [[package]]
 name = "ordered-float"
-version = "5.1.0"
+version = "5.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f4779c6901a562440c3786d08192c6fbda7c1c2060edd10006b05ee35d10f2d"
+checksum = "0218004a4aae742209bee9c3cef05672f6b2708be36a50add8eb613b1f2a4008"
 dependencies = [
  "num-traits",
 ]
