@@ -20,7 +20,7 @@ impl KnodiqApp {
         let max_scroll = (content_height - total_rect.height()).max(0.0);
         self.ui_state.timeline_scroll_y = self.ui_state.timeline_scroll_y.clamp(0.0, max_scroll);
 
-        // Share the scroll amount
+        // Synchronize the scroll amount
         let scroll_y = self.ui_state.timeline_scroll_y;
 
         // Add the left track list panel
@@ -38,7 +38,13 @@ impl KnodiqApp {
             total_rect.max,
         );
         scrolled_panel(ui, edit_rect, scroll_y, |ui| {
-            self.track_edit_panel(ui);
+            egui::ScrollArea::horizontal()
+                .min_scrolled_height(edit_rect.height())
+                .show(ui, |ui| {
+                    let min_height = ui.available_height();
+                    ui.set_min_height(min_height);
+                    self.track_edit_panel(ui);
+                });
         });
 
         // Add a divider and make it draggable
