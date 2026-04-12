@@ -24,10 +24,7 @@ impl KnodiqApp {
         let total_rect = ui.available_rect_before_wrap();
 
         // Draw notes
-        let grid_rect = egui::Rect::from_min_max(
-            egui::pos2(total_rect.min.x, total_rect.min.y),
-            total_rect.max,
-        );
+        let grid_rect = egui::Rect::from_min_max(total_rect.min, total_rect.max);
         egui::Frame::new()
             .fill(colors::secondary_bg(ui.visuals().dark_mode))
             .show(ui, |ui| {

@@ -13,7 +13,7 @@ impl KnodiqApp {
     pub(super) fn note_grid(
         &mut self,
         ui: &mut egui::Ui,
-        grid_rect: egui::Rect,
+        note_grid_rect: egui::Rect,
         track_id: TrackID,
         region_id: RegionID,
     ) {
@@ -39,20 +39,22 @@ impl KnodiqApp {
             return;
         };
 
-        // Calculate the total size by multiplying the duration of the region
-        let total_width = (region.duration.0 as f32
+        // Calculate the total size of the scroll area content
+        let scroll_content_width = (region.duration.0 as f32
             * self.ui_state.piano_roll_state.pixels_per_beat)
-            .max(grid_rect.width());
-        // Calculate the total height
-        let total_height = 128.0 * self.ui_state.piano_roll_state.note_height;
+            .max(note_grid_rect.width());
+        // Calculate the total height of the scroll area content (128 MIDI notes)
+        let scroll_content_height = 128.0 * self.ui_state.piano_roll_state.note_height;
 
         let notes = region.notes.clone();
 
         // Draw the notes
         let scroll_area = egui::ScrollArea::both().show(ui, |ui| {
             // Allocate a painter
-            let (response, painter) =
-                ui.allocate_painter(egui::vec2(total_width, total_height), egui::Sense::click());
+            let (response, painter) = ui.allocate_painter(
+                egui::vec2(scroll_content_width, scroll_content_height),
+                egui::Sense::click(),
+            );
             let offset = response.rect.min;
 
             for (note_id, note) in notes {
@@ -92,8 +94,8 @@ impl KnodiqApp {
         // Handle zoom and track adding gestures
         self.note_grid_gestures(
             ui,
-            grid_rect,
-            total_height,
+            note_grid_rect,
+            scroll_content_height,
             scroll_area.state.offset,
             &track_id,
             &region_id,
@@ -103,20 +105,24 @@ impl KnodiqApp {
     fn note_grid_gestures(
         &mut self,
         ui: &mut egui::Ui,
-        grid_rect: egui::Rect,
-        scroll_height: f32,
+        note_grid_rect: egui::Rect,
+        scroll_content_height: f32,
         scroll_amount: egui::Vec2,
         track_id: &TrackID,
         region_id: &RegionID,
     ) {
-        let response = ui.allocate_rect(grid_rect, egui::Sense::click());
+        let response = ui.allocate_rect(note_grid_rect, egui::Sense::click());
 
         if response.double_clicked() {
             // Add a new note when double clicked
             if let Some(click_pos) = response.interact_pointer_pos() {
                 // Calculate the note start beats and the pitch
-                let (start, pitch) =
-                    self.calc_note_position(click_pos, grid_rect, scroll_height, scroll_amount);
+                let (start, pitch) = self.calc_note_position(
+                    click_pos,
+                    note_grid_rect,
+                    scroll_content_height,
+                    scroll_amount,
+                );
 
                 // Add a note at the position
                 let note = Note::new(start, Beats(1.0), pitch, 1.0);
