@@ -78,6 +78,27 @@ impl KnodiqApp {
                     egui::vec2(note_width, self.ui_state.piano_roll_state.note_height),
                 );
 
+                // Create a rect on the right side of the note to drag and resize the note
+                let draggable_width = 5.0;
+                let resize_rect = egui::Rect::from_min_size(
+                    egui::pos2(note_x + note_width - draggable_width, note_y + 2.0),
+                    egui::vec2(
+                        draggable_width,
+                        self.ui_state.piano_roll_state.note_height - 4.0,
+                    ),
+                );
+
+                // Handle note gestures
+                self.note_controls(
+                    ui,
+                    &track_id,
+                    &region_id,
+                    &note_id,
+                    &note,
+                    note_rect,
+                    resize_rect,
+                );
+
                 // Highlight the selected note
                 let stroke = if self.ui_state.piano_roll_state.selected_note == Some(note_id) {
                     egui::Stroke::new(2.0, colors::region_selected())
@@ -93,9 +114,6 @@ impl KnodiqApp {
                     stroke,
                     egui::StrokeKind::Inside,
                 );
-
-                // Handle note gestures
-                self.note_controls(ui, &track_id, &region_id, &note_id, note, note_rect);
             }
         });
 
@@ -197,8 +215,9 @@ impl KnodiqApp {
         track_id: &TrackID,
         region_id: &RegionID,
         note_id: &NoteID,
-        note: Note,
+        note: &Note,
         note_rect: egui::Rect,
+        resize_rect: egui::Rect,
     ) {
         // Check for the delete key input
         if self.ui_state.piano_roll_state.selected_note == Some(*note_id) {
@@ -212,16 +231,51 @@ impl KnodiqApp {
             }
         }
 
-        // Handle note click gesture
-        let response = ui.allocate_rect(note_rect, egui::Sense::drag());
+        // Get gestures on the note
+        let move_res = ui.allocate_rect(note_rect, egui::Sense::drag());
+        let resize_res = ui.allocate_rect(resize_rect, egui::Sense::drag());
 
-        // Calculate the beats from the drag amount
-        let delta_beats =
-            Beats((response.drag_delta().x / self.ui_state.timeline_state.pixels_per_beat) as f64);
-        let new_start = note.start + delta_beats;
+        // If the resize area is hovered, show the resize cursor
+        if resize_res.hovered() {
+            ui.set_cursor_icon(egui::CursorIcon::ResizeHorizontal);
+        }
 
-        if response.dragged() {
-            self.ui_state.piano_roll_state.selected_note = Some(*note_id);
+        // Handle resize
+        if resize_res.dragged() {
+            // Select the note
+            self.ui_state.set_selected_note(*note_id);
+
+            // Calculate the new duration from the drag amount
+            let delta_beats = Beats(
+                (resize_res.drag_delta().x / self.ui_state.piano_roll_state.pixels_per_beat) as f64,
+            );
+            if let Some(region) = self
+                .project
+                .get_track_mut(track_id)
+                .and_then(|track| track.as_any_mut().downcast_mut::<NoteTrack>())
+                .and_then(|track| track.get_region_mut(region_id))
+            {
+                region.set_duration(note_id, Beats((note.duration.0 + delta_beats.0).max(0.0)));
+            }
+        } else if resize_res.drag_stopped()
+            && let Some(new_duration) = self
+                .project
+                .get_track(track_id)
+                .and_then(|track| track.as_any().downcast_ref::<NoteTrack>())
+                .and_then(|track| track.get_region(region_id))
+                .and_then(|region| region.get_duration(note_id))
+        {
+            self.set_note_duration(track_id, region_id, note_id, new_duration);
+        }
+
+        if move_res.dragged() {
+            // Calculate the beats from the drag amount
+            let delta_beats = Beats(
+                (move_res.drag_delta().x / self.ui_state.timeline_state.pixels_per_beat) as f64,
+            );
+            let new_start = note.start + delta_beats;
+
+            self.ui_state.set_selected_note(*note_id);
 
             if let Some(region) = self
                 .project
@@ -231,7 +285,14 @@ impl KnodiqApp {
             {
                 region.set_start(note_id, new_start);
             }
-        } else if response.drag_stopped() && new_start != note.start {
+        } else if move_res.drag_stopped()
+            && let Some(new_start) = self
+                .project
+                .get_track(track_id)
+                .and_then(|track| track.as_any().downcast_ref::<NoteTrack>())
+                .and_then(|track| track.get_region(region_id))
+                .and_then(|region| region.get_start(note_id))
+        {
             self.set_note_start(track_id, region_id, note_id, new_start);
         }
     }

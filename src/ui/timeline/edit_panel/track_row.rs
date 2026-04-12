@@ -147,8 +147,8 @@ impl KnodiqApp {
         } else if resize_res.drag_stopped()
             && let Some(new_duration) = self
                 .project_meta
-                .get_track_mut(track_id)
-                .and_then(|track| track.get_region_mut(region_id))
+                .get_track(track_id)
+                .and_then(|track| track.get_region(region_id))
                 .map(|region| region.duration)
         {
             self.set_region_duration(track_id, region_id, new_duration);

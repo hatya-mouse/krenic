@@ -2177,8 +2177,8 @@ dependencies = [
 
 [[package]]
 name = "knodiq_engine"
-version = "0.3.10"
-source = "git+https://github.com/hatya-mouse/knodiq_engine#08d43d5213fe2054599f69c7c2126ae5f813f49b"
+version = "0.3.11"
+source = "git+https://github.com/hatya-mouse/knodiq_engine#5d7c32db9d3715ee460ae6e19334ef123dc0db65"
 dependencies = [
  "cpal",
  "ringbuf",
@@ -3093,9 +3093,9 @@ dependencies = [
 
 [[package]]
 name = "pkg-config"
-version = "0.3.32"
+version = "0.3.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7edddbd0b52d732b21ad9a5fab5c704c14cd949e5e9a1ec5929a24fded1b904c"
+checksum = "19f132c84eca552bf34cab8ec81f1c1dcc229b811638f9d283dceabe58c5569e"
 
 [[package]]
 name = "plain"

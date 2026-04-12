@@ -5,7 +5,11 @@ pub mod timeline_state;
 use crate::ui_state::{
     dialog_state::DialogState, piano_roll_state::PianoRollState, timeline_state::TimelineState,
 };
-use knodiq_engine::{data_types::Beats, mixer::TrackID, track::RegionID};
+use knodiq_engine::{
+    data_types::Beats,
+    mixer::TrackID,
+    track::{RegionID, note_track::NoteID},
+};
 use std::time::Instant;
 
 #[derive(Default)]
@@ -38,5 +42,10 @@ impl KnodiqUIState {
         self.selected_region = Some((track_id, region_id));
         // Deselect the note
         self.piano_roll_state.selected_note = None;
+    }
+
+    /// Set the selected note to the given one.
+    pub fn set_selected_note(&mut self, note_id: NoteID) {
+        self.piano_roll_state.selected_note = Some(note_id)
     }
 }

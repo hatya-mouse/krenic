@@ -1,4 +1,4 @@
-mod note_edit;
+mod note;
 mod project_updater;
 mod region;
 mod track;
