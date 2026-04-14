@@ -1,4 +1,5 @@
 mod graph_io;
+mod node_io;
 mod project_io;
 mod track_io;
 
@@ -7,7 +8,7 @@ pub trait AsBytes {
     fn as_bytes(&self, bytes: &mut Vec<u8>);
 }
 
-pub trait FromBytes {
+pub trait FromBytes: Sized {
     /// Loads the instance of self from bytes.
-    fn from_bytes(bytes: &[u8]) -> Self;
+    fn from_bytes(bytes: &[u8]) -> std::io::Result<Self>;
 }

@@ -2167,7 +2167,7 @@ checksum = "7d47701276b8b5bc4eaa23203070eeb899e34bb59084580d949c70d6a62cd632"
 [[package]]
 name = "kasl_node"
 version = "0.1.2"
-source = "git+https://github.com/hatya-mouse/kasl_node#0b2d040097702f0deb6718b058c20deaa5c7b61c"
+source = "git+https://github.com/hatya-mouse/kasl_node#44c6e42bb84f334be63d2fe22ec4fc1557c01f5a"
 dependencies = [
  "kasl",
  "knodiq_engine",
@@ -2206,7 +2206,7 @@ dependencies = [
 [[package]]
 name = "knodiq_engine"
 version = "0.3.15"
-source = "git+https://github.com/hatya-mouse/knodiq_engine#0ebe6e049b036016c63fe52526612c0f8825e6c1"
+source = "git+https://github.com/hatya-mouse/knodiq_engine#37bae6ee4857d9bb0268c21fbc36ab43f7e82d45"
 dependencies = [
  "cpal",
  "ringbuf",
