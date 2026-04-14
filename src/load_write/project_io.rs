@@ -1,4 +1,4 @@
-use crate::project_io::AsBytes;
+use crate::load_write::AsBytes;
 use knodiq_engine::mixer::Project;
 use std::{fs::File, io::Write, path::Path};
 
@@ -20,7 +20,7 @@ pub(crate) fn save_project(path: &Path, project: &Project) -> std::io::Result<()
     // Write the project
     let mut project_bytes = Vec::new();
     project.as_bytes(&mut project_bytes);
-    file.write_all(&project_bytes);
+    file.write_all(&project_bytes)?;
 
     Ok(())
 }

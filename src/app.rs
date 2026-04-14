@@ -3,7 +3,7 @@ use crate::{
     ui_state::{KnodiqUIState, dialog_state::TrackType},
 };
 use eframe::egui;
-use kasl::localization::format_error;
+use kasl::core::localization::format_error;
 use kasl_node::KaslNode;
 use knodiq_engine::{
     audio_thread::{AudioThread, AudioThreadHandle, error::AudioError},
@@ -47,7 +47,7 @@ impl KnodiqApp {
             max_voices: 32,
         };
         let mut project = Project::new(audio_ctx.clone(), 120.0, Beats(0.0), Beats(8.0));
-        let mut project_meta = ProjectMeta::new("Project".to_string());
+        let mut project_meta = ProjectMeta::new();
 
         // Test project by adding some tracks and nodes
         Self::setup_project(&mut project, &mut project_meta, &audio_ctx);
