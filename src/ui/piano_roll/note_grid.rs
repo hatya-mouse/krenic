@@ -49,7 +49,8 @@ impl KnodiqApp {
             * self.ui_state.piano_roll_state.pixels_per_beat)
             .max(note_grid_rect.width());
         // Calculate the total height of the scroll area content (128 MIDI notes)
-        let scroll_content_height = 128.0 * self.ui_state.piano_roll_state.note_height;
+        let scroll_content_height =
+            (128.0 * self.ui_state.piano_roll_state.note_height).max(note_grid_rect.height());
 
         let notes = region.notes.clone();
 

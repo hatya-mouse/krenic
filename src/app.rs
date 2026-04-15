@@ -125,8 +125,9 @@ impl KnodiqApp {
 
         let program = r#"
 import std
-import knodiq
+import math/float
 import convert
+import knodiq
 
 input notes = [knodiq.Voice(); knodiq.max_voices]
 output sample = knodiq.zero_sample()
@@ -144,17 +145,17 @@ func main() {
     loop knodiq.max_voices {
         if notes[i].is_active {
             let t = notes[i].age
-            let base_freq = 440.0 * std.float.pow(2.0, (notes[i].pitch - 69.0) / 12.0)
+            let base_freq = 440.0 * float.pow(2.0, (notes[i].pitch - 69.0) / 12.0)
 
             if base_freq > 500.0 {
-                let vib = std.float.fast_sin(pi2 * vib_rate * t) * vib_depth
+                let vib = float.fast_sin(pi2 * vib_rate * t) * vib_depth
                 let vib_freq = base_freq * (1.0 + vib)
-                let mod_sig = std.float.fast_sin(vib_freq * fm_ratio * t * pi2) * fm_depth
-                let carrier = std.float.sgn(std.float.fast_sin(vib_freq * t * pi2 + mod_sig))
+                let mod_sig = float.fast_sin(vib_freq * fm_ratio * t * pi2) * fm_depth
+                let carrier = float.sgn(float.fast_sin(vib_freq * t * pi2 + mod_sig))
                 out = out + carrier * notes[i].velocity * 0.3
             } else {
-                let mod_sig = std.float.fast_sin(base_freq * fm_ratio * t * pi2) * fm_depth
-                let carrier = std.float.sgn(std.float.sin(base_freq * t * pi2 + mod_sig))
+                let mod_sig = float.fast_sin(base_freq * fm_ratio * t * pi2) * fm_depth
+                let carrier = float.sgn(float.sin(base_freq * t * pi2 + mod_sig))
                 out = out + carrier * notes[i].velocity * 0.3
             }
         }
