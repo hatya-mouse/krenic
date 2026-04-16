@@ -2206,7 +2206,7 @@ dependencies = [
 [[package]]
 name = "knodiq_engine"
 version = "0.3.16"
-source = "git+https://github.com/hatya-mouse/knodiq_engine#6b300491915f0dea158e4bc7b5b0cffedfc351dc"
+source = "git+https://github.com/hatya-mouse/knodiq_engine#10a6ab07d318f92fae69884b632103fd2cb6da55"
 dependencies = [
  "cpal",
  "ringbuf",
@@ -4679,9 +4679,9 @@ dependencies = [
 
 [[package]]
 name = "webpki-roots"
-version = "1.0.6"
+version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22cfaf3c063993ff62e73cb4311efde4db1efb31ab78a3e5c457939ad5cc0bed"
+checksum = "52f5ee44c96cf55f1b349600768e3ece3a8f26010c05265ab73f945bb1a2eb9d"
 dependencies = [
  "rustls-pki-types",
 ]

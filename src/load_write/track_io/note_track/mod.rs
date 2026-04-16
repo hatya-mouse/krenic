@@ -2,12 +2,9 @@ mod note;
 mod note_region;
 
 use crate::load_write::{AsBytes, FromBytes};
-use knodiq_engine::{
-    data_types::AudioContext,
-    track::{
-        RegionID,
-        note_track::{NoteRegion, NoteTrack},
-    },
+use knodiq_engine::track::{
+    RegionID,
+    note_track::{NoteRegion, NoteTrack},
 };
 use std::{
     collections::HashMap,
@@ -69,7 +66,7 @@ impl FromBytes for NoteTrack {
         }
 
         // Construct a new track
-        let mut track = NoteTrack::new(AudioContext::default());
+        let mut track = NoteTrack::default();
         track.set_regions(regions);
 
         Ok(track)

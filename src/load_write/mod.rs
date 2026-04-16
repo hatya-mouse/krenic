@@ -1,6 +1,8 @@
+mod audio_ctx_io;
 mod graph_io;
 mod node_io;
 mod project_io;
+mod tempo_map_io;
 mod track_io;
 
 pub trait AsBytes {

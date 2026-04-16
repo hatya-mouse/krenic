@@ -21,10 +21,10 @@ impl FromBytes for Note {
         let mut pitch_bytes = [0u8; 4];
         let mut velocity_bytes = [0u8; 4];
 
-        cursor.read_exact(&mut start_bytes);
-        cursor.read_exact(&mut duration_bytes);
-        cursor.read_exact(&mut pitch_bytes);
-        cursor.read_exact(&mut velocity_bytes);
+        cursor.read_exact(&mut start_bytes)?;
+        cursor.read_exact(&mut duration_bytes)?;
+        cursor.read_exact(&mut pitch_bytes)?;
+        cursor.read_exact(&mut velocity_bytes)?;
 
         let start = Beats(f64::from_le_bytes(start_bytes));
         let duration = Beats(f64::from_le_bytes(duration_bytes));
