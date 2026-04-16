@@ -1,4 +1,4 @@
-use crate::load_write::{AsBytes, FromBytes};
+use crate::load_write::{AsBytes, FromBytes, safe_read};
 use knodiq_engine::{
     graph::{Graph, node_id::NodeID},
     node::Node,
@@ -38,9 +38,8 @@ impl FromBytes for Graph {
         let nodes_length = u64::from_le_bytes(length_bytes) as usize;
 
         // Read nodes_bytes
-        let mut nodes_bytes = vec![0u8; nodes_length];
-        cursor.read_exact(&mut nodes_bytes)?;
-        let mut nodes_cursor = Cursor::new(nodes_bytes);
+        let nodes_bytes = safe_read(&mut cursor, nodes_length)?;
+        let mut nodes_cursor = Cursor::new(nodes_bytes.as_slice());
 
         // Read each node
         while nodes_cursor.position() < nodes_length as u64 {
@@ -54,8 +53,7 @@ impl FromBytes for Graph {
             let node_length = u64::from_le_bytes(buf) as usize;
 
             // Read node data
-            let mut node_bytes = vec![0u8; node_length];
-            nodes_cursor.read_exact(&mut node_bytes)?;
+            let node_bytes = safe_read(&mut nodes_cursor, node_length)?;
             let node = <Box<dyn Node>>::from_bytes(&node_bytes)?;
 
             graph.add_node_with_id(node_id, node);

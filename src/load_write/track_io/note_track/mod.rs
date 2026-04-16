@@ -1,7 +1,7 @@
 mod note;
 mod note_region;
 
-use crate::load_write::{AsBytes, FromBytes};
+use crate::load_write::{AsBytes, FromBytes, safe_read};
 use knodiq_engine::track::{
     RegionID,
     note_track::{NoteRegion, NoteTrack},
@@ -41,13 +41,12 @@ impl FromBytes for NoteTrack {
         cursor.read_exact(&mut region_len_bytes)?;
         let region_len = u64::from_le_bytes(region_len_bytes) as usize;
 
-        // Read the note bytes
-        let mut regions_data_bytes = vec![0u8; region_len];
-        cursor.read_exact(&mut regions_data_bytes)?;
+        // Read the track bytes
+        let regions_data_bytes = safe_read(&mut cursor, region_len)?;
 
         // Parse the regions
         let mut regions = HashMap::new();
-        let mut region_cursor = Cursor::new(bytes);
+        let mut region_cursor = Cursor::new(regions_data_bytes.as_slice());
         while region_cursor.position() < region_len as u64 {
             // Get the length of the region and the region ID
             let mut region_len_bytes = [0u8; 8];
@@ -58,8 +57,7 @@ impl FromBytes for NoteTrack {
             let region_id = RegionID(u64::from_le_bytes(region_id_bytes) as usize);
 
             // Get the region content data and decode it
-            let mut region_data_bytes = vec![0u8; region_len];
-            region_cursor.read_exact(&mut region_data_bytes)?;
+            let region_data_bytes = safe_read(&mut region_cursor, region_len)?;
             let region = NoteRegion::from_bytes(&region_data_bytes)?;
 
             regions.insert(region_id, region);

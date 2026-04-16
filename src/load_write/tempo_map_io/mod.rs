@@ -1,6 +1,6 @@
 mod tempo_event;
 
-use crate::load_write::{AsBytes, FromBytes};
+use crate::load_write::{AsBytes, FromBytes, safe_read};
 use knodiq_engine::mixer::{TempoEvent, TempoMap};
 use std::io::{Cursor, Read};
 
@@ -28,8 +28,7 @@ impl FromBytes for TempoMap {
         let events_len = u64::from_le_bytes(events_len_bytes) as usize;
 
         // Get the events data bytes
-        let mut events_data_bytes = vec![0u8; events_len];
-        cursor.read_exact(&mut events_data_bytes)?;
+        let events_data_bytes = safe_read(&mut cursor, events_len)?;
 
         // Parse the events from the data bytes
         let mut events = Vec::new();

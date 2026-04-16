@@ -1,6 +1,6 @@
 mod kasl_node;
 
-use crate::load_write::{AsBytes, FromBytes};
+use crate::load_write::{AsBytes, FromBytes, safe_read};
 use ::kasl_node::KaslNode;
 use knodiq_engine::node::{
     Node,
@@ -59,9 +59,8 @@ impl FromBytes for Box<dyn Node> {
                 let mut buf = [0u8; 8];
                 cursor.read_exact(&mut buf)?;
                 let node_length = u64::from_le_bytes(buf) as usize;
-                // Get the
-                let mut node_bytes = vec![0u8; node_length];
-                cursor.read_exact(&mut node_bytes)?;
+                // Get the KASL Node data
+                let node_bytes = safe_read(&mut cursor, node_length)?;
                 // Create a new node and set the code
                 Ok(Box::new(KaslNode::from_bytes(&node_bytes)?))
             }

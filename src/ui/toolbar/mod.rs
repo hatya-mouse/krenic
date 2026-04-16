@@ -1,3 +1,4 @@
+mod file_control;
 mod playback_control;
 mod toolbar_group;
 
@@ -26,6 +27,8 @@ impl KnodiqApp {
 
             // Show the current playhead beats
             self.playhead_beats(ui);
+
+            self.file_control(ui);
         });
     }
 

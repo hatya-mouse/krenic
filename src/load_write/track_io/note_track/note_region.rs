@@ -1,4 +1,4 @@
-use crate::load_write::{AsBytes, FromBytes};
+use crate::load_write::{AsBytes, FromBytes, safe_read};
 use knodiq_engine::{
     data_types::Beats,
     track::note_track::{Note, NoteID, NoteRegion},
@@ -18,7 +18,7 @@ impl AsBytes for NoteRegion {
         let mut note_bytes = Vec::new();
         for (note_id, note) in &self.notes {
             note_bytes.extend((note_id.0 as u64).to_le_bytes());
-            note.as_bytes(bytes);
+            note.as_bytes(&mut note_bytes);
         }
 
         // Write the length of the note bytes
@@ -46,8 +46,7 @@ impl FromBytes for NoteRegion {
         let notes_len = u64::from_le_bytes(note_bytes) as usize;
 
         // Read the note bytes
-        let mut notes_data_bytes = vec![0u8; notes_len];
-        cursor.read_exact(&mut notes_data_bytes)?;
+        let notes_data_bytes = safe_read(&mut cursor, notes_len)?;
 
         // Parse the notes
         let mut notes = HashMap::new();
@@ -60,6 +59,7 @@ impl FromBytes for NoteRegion {
 
             let note_id = u64::from_le_bytes(note_id_bytes) as usize;
             let note = Note::from_bytes(&note_data_bytes)?;
+
             notes.insert(NoteID(note_id), note);
         }
 

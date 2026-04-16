@@ -1,4 +1,4 @@
-use crate::load_write::{AsBytes, FromBytes};
+use crate::load_write::{AsBytes, FromBytes, error::LoadError, safe_read};
 use knodiq_engine::{
     data_types::{AudioContext, Beats},
     mixer::{Project, TempoMap, TrackID},
@@ -11,6 +11,7 @@ use std::{
     path::Path,
 };
 
+/// Saves the given project to the given path. Returns an error if the file cannot be created or written to.
 pub(crate) fn save_project(path: &Path, project: &Project) -> std::io::Result<()> {
     let mut file = File::create(path)?;
 
@@ -29,9 +30,48 @@ pub(crate) fn save_project(path: &Path, project: &Project) -> std::io::Result<()
     // Write the project
     let mut project_bytes = Vec::new();
     project.as_bytes(&mut project_bytes);
+
     file.write_all(&project_bytes)?;
+    file.flush()?;
 
     Ok(())
+}
+
+/// Loads a project from the given path. Returns an error if the file is not a Knodiq Project file or if the file is corrupted.
+pub(crate) fn load_project(path: &Path) -> Result<Project, LoadError> {
+    // Load the file from the path
+    let mut file = File::open(path).map_err(LoadError::IoError)?;
+
+    // Read the first 6 bytes to check if it's a Knodiq Project file
+    let mut header_bytes = [0u8; 6];
+    file.read_exact(&mut header_bytes)
+        .map_err(LoadError::IoError)?;
+
+    if &header_bytes != b"KNODIQ" {
+        return Err(LoadError::NotAProjectFile);
+    }
+
+    // Read the next 12 bytes to get the version of Knodiq that created the project
+    let mut major_bytes = [0u8; 4];
+    let mut minor_bytes = [0u8; 4];
+    let mut patch_bytes = [0u8; 4];
+    file.read_exact(&mut major_bytes)
+        .map_err(LoadError::IoError)?;
+    file.read_exact(&mut minor_bytes)
+        .map_err(LoadError::IoError)?;
+    file.read_exact(&mut patch_bytes)
+        .map_err(LoadError::IoError)?;
+    let file_major_ver = u32::from_le_bytes(major_bytes);
+    let file_minor_ver = u32::from_le_bytes(minor_bytes);
+    let file_patch_ver = u32::from_le_bytes(patch_bytes);
+
+    // Read the rest of the file and parse the project
+    let mut project_bytes = Vec::new();
+    file.read_to_end(&mut project_bytes)
+        .map_err(LoadError::IoError)?;
+    let project = Project::from_bytes(&project_bytes).map_err(LoadError::FileCorrupted)?;
+
+    Ok(project)
 }
 
 impl AsBytes for Project {
@@ -43,8 +83,11 @@ impl AsBytes for Project {
         bytes.extend(&self.range_start.0.to_le_bytes());
         bytes.extend(&self.range_duration.0.to_le_bytes());
 
-        // Write the tempo map
-        self.tempo_map.as_bytes(bytes);
+        // Write the tempo map and its size
+        let mut tempo_map_bytes = Vec::new();
+        self.tempo_map.as_bytes(&mut tempo_map_bytes);
+        bytes.extend(&(tempo_map_bytes.len() as u64).to_le_bytes());
+        bytes.extend(tempo_map_bytes);
 
         // Write the tracks to the temporary buffer
         let mut tracks_bytes = Vec::new();
@@ -86,8 +129,7 @@ impl FromBytes for Project {
         let mut tempo_map_len_bytes = [0u8; 8];
         cursor.read_exact(&mut tempo_map_len_bytes)?;
         let tempo_map_len = u64::from_le_bytes(tempo_map_len_bytes) as usize;
-        let mut tempo_map_bytes = vec![0u8; tempo_map_len];
-        cursor.read_exact(&mut tempo_map_bytes)?;
+        let tempo_map_bytes = safe_read(&mut cursor, tempo_map_len)?;
         let tempo_map = TempoMap::from_bytes(&tempo_map_bytes)?;
 
         // Read the length of all tracks
@@ -96,11 +138,10 @@ impl FromBytes for Project {
         let tracks_len = u64::from_le_bytes(tracks_len_bytes);
 
         // Read the tracks data
-        let mut tracks_bytes = vec![0u8; tracks_len as usize];
-        cursor.read_exact(&mut tracks_bytes)?;
+        let tracks_bytes = safe_read(&mut cursor, tracks_len as usize)?;
 
         let mut tracks = HashMap::new();
-        let mut tracks_cursor = Cursor::new(tracks_bytes);
+        let mut tracks_cursor = Cursor::new(tracks_bytes.as_slice());
         while tracks_cursor.position() < tracks_len {
             // Get the ID and the length of the track contents
             let mut track_id_bytes = [0u8; 8];
@@ -111,15 +152,16 @@ impl FromBytes for Project {
             let data_len = u64::from_le_bytes(data_len_bytes) as usize;
 
             // Parse the track contents
-            let mut track_data_bytes = vec![0u8; data_len];
-            tracks_cursor.read_exact(&mut track_data_bytes)?;
-            let track = <Box<dyn Track>>::from_bytes(&track_data_bytes);
+            let track_data_bytes = safe_read(&mut tracks_cursor, data_len)?;
+            let track = <Box<dyn Track>>::from_bytes(&track_data_bytes)?;
 
             tracks.insert(track_id, track);
         }
 
         // Construct the new project
-        let project = Project::with_tempo_map(audio_ctx, tempo_map, range_start, range_duration);
+        let mut project =
+            Project::with_tempo_map(audio_ctx, tempo_map, range_start, range_duration);
+        project.tracks = tracks;
 
         Ok(project)
     }
