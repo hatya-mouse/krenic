@@ -15,7 +15,7 @@ use std::path::PathBuf;
 
 #[derive(Default)]
 pub struct KaslNode {
-    compiler: Option<KaslCompiler>,
+    backend: Option<CraneliftBackend>,
     blueprint: Option<IOBlueprint>,
     search_paths: Vec<String>,
     code: Option<String>,
@@ -91,7 +91,7 @@ impl KaslNode {
         // Set the blueprint
         self.blueprint = Some(blueprint);
         // Move the compiler to KaslNode to preserve the compiled program until next compile
-        self.compiler = Some(compiler);
+        self.backend = Some(backend);
         // Update the types
         self.update_type_infos();
 
@@ -222,7 +222,7 @@ impl Node for KaslNode {
 impl Clone for KaslNode {
     fn clone(&self) -> Self {
         Self {
-            compiler: None,
+            backend: None,
             blueprint: None,
             search_paths: self.search_paths.clone(),
             code: self.code.clone(),
