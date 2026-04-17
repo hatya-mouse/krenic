@@ -18,10 +18,8 @@ impl AsBytes for KaslNode {
 impl FromBytes for KaslNode {
     fn from_bytes(bytes: &[u8]) -> std::io::Result<Self> {
         // Get the code from the node
-        let code = str::from_utf8(bytes)
-            .map(|code| code.to_string())
-            .ok()
-            .unwrap_or_default();
+        let code = String::from_utf8(bytes.to_vec())
+            .map_err(|err| std::io::Error::new(std::io::ErrorKind::InvalidData, err))?;
         // Create a new node and set the code
         let mut node = KaslNode::new();
         node.set_code(code);

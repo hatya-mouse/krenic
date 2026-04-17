@@ -1,16 +1,16 @@
 use std::fmt::Display;
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(PartialEq, Clone, Copy, Debug)]
 pub enum TrackType {
-    AudioTrack,
-    NoteTrack,
+    Audio,
+    Note,
 }
 
 impl Display for TrackType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::AudioTrack => write!(f, "Audio Track"),
-            Self::NoteTrack => write!(f, "Note Track"),
+            Self::Audio => write!(f, "Audio"),
+            Self::Note => write!(f, "Note"),
         }
     }
 }

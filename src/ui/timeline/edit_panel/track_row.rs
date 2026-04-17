@@ -99,10 +99,10 @@ impl KnodiqApp {
 
             let track_type = self.project_meta.get_track(track_id).map(|m| m.track_type);
             match track_type {
-                Some(TrackType::AudioTrack) => {
+                Some(TrackType::Audio) => {
                     self.add_audio_region(track_id, "Region".to_string(), start);
                 }
-                Some(TrackType::NoteTrack) => {
+                Some(TrackType::Note) => {
                     self.add_note_region(track_id, "Region".to_string(), start);
                 }
                 None => (),

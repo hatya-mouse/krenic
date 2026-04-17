@@ -36,7 +36,7 @@ impl KnodiqApp {
                 .clicked()
                 {
                     self.ui_state.dialog_state = DialogState::AddTrack(AddTrackState {
-                        selected_track_type: TrackType::AudioTrack,
+                        selected_track_type: TrackType::Audio,
                         name: String::new(),
                     });
                 }

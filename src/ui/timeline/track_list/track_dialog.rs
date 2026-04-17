@@ -18,7 +18,7 @@ impl KnodiqApp {
         let modal = dialog(ui, "Add Track", |ui| {
             ui.columns(2, |cols| {
                 cols[0].label("Track Type");
-                for track_type in [TrackType::AudioTrack, TrackType::NoteTrack] {
+                for track_type in [TrackType::Audio, TrackType::Note] {
                     let selected = state.selected_track_type == track_type;
                     if cols[0]
                         .selectable_label(selected, track_type.to_string())

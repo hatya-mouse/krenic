@@ -7,8 +7,8 @@ impl KnodiqApp {
     pub(crate) fn add_track(&mut self, track_type: TrackType, name: String, color: egui::Color32) {
         // Create a track with the given type
         let track: Box<dyn Track> = match track_type {
-            TrackType::AudioTrack => Box::new(AudioTrack::new(self.project.audio_ctx.clone())),
-            TrackType::NoteTrack => Box::new(NoteTrack::new(self.project.audio_ctx.clone())),
+            TrackType::Audio => Box::new(AudioTrack::new(self.project.audio_ctx.clone())),
+            TrackType::Note => Box::new(NoteTrack::new(self.project.audio_ctx.clone())),
         };
         // Add a track to the project
         let track_id = self.project.add_track(track);

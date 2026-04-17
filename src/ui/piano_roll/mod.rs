@@ -15,7 +15,7 @@ impl KnodiqApp {
         if self
             .project_meta
             .get_track(&track_id)
-            .is_none_or(|track| track.track_type != TrackType::NoteTrack)
+            .is_none_or(|track| track.track_type != TrackType::Note)
         {
             ui.label("Select a note region to edit");
             return;

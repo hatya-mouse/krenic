@@ -47,7 +47,7 @@ impl KnodiqApp {
             max_voices: 32,
         };
         let mut project = Project::new(audio_ctx.clone(), 120.0, Beats(0.0), Beats(8.0));
-        let mut project_meta = ProjectMeta::new();
+        let mut project_meta = ProjectMeta::default();
 
         // Test project by adding some tracks and nodes
         Self::setup_project(&mut project, &mut project_meta, &audio_ctx);
@@ -115,7 +115,7 @@ impl KnodiqApp {
         let mut track_meta = TrackMeta::new(
             "Synth".to_string(),
             egui::Color32::from_rgb(42, 180, 255),
-            TrackType::NoteTrack,
+            TrackType::Note,
         );
         let region_id = note_track.add_region(note_region);
         track_meta.add_region(region_id, region_meta);

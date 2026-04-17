@@ -1,8 +1,13 @@
 use crate::{metadata::RegionMeta, ui_state::dialog_state::TrackType};
 use eframe::egui;
-use knodiq_engine::track::RegionID;
+use knodiq_engine::track::{
+    RegionID, Track,
+    audio_track::{AudioRegion, AudioTrack},
+    note_track::{NoteRegion, NoteTrack},
+};
 use std::collections::HashMap;
 
+#[derive(Debug)]
 pub(crate) struct TrackMeta {
     pub name: String,
     pub color: egui::Color32,
@@ -17,6 +22,63 @@ impl TrackMeta {
             color,
             track_type,
             regions: HashMap::new(),
+        }
+    }
+
+    pub fn from_track(track: &dyn Track, name: String, color: egui::Color32) -> Self {
+        // Determine track type based on the track's type
+        if let Some(audio_region) = track.as_any().downcast_ref::<AudioTrack>() {
+            // Get the audio regions from the track
+            let regions = audio_region
+                .get_all_regions()
+                .iter()
+                .map(|(region_id, note_region)| {
+                    // TODO: Get the region name
+                    (
+                        *region_id,
+                        RegionMeta::new(
+                            name.clone(),
+                            note_region.start,
+                            note_region.duration,
+                            None,
+                        ),
+                    )
+                })
+                .collect();
+
+            Self {
+                name,
+                color,
+                track_type: TrackType::Audio,
+                regions,
+            }
+        } else if let Some(note_region) = track.as_any().downcast_ref::<NoteTrack>() {
+            // Get the note regions from the track
+            let regions = note_region
+                .get_all_regions()
+                .iter()
+                .map(|(region_id, note_region)| {
+                    // TODO: Get the region name
+                    (
+                        *region_id,
+                        RegionMeta::new(
+                            name.clone(),
+                            note_region.start,
+                            note_region.duration,
+                            None,
+                        ),
+                    )
+                })
+                .collect();
+
+            Self {
+                name,
+                color,
+                track_type: TrackType::Note,
+                regions,
+            }
+        } else {
+            unreachable!("There must be no tracks other than AudioTrack and NoteTrack");
         }
     }
 
