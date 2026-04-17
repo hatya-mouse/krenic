@@ -42,12 +42,17 @@ impl KnodiqApp {
 
                 if let Some(path) = files {
                     match load_project(&path) {
-                        Ok(proj_res) => {
-                            self.project_meta = ProjectMeta::from_load_res(&proj_res);
-                            self.project = proj_res.project;
-                            println!("New Project Meta: {:#?}", self.project_meta);
-                            self.update_project();
-                        }
+                        Ok(proj_res) => match ProjectMeta::from_load_res(&proj_res) {
+                            Ok(project_meta) => {
+                                self.project_meta = project_meta;
+                                self.project = proj_res.project;
+                                println!("New Project Meta: {:#?}", self.project_meta);
+                                self.update_project();
+                            }
+                            Err(e) => {
+                                eprintln!("Failed to extract project metadata: {:?}", e);
+                            }
+                        },
                         Err(e) => {
                             eprintln!("Failed to load project: {:?}", e);
                         }

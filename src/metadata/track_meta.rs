@@ -1,10 +1,6 @@
-use crate::{metadata::RegionMeta, ui_state::dialog_state::TrackType};
+use crate::{load_write::StoredTrackMeta, metadata::RegionMeta, ui_state::dialog_state::TrackType};
 use eframe::egui;
-use knodiq_engine::track::{
-    RegionID, Track,
-    audio_track::{AudioRegion, AudioTrack},
-    note_track::{NoteRegion, NoteTrack},
-};
+use knodiq_engine::track::{RegionID, Track, audio_track::AudioTrack, note_track::NoteTrack};
 use std::collections::HashMap;
 
 #[derive(Debug)]
@@ -25,55 +21,51 @@ impl TrackMeta {
         }
     }
 
-    pub fn from_track(track: &dyn Track, name: String, color: egui::Color32) -> Self {
+    pub fn from_track(track: &dyn Track, track_meta: &StoredTrackMeta) -> Self {
         // Determine track type based on the track's type
-        if let Some(audio_region) = track.as_any().downcast_ref::<AudioTrack>() {
+        if let Some(audio_track) = track.as_any().downcast_ref::<AudioTrack>() {
             // Get the audio regions from the track
-            let regions = audio_region
-                .get_all_regions()
-                .iter()
-                .map(|(region_id, note_region)| {
-                    // TODO: Get the region name
-                    (
+            let mut regions = HashMap::new();
+            for (region_id, audio_region) in audio_track.get_all_regions() {
+                if let Some(stored_region_meta) = track_meta.region_metas.get(region_id) {
+                    regions.insert(
                         *region_id,
                         RegionMeta::new(
-                            name.clone(),
-                            note_region.start,
-                            note_region.duration,
+                            stored_region_meta.name.clone(),
+                            audio_region.start,
+                            audio_region.duration,
                             None,
                         ),
-                    )
-                })
-                .collect();
+                    );
+                }
+            }
 
             Self {
-                name,
-                color,
+                name: track_meta.name.clone(),
+                color: track_meta.color,
                 track_type: TrackType::Audio,
                 regions,
             }
-        } else if let Some(note_region) = track.as_any().downcast_ref::<NoteTrack>() {
+        } else if let Some(note_track) = track.as_any().downcast_ref::<NoteTrack>() {
             // Get the note regions from the track
-            let regions = note_region
-                .get_all_regions()
-                .iter()
-                .map(|(region_id, note_region)| {
-                    // TODO: Get the region name
-                    (
+            let mut regions = HashMap::new();
+            for (region_id, audio_region) in note_track.get_all_regions() {
+                if let Some(stored_region_meta) = track_meta.region_metas.get(region_id) {
+                    regions.insert(
                         *region_id,
                         RegionMeta::new(
-                            name.clone(),
-                            note_region.start,
-                            note_region.duration,
+                            stored_region_meta.name.clone(),
+                            audio_region.start,
+                            audio_region.duration,
                             None,
                         ),
-                    )
-                })
-                .collect();
+                    );
+                }
+            }
 
             Self {
-                name,
-                color,
+                name: track_meta.name.clone(),
+                color: track_meta.color,
                 track_type: TrackType::Note,
                 regions,
             }

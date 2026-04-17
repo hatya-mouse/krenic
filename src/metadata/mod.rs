@@ -5,7 +5,6 @@ pub(crate) use region_meta::RegionMeta;
 pub(crate) use track_meta::TrackMeta;
 
 use crate::load_write::LoadProjResult;
-use eframe::egui;
 use knodiq_engine::mixer::TrackID;
 use std::collections::HashMap;
 
@@ -15,27 +14,26 @@ pub(crate) struct ProjectMeta {
     pub track_order: Vec<TrackID>,
 }
 
+#[derive(Debug)]
+pub enum ProjectMetaLoadingError {
+    MissingTrackMeta(TrackID),
+}
+
 impl ProjectMeta {
-    pub fn from_load_res(proj_res: &LoadProjResult) -> Self {
+    pub fn from_load_res(proj_res: &LoadProjResult) -> Result<Self, ProjectMetaLoadingError> {
         let mut new_meta = ProjectMeta::default();
 
         // Initialize the tracks
-        for (id, track) in &proj_res.project.tracks {
-            let track_name = proj_res
-                .track_names
-                .get(id)
-                .cloned()
-                .unwrap_or(format!("Track({})", id.0));
-            let track_color = proj_res
-                .track_colors
-                .get(id)
-                .copied()
-                .unwrap_or(egui::Color32::WHITE);
-            let track_meta = TrackMeta::from_track(track.as_ref(), track_name, track_color);
-            new_meta.add_track(*id, track_meta);
+        for (track_id, track) in &proj_res.project.tracks {
+            if let Some(stored_track_meta) = proj_res.proj_meta.track_metas.get(track_id) {
+                let track_meta = TrackMeta::from_track(track.as_ref(), stored_track_meta);
+                new_meta.add_track(*track_id, track_meta);
+            } else {
+                return Err(ProjectMetaLoadingError::MissingTrackMeta(*track_id));
+            }
         }
 
-        new_meta
+        Ok(new_meta)
     }
 
     // --- TRACK MANAGEMENT ---

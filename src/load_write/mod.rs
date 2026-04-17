@@ -4,28 +4,23 @@ mod graph_io;
 mod load_proj_res;
 mod node_io;
 mod project_io;
+mod project_meta_io;
 mod tempo_map_io;
 mod track_io;
 mod traits;
 
 use crate::{load_write::error::LoadError, metadata::ProjectMeta};
+pub(crate) use load_proj_res::LoadProjResult;
+pub(crate) use project_meta_io::{StoredProjMeta, StoredTrackMeta};
 pub(crate) use traits::{AsBytes, FromBytes};
 
 use crate::load_write::traits::safe_read;
-use eframe::egui;
-use knodiq_engine::mixer::{Project, TrackID};
+use knodiq_engine::mixer::Project;
 use std::{
-    collections::HashMap,
     fs::File,
-    io::{Cursor, Read, Write},
+    io::{Read, Write},
     path::Path,
 };
-
-pub(crate) struct LoadProjResult {
-    pub(crate) project: Project,
-    pub(crate) track_names: HashMap<TrackID, String>,
-    pub(crate) track_colors: HashMap<TrackID, egui::Color32>,
-}
 
 /// Saves the given project to the given path. Returns an error if the file cannot be created or written to.
 pub(crate) fn save_project(
@@ -47,24 +42,13 @@ pub(crate) fn save_project(
     file.write_all(&minor_ver.to_le_bytes())?;
     file.write_all(&patch_ver.to_le_bytes())?;
 
-    // Write the track metadata
-    let mut tracks_meta_bytes = Vec::new();
-    for (id, track_meta) in &project_meta.tracks {
-        // Write the name of the track
-        let track_name_bytes = track_meta.name.as_bytes();
-
-        // Write the size of the track metadata and the metadata itself
-        tracks_meta_bytes.extend((id.0 as u64).to_le_bytes());
-        tracks_meta_bytes.push(track_meta.color.r());
-        tracks_meta_bytes.push(track_meta.color.g());
-        tracks_meta_bytes.push(track_meta.color.b());
-        tracks_meta_bytes.push(track_meta.color.a());
-        tracks_meta_bytes.extend((track_name_bytes.len() as u64).to_le_bytes());
-        tracks_meta_bytes.extend(track_name_bytes);
-    }
-    // Write the total size of the track metadata
-    file.write_all(&(tracks_meta_bytes.len() as u64).to_le_bytes())?;
-    file.write_all(&tracks_meta_bytes)?;
+    // Write the project metadata
+    let stored_proj_meta = StoredProjMeta::from_proj_meta(project_meta);
+    let mut proj_meta_bytes = Vec::new();
+    stored_proj_meta.as_bytes(&mut proj_meta_bytes);
+    // Write the length of the project metadata before writing the project metadata itself
+    file.write_all(&(proj_meta_bytes.len() as u64).to_le_bytes())?;
+    file.write_all(&proj_meta_bytes)?;
 
     // Write the project
     let mut project_bytes = Vec::new();
