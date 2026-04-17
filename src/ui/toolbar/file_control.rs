@@ -44,9 +44,7 @@ impl KnodiqApp {
                 if let Some(path) = files {
                     match load_project(&path) {
                         Ok(mut proj_res) => match ProjectMeta::from_load_res(&proj_res) {
-                            Ok(mut project_meta) => {
-                                project_meta.kasl_search_paths =
-                                    KnodiqApp::system_kasl_search_paths();
+                            Ok(project_meta) => {
                                 KnodiqApp::apply_kasl_search_paths(
                                     &mut proj_res.project,
                                     &project_meta.kasl_search_paths,

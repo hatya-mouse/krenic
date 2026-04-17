@@ -1,4 +1,4 @@
-use crate::load_write::{FromBytes, project_meta_io::StoredProjMeta};
+use crate::load_write::{FromBytes, project_meta_io::StoredProjMeta, traits::safe_read};
 use knodiq_engine::mixer::Project;
 use std::io::{Cursor, Read};
 
@@ -17,8 +17,7 @@ impl FromBytes for LoadProjResult {
         let proj_meta_len = u64::from_le_bytes(proj_meta_len_bytes) as usize;
 
         // Read the project metadata bytes and prase it
-        let mut proj_meta_bytes = vec![0u8; proj_meta_len];
-        cursor.read_exact(&mut proj_meta_bytes)?;
+        let proj_meta_bytes = safe_read(&mut cursor, proj_meta_len)?;
         let proj_meta = StoredProjMeta::from_bytes(&proj_meta_bytes)?;
 
         // Read the rest of the file and parse the project

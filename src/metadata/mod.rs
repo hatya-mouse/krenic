@@ -24,6 +24,9 @@ impl ProjectMeta {
     pub fn from_load_res(proj_res: &LoadProjResult) -> Result<Self, ProjectMetaLoadingError> {
         let mut new_meta = ProjectMeta::default();
 
+        // Restore search paths from the saved file
+        new_meta.kasl_search_paths = proj_res.proj_meta.kasl_search_paths.clone();
+
         // Initialize the tracks
         for (track_id, track) in &proj_res.project.tracks {
             if let Some(stored_track_meta) = proj_res.proj_meta.track_metas.get(track_id) {

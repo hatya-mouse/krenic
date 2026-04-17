@@ -1,4 +1,4 @@
-use crate::load_write::{AsBytes, FromBytes, project_meta_io::StoredRegionMeta};
+use crate::load_write::{AsBytes, FromBytes, project_meta_io::StoredRegionMeta, traits::safe_read};
 use eframe::egui;
 use knodiq_engine::track::RegionID;
 use std::{
@@ -81,8 +81,7 @@ impl FromBytes for StoredTrackMeta {
         cursor.read_exact(&mut name_len_bytes)?;
         let name_len = u64::from_le_bytes(name_len_bytes) as usize;
         // Read the name itself
-        let mut name_bytes = vec![0u8; name_len];
-        cursor.read_exact(&mut name_bytes)?;
+        let name_bytes = safe_read(&mut cursor, name_len)?;
         let name = String::from_utf8(name_bytes)
             .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
 
@@ -92,11 +91,10 @@ impl FromBytes for StoredTrackMeta {
         let region_metas_len = u64::from_le_bytes(region_metas_len_bytes);
 
         // Read the region metadatas
-        let mut region_metas_bytes = vec![0u8; region_metas_len as usize];
-        cursor.read_exact(&mut region_metas_bytes)?;
+        let region_metas_bytes = safe_read(&mut cursor, region_metas_len as usize)?;
 
         let mut region_metas = HashMap::new();
-        let mut region_metas_cursor = Cursor::new(region_metas_bytes);
+        let mut region_metas_cursor = Cursor::new(region_metas_bytes.as_slice());
         while region_metas_cursor.position() < region_metas_len {
             // Read the region ID
             let mut region_id_bytes = [0u8; 8];
@@ -109,8 +107,7 @@ impl FromBytes for StoredTrackMeta {
             let region_meta_len = u64::from_le_bytes(region_meta_len_bytes) as usize;
 
             // Read the region metadata itself
-            let mut region_meta_bytes = vec![0u8; region_meta_len];
-            region_metas_cursor.read_exact(&mut region_meta_bytes)?;
+            let region_meta_bytes = safe_read(&mut region_metas_cursor, region_meta_len)?;
             let region_meta = StoredRegionMeta::from_bytes(&region_meta_bytes)?;
 
             // Inser the region metadata into the hashmap

@@ -96,8 +96,13 @@ impl FromBytes for Project {
 
         // Construct the new project
         let mut project =
-            Project::with_tempo_map(audio_ctx, tempo_map, range_start, range_duration);
+            Project::with_tempo_map(audio_ctx.clone(), tempo_map, range_start, range_duration);
         project.tracks = tracks;
+
+        // Restore the audio context on deserialized tracks
+        for track in project.tracks.values_mut() {
+            track.set_audio_ctx(&audio_ctx);
+        }
 
         Ok(project)
     }
