@@ -65,7 +65,8 @@ impl FromBytes for Project {
         cursor.read_exact(&mut tempo_map_len_bytes)?;
         let tempo_map_len = u64::from_le_bytes(tempo_map_len_bytes) as usize;
         let tempo_map_bytes = safe_read(&mut cursor, tempo_map_len)?;
-        let tempo_map = TempoMap::from_bytes(&tempo_map_bytes)?;
+        let mut tempo_map = TempoMap::from_bytes(&tempo_map_bytes)?;
+        tempo_map.set_audio_ctx(audio_ctx.clone());
 
         // Read the length of all tracks
         let mut tracks_len_bytes = [0u8; 8];

@@ -49,5 +49,11 @@ impl App for KnodiqApp {
 
         // Check for project updating
         self.update_project();
+
+        // Drain and log errors from the audio thread
+        while let Ok(err) = self.thread_handle.error_rx.try_recv() {
+            eprintln!("Audio thread error occurred");
+            self.errors.push(err);
+        }
     }
 }

@@ -12,6 +12,7 @@ use std::collections::HashMap;
 pub(crate) struct ProjectMeta {
     pub tracks: HashMap<TrackID, TrackMeta>,
     pub track_order: Vec<TrackID>,
+    pub kasl_search_paths: Vec<String>,
 }
 
 #[derive(Debug)]

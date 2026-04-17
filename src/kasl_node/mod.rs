@@ -183,8 +183,13 @@ impl Node for KaslNode {
     fn prepare(&mut self) -> Result<(), Box<dyn NodeError>> {
         self.is_first_process = true;
 
-        self.compile()
-            .map_err(|records| -> Box<dyn NodeError> { Box::new(KaslNodeError::new(records)) })
+        println!("KaslNode::prepare: compiling...");
+        let result = self.compile();
+        match &result {
+            Ok(()) => println!("KaslNode::prepare: compile succeeded"),
+            Err(records) => eprintln!("KaslNode::prepare: compile FAILED: {:?}", records),
+        }
+        result.map_err(|records| -> Box<dyn NodeError> { Box::new(KaslNodeError::new(records)) })
     }
 
     fn process(&mut self, inputs: &[*const u8], outputs: &[*mut u8], audio_ctx: &AudioContext) {

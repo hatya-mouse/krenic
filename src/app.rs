@@ -47,7 +47,10 @@ impl KnodiqApp {
             max_voices: 32,
         };
         let mut project = Project::new(audio_ctx.clone(), 120.0, Beats(0.0), Beats(8.0));
-        let mut project_meta = ProjectMeta::default();
+        let mut project_meta = ProjectMeta {
+            kasl_search_paths: Self::system_kasl_search_paths(),
+            ..Default::default()
+        };
 
         // Test project by adding some tracks and nodes
         Self::setup_project(&mut project, &mut project_meta, &audio_ctx);
@@ -192,28 +195,17 @@ struct Voice {{
             audio_ctx.channels, audio_ctx.sample_rate, audio_ctx.max_voices, audio_ctx.buffer_size
         );
 
-        let mut lib_paths = Vec::new();
-
-        // Save the generated kasl library to temporary directory
+        // Save the generated kasl library to the data directory
         let app_data = dirs::data_dir()
             .expect("Could not get data dir")
             .join("knodiq");
         std::fs::create_dir_all(&app_data).unwrap();
         let kasl_path = app_data.join("knodiq.kasl");
         std::fs::write(&kasl_path, knodiq_lib).expect("Failed to write knodiq.kasl");
-        lib_paths.push(app_data.to_str().unwrap().to_string());
-
-        // Add the standard library directory
-        if let Some(mut home_dir) = dirs::home_dir() {
-            home_dir.push(".kasl/std/");
-            if let Some(path_str) = home_dir.to_str() {
-                lib_paths.push(path_str.to_string());
-            }
-        }
 
         // Create a new kasl node
         let mut kasl_node = KaslNode::new();
-        kasl_node.set_search_paths(lib_paths);
+        kasl_node.set_search_paths(project_meta.kasl_search_paths.clone());
         kasl_node.set_code(program.to_string());
         match kasl_node.compile() {
             Ok(()) => (),
@@ -244,6 +236,32 @@ struct Voice {{
         // Add the note track to the project
         let track_id = project.add_track(Box::new(note_track));
         project_meta.add_track(track_id, track_meta);
+    }
+
+    pub(crate) fn system_kasl_search_paths() -> Vec<String> {
+        let mut paths = Vec::new();
+        if let Some(app_data) = dirs::data_dir().map(|d| d.join("knodiq"))
+            && let Some(s) = app_data.to_str()
+        {
+            paths.push(s.to_string());
+        }
+        if let Some(mut home) = dirs::home_dir() {
+            home.push(".kasl/std/");
+            if let Some(s) = home.to_str() {
+                paths.push(s.to_string());
+            }
+        }
+        paths
+    }
+
+    pub(crate) fn apply_kasl_search_paths(project: &mut Project, paths: &[String]) {
+        for track in project.tracks.values_mut() {
+            for node in track.get_graph_mut().get_node_map_mut().values_mut() {
+                if let Some(kasl_node) = node.as_any_mut().downcast_mut::<KaslNode>() {
+                    kasl_node.set_search_paths(paths.to_vec());
+                }
+            }
+        }
     }
 
     fn base_style(ctx: &egui::Context) {
