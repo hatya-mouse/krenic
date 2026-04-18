@@ -1,14 +1,14 @@
 mod track_dialog;
 
 use crate::{
-    app::KnodiqApp,
+    app::EditorUi,
     colors,
     components::icon_button::icon_button,
     ui_state::dialog_state::{AddTrackState, DialogState, TrackType},
 };
 use eframe::egui;
 
-impl KnodiqApp {
+impl EditorUi {
     pub(super) fn track_list_panel(&mut self, ui: &mut egui::Ui) {
         egui::Frame::new()
             .fill(colors::primary_bg(ui.visuals().dark_mode))
@@ -18,10 +18,7 @@ impl KnodiqApp {
                         ui.horizontal(|ui| {
                             // Draw track color
                             let (rect, _) = ui.allocate_exact_size(
-                                egui::vec2(
-                                    4.0,
-                                    self.ui_state.editor_state.timeline_state.track_height,
-                                ),
+                                egui::vec2(4.0, self.ui_state.timeline_state.track_height),
                                 egui::Sense::hover(),
                             );
                             ui.painter().rect_filled(rect, 0.0, track_meta.color);
@@ -38,11 +35,10 @@ impl KnodiqApp {
                 )
                 .clicked()
                 {
-                    self.ui_state.editor_state.dialog_state =
-                        DialogState::AddTrack(AddTrackState {
-                            selected_track_type: TrackType::Audio,
-                            name: String::new(),
-                        });
+                    self.ui_state.dialog_state = DialogState::AddTrack(AddTrackState {
+                        selected_track_type: TrackType::Audio,
+                        name: String::new(),
+                    });
                 }
             });
     }

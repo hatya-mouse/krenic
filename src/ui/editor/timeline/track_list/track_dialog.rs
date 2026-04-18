@@ -1,16 +1,15 @@
 use crate::{
-    app::KnodiqApp,
+    app::EditorUi,
     components::dialog::dialog,
     ui_state::dialog_state::{DialogState, TrackType},
 };
 use eframe::egui;
 
-impl KnodiqApp {
+impl EditorUi {
     pub(crate) fn track_dialog(&mut self, ui: &egui::Ui) {
-        let DialogState::AddTrack(mut state) = std::mem::replace(
-            &mut self.ui_state.editor_state.dialog_state,
-            DialogState::None,
-        ) else {
+        let DialogState::AddTrack(mut state) =
+            std::mem::replace(&mut self.ui_state.dialog_state, DialogState::None)
+        else {
             return;
         };
 
@@ -52,9 +51,9 @@ impl KnodiqApp {
         });
 
         if close || modal.should_close() {
-            self.ui_state.editor_state.dialog_state = DialogState::None;
+            self.ui_state.dialog_state = DialogState::None;
         } else {
-            self.ui_state.editor_state.dialog_state = DialogState::AddTrack(state);
+            self.ui_state.dialog_state = DialogState::AddTrack(state);
         }
     }
 }

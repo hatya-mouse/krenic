@@ -1,5 +1,5 @@
 use crate::{
-    app::KnodiqApp,
+    app::EditorUi,
     components::icon_button::icon_button,
     load_write::{load_project_from_dir, save_project_to_dir},
     metadata::ProjectMeta,
@@ -8,7 +8,7 @@ use crate::{
 use eframe::egui;
 use knodiq_engine::audio_thread::{AudioCommand, error::AudioError};
 
-impl KnodiqApp {
+impl EditorUi {
     pub(super) fn file_control(&mut self, ui: &mut egui::Ui) {
         toolbar_group(ui, |ui| {
             if icon_button(
@@ -41,11 +41,13 @@ impl KnodiqApp {
                     match load_project_from_dir(&path) {
                         Ok(mut proj_res) => match ProjectMeta::from_load_res(&proj_res) {
                             Ok(project_meta) => {
-                                KnodiqApp::apply_kasl_search_paths(
+                                EditorUi::apply_kasl_search_paths(
                                     &mut proj_res.project,
                                     &project_meta.kasl_search_paths,
                                 );
+                                EditorUi::load_kasl_files(&mut proj_res.project, &path);
 
+                                self.project_dir = path;
                                 self.project_meta = project_meta;
                                 self.project = proj_res.project;
 

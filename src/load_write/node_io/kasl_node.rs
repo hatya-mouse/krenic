@@ -2,28 +2,26 @@ use crate::{
     kasl_node::KaslNode,
     load_write::{AsBytes, FromBytes},
 };
+use std::path::PathBuf;
 
 impl AsBytes for KaslNode {
     fn as_bytes(&self, bytes: &mut Vec<u8>) {
-        // Convert the code into bytes
-        let code_bytes = self
-            .get_code()
-            .map(|code| code.as_bytes())
+        let path_str = self
+            .get_file_path()
+            .and_then(|p| p.to_str())
             .unwrap_or_default();
-        // Write the code data
-        bytes.extend_from_slice(code_bytes);
+        bytes.extend_from_slice(path_str.as_bytes());
     }
 }
 
 impl FromBytes for KaslNode {
     fn from_bytes(bytes: &[u8]) -> std::io::Result<Self> {
-        // Get the code from the node
-        let code = String::from_utf8(bytes.to_vec())
-            .map_err(|err| std::io::Error::new(std::io::ErrorKind::InvalidData, err))?;
-        // Create a new node and set the code
+        let path_str = String::from_utf8(bytes.to_vec())
+            .map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidData, e))?;
         let mut node = KaslNode::new();
-        node.set_code(code);
-
+        if !path_str.is_empty() {
+            node.set_file_path(PathBuf::from(path_str));
+        }
         Ok(node)
     }
 }

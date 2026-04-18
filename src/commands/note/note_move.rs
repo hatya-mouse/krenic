@@ -1,4 +1,4 @@
-use crate::app::KnodiqApp;
+use crate::app::EditorUi;
 use knodiq_engine::{
     data_types::Beats,
     mixer::TrackID,
@@ -8,7 +8,7 @@ use knodiq_engine::{
     },
 };
 
-impl KnodiqApp {
+impl EditorUi {
     pub(crate) fn set_note_start(
         &mut self,
         track_id: &TrackID,

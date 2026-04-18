@@ -1,7 +1,7 @@
 use crate::{
     kasl_node::KaslNode,
     metadata::{ProjectMeta, RegionMeta, TrackMeta},
-    ui_state::{KnodiqUIState, dialog_state::TrackType},
+    ui_state::{dialog_state::TrackType, editor_state::EditorUIState},
 };
 use eframe::egui;
 use kasl::core::localization::format_error;
@@ -14,8 +14,11 @@ use knodiq_engine::{
         note_track::{Note, NoteRegion, NoteTrack},
     },
 };
+use std::path::PathBuf;
 
-pub struct KnodiqApp {
+pub struct EditorUi {
+    /// The directory where the project is saved.
+    pub project_dir: PathBuf,
     /// A master source of the project.
     pub project: Project,
     /// Whether the audio is playing.
@@ -27,47 +30,31 @@ pub struct KnodiqApp {
     /// The metadata of the project.
     pub project_meta: ProjectMeta,
     /// UI states to store the current UI state.
-    pub ui_state: KnodiqUIState,
+    pub ui_state: EditorUIState,
 }
 
-impl KnodiqApp {
-    pub fn new(cc: &eframe::CreationContext) -> Self {
-        // Install the image loader
-        egui_extras::install_image_loaders(&cc.egui_ctx);
-
-        // UI Setup
-        Self::setup_fonts(&cc.egui_ctx);
-        Self::base_style(&cc.egui_ctx);
-
-        // Create a new project and spawn an audio thread
-        let audio_ctx = AudioContext {
-            channels: 2,
-            sample_rate: 48000,
-            buffer_size: 512,
-            max_voices: 32,
-        };
-        let mut project = Project::new(audio_ctx.clone(), 120.0, Beats(0.0), Beats(8.0));
-        let mut project_meta = ProjectMeta {
-            kasl_search_paths: Self::system_kasl_search_paths(),
-            ..Default::default()
-        };
-
-        // Test project by adding some tracks and nodes
-        Self::setup_project(&mut project, &mut project_meta, &audio_ctx);
-
+impl EditorUi {
+    pub fn new(
+        project_dir: PathBuf,
+        audio_ctx: AudioContext,
+        project: Project,
+        project_meta: ProjectMeta,
+    ) -> Self {
         let thread_handle = AudioThread::spawn(audio_ctx, project.clone()).unwrap();
 
         Self {
+            project_dir,
             project,
             is_playing: false,
             thread_handle,
             errors: Vec::new(),
             project_meta,
-            ui_state: KnodiqUIState::default(),
+            ui_state: EditorUIState::default(),
         }
     }
 
-    fn setup_project(
+    pub(crate) fn setup_project(
+        project_dir: &std::path::Path,
         project: &mut Project,
         project_meta: &mut ProjectMeta,
         audio_ctx: &AudioContext,
@@ -195,7 +182,7 @@ struct Voice {{
             audio_ctx.channels, audio_ctx.sample_rate, audio_ctx.max_voices, audio_ctx.buffer_size
         );
 
-        // Save the generated kasl library to the data directory
+        // Write the knodiq standard library to the app data directory
         let app_data = dirs::data_dir()
             .expect("Could not get data dir")
             .join("knodiq");
@@ -203,10 +190,18 @@ struct Voice {{
         let kasl_path = app_data.join("knodiq.kasl");
         std::fs::write(&kasl_path, knodiq_lib).expect("Failed to write knodiq.kasl");
 
-        // Create a new kasl node
+        // Write the main KASL program into the project's kasl/ directory
+        let kasl_dir = project_dir.join("kasl");
+        std::fs::create_dir_all(&kasl_dir).unwrap();
+        std::fs::write(kasl_dir.join("main.kasl"), program).expect("Failed to write main.kasl");
+
+        // Create a new kasl node pointing to the relative path
         let mut kasl_node = KaslNode::new();
         kasl_node.set_search_paths(project_meta.kasl_search_paths.clone());
-        kasl_node.set_code(program.to_string());
+        kasl_node.set_file_path(std::path::PathBuf::from("kasl/main.kasl"));
+        kasl_node
+            .load_code(project_dir)
+            .expect("Failed to load KASL code");
         match kasl_node.compile() {
             Ok(()) => (),
             Err(err) => {
@@ -254,6 +249,7 @@ struct Voice {{
         paths
     }
 
+    /// Apply KASL search paths to all KaslNodes in the project.
     pub(crate) fn apply_kasl_search_paths(project: &mut Project, paths: &[String]) {
         for track in project.tracks.values_mut() {
             for node in track.get_graph_mut().get_node_map_mut().values_mut() {
@@ -264,7 +260,20 @@ struct Voice {{
         }
     }
 
-    fn base_style(ctx: &egui::Context) {
+    /// Load KASL files for all KaslNodes in the project.
+    pub(crate) fn load_kasl_files(project: &mut Project, project_dir: &std::path::Path) {
+        for track in project.tracks.values_mut() {
+            for node in track.get_graph_mut().get_node_map_mut().values_mut() {
+                if let Some(kasl_node) = node.as_any_mut().downcast_mut::<KaslNode>()
+                    && let Err(e) = kasl_node.load_code(project_dir)
+                {
+                    eprintln!("Failed to load KASL file: {:?}", e);
+                }
+            }
+        }
+    }
+
+    pub(crate) fn base_style(ctx: &egui::Context) {
         ctx.global_style_mut(|style| {
             // Make labels unselectable by default
             style.interaction.selectable_labels = false;

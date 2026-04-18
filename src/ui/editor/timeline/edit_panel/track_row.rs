@@ -1,8 +1,8 @@
-use crate::{app::KnodiqApp, colors, ui_state::dialog_state::TrackType};
+use crate::{app::EditorUi, colors, ui_state::dialog_state::TrackType};
 use eframe::egui;
 use knodiq_engine::{data_types::Beats, mixer::TrackID, track::RegionID};
 
-impl KnodiqApp {
+impl EditorUi {
     pub(super) fn track_row(
         &mut self,
         ui: &mut egui::Ui,
@@ -19,7 +19,7 @@ impl KnodiqApp {
             return;
         };
 
-        let ppb = self.ui_state.editor_state.timeline_state.pixels_per_beat;
+        let ppb = self.ui_state.timeline_state.pixels_per_beat;
         let region_ids: Vec<RegionID> = track_meta.regions.keys().copied().collect();
 
         // Loop through the regions in the track and draw them
@@ -60,12 +60,11 @@ impl KnodiqApp {
             let painter = ui.painter().with_clip_rect(region_rect);
 
             // Highlight the stroke if the region is selected
-            let stroke =
-                if self.ui_state.editor_state.selected_region == Some((*track_id, region_id)) {
-                    egui::Stroke::new(2.0, colors::region_selected())
-                } else {
-                    egui::Stroke::new(1.0, colors::region_stroke())
-                };
+            let stroke = if self.ui_state.selected_region == Some((*track_id, region_id)) {
+                egui::Stroke::new(2.0, colors::region_selected())
+            } else {
+                egui::Stroke::new(1.0, colors::region_stroke())
+            };
 
             painter.rect(
                 region_rect,
@@ -92,8 +91,7 @@ impl KnodiqApp {
                 .interact_pointer_pos()
                 .map(|pos| {
                     Beats(
-                        ((pos.x - row_rect.min.x)
-                            / self.ui_state.editor_state.timeline_state.pixels_per_beat)
+                        ((pos.x - row_rect.min.x) / self.ui_state.timeline_state.pixels_per_beat)
                             as f64,
                     )
                 })
@@ -133,15 +131,11 @@ impl KnodiqApp {
         // Support resize
         if resize_res.dragged() {
             // Select the region
-            self.ui_state
-                .editor_state
-                .set_selected_region(*track_id, *region_id);
+            self.ui_state.set_selected_region(*track_id, *region_id);
 
             // Calculate the new duration from the drag amount
             let delta_beats = Beats(
-                (resize_res.drag_delta().x
-                    / self.ui_state.editor_state.timeline_state.pixels_per_beat)
-                    as f64,
+                (resize_res.drag_delta().x / self.ui_state.timeline_state.pixels_per_beat) as f64,
             );
             if let Some(region) = self
                 .project_meta
@@ -162,14 +156,10 @@ impl KnodiqApp {
             // Drag to move
             if move_res.dragged() {
                 // Select the region
-                self.ui_state
-                    .editor_state
-                    .set_selected_region(*track_id, *region_id);
+                self.ui_state.set_selected_region(*track_id, *region_id);
 
                 let delta_beats = Beats(
-                    (move_res.drag_delta().x
-                        / self.ui_state.editor_state.timeline_state.pixels_per_beat)
-                        as f64,
+                    (move_res.drag_delta().x / self.ui_state.timeline_state.pixels_per_beat) as f64,
                 );
                 if let Some(region) = self
                     .project_meta

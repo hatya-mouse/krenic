@@ -1,7 +1,7 @@
-use crate::app::KnodiqApp;
+use crate::app::EditorUi;
 use knodiq_engine::{data_types::Beats, mixer::TrackID, track::RegionID};
 
-impl KnodiqApp {
+impl EditorUi {
     pub(crate) fn move_region(
         &mut self,
         track_id: &TrackID,

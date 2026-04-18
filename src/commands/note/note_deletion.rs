@@ -1,4 +1,4 @@
-use crate::app::KnodiqApp;
+use crate::app::EditorUi;
 use knodiq_engine::{
     mixer::TrackID,
     track::{
@@ -7,7 +7,7 @@ use knodiq_engine::{
     },
 };
 
-impl KnodiqApp {
+impl EditorUi {
     pub(crate) fn remove_note(
         &mut self,
         track_id: &TrackID,

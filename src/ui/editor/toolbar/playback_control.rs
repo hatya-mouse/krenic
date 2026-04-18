@@ -1,11 +1,11 @@
 use crate::{
-    app::KnodiqApp, components::icon_button::icon_button,
+    app::EditorUi, components::icon_button::icon_button,
     ui::editor::toolbar::toolbar_group::toolbar_group,
 };
 use eframe::egui;
 use knodiq_engine::audio_thread::{AudioCommand, error::AudioError};
 
-impl KnodiqApp {
+impl EditorUi {
     pub(super) fn playback_control(&mut self, ui: &mut egui::Ui) {
         toolbar_group(ui, |ui| {
             if icon_button(

@@ -18,6 +18,8 @@ pub struct KaslNode {
     backend: Option<CraneliftBackend>,
     blueprint: Option<IOBlueprint>,
     search_paths: Vec<String>,
+    /// Relative path to the KASL source file within the project directory.
+    file_path: Option<PathBuf>,
     code: Option<String>,
 
     input_types: Vec<TypeInfo>,
@@ -37,12 +39,20 @@ impl KaslNode {
         self.search_paths = paths;
     }
 
-    pub fn set_code(&mut self, code: String) {
-        self.code = Some(code);
+    pub fn set_file_path(&mut self, path: PathBuf) {
+        self.file_path = Some(path);
     }
 
-    pub fn get_code(&self) -> Option<&String> {
-        self.code.as_ref()
+    pub fn get_file_path(&self) -> Option<&PathBuf> {
+        self.file_path.as_ref()
+    }
+
+    /// Reads the source file at `project_dir/file_path` and caches it for compilation.
+    pub fn load_code(&mut self, project_dir: &std::path::Path) -> std::io::Result<()> {
+        if let Some(rel) = &self.file_path {
+            self.code = Some(std::fs::read_to_string(project_dir.join(rel))?);
+        }
+        Ok(())
     }
 
     pub fn compile(&mut self) -> Result<(), Vec<ErrorRecord>> {
@@ -230,6 +240,7 @@ impl Clone for KaslNode {
             backend: None,
             blueprint: None,
             search_paths: self.search_paths.clone(),
+            file_path: self.file_path.clone(),
             code: self.code.clone(),
             input_types: self.input_types.clone(),
             output_types: self.output_types.clone(),

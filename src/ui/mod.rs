@@ -1,72 +1,64 @@
 mod editor;
 mod splash;
 
-use crate::{app::KnodiqApp, colors, ui_state::AppScreen};
+use crate::{app::EditorUi, colors};
 use eframe::{App, egui};
+use splash::{SplashTransition, SplashUi};
+
+pub enum KnodiqApp {
+    Splash(Box<SplashUi>),
+    Editor(Box<EditorUi>),
+}
+
+impl KnodiqApp {
+    pub fn new(cc: &eframe::CreationContext) -> Self {
+        egui_extras::install_image_loaders(&cc.egui_ctx);
+        EditorUi::setup_fonts(&cc.egui_ctx);
+        EditorUi::base_style(&cc.egui_ctx);
+        KnodiqApp::Splash(Box::new(SplashUi))
+    }
+}
 
 impl App for KnodiqApp {
-    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
-        match self.ui_state.app_screen {
-            AppScreen::Splash => {
-                egui::CentralPanel::default()
-                    .frame(
-                        egui::Frame::new()
-                            .fill(colors::primary_bg(ui.visuals().dark_mode))
-                            .inner_margin(0),
-                    )
-                    .show_inside(ui, |ui| {
-                        self.splash_screen(ui);
-                    });
-            }
-            AppScreen::Editor => {
-                self.calculate_playhead();
+    fn ui(&mut self, ui: &mut egui::Ui, frame: &mut eframe::Frame) {
+        // Compute any splash→editor transition before mutating self.
+        let transition = if let KnodiqApp::Splash(splash) = self {
+            egui::CentralPanel::default()
+                .frame(
+                    egui::Frame::new()
+                        .fill(colors::primary_bg(ui.visuals().dark_mode))
+                        .inner_margin(0),
+                )
+                .show_inside(ui, |ui| splash.ui(ui))
+                .inner
+        } else if let KnodiqApp::Editor(app) = self {
+            app.editor_ui(ui, frame);
+            None
+        } else {
+            None
+        };
 
-                egui::Panel::top("toolbar")
-                    .frame(
-                        egui::Frame::new()
-                            .fill(colors::tertiary_bg(ui.visuals().dark_mode))
-                            .inner_margin(egui::Margin::symmetric(12, 0)),
-                    )
-                    .exact_size(44.0)
-                    .show_inside(ui, |ui| {
-                        self.toolbar(ui);
-                    });
-
-                if self.ui_state.editor_state.selected_region.is_some() {
-                    egui::Panel::bottom("piano_roll")
-                        .frame(
-                            egui::Frame::new()
-                                .fill(colors::primary_bg(ui.visuals().dark_mode))
-                                .inner_margin(0),
-                        )
-                        .min_size(300.0)
-                        .show_inside(ui, |ui| {
-                            self.piano_roll(ui);
-                        });
+        if let Some(transition) = transition {
+            let (project_dir, audio_ctx, project, project_meta) = match transition {
+                SplashTransition::NewProject {
+                    project_dir,
+                    audio_ctx,
+                    project,
+                    project_meta,
                 }
-
-                egui::CentralPanel::default()
-                    .frame(
-                        egui::Frame::new()
-                            .fill(colors::primary_bg(ui.visuals().dark_mode))
-                            .inner_margin(0),
-                    )
-                    .show_inside(ui, |ui| {
-                        self.timeline(ui);
-                    });
-
-                // Show dialogs
-                self.track_dialog(ui);
-
-                // Check for project updating
-                self.update_project();
-
-                // Drain and log errors from the audio thread
-                while let Ok(err) = self.thread_handle.error_rx.try_recv() {
-                    eprintln!("Audio thread error occurred");
-                    self.errors.push(err);
-                }
-            }
+                | SplashTransition::OpenProject {
+                    project_dir,
+                    audio_ctx,
+                    project,
+                    project_meta,
+                } => (project_dir, audio_ctx, project, project_meta),
+            };
+            *self = KnodiqApp::Editor(Box::new(EditorUi::new(
+                project_dir,
+                audio_ctx,
+                project,
+                project_meta,
+            )));
         }
     }
 }
