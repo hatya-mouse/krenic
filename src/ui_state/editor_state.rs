@@ -1,5 +1,8 @@
 use crate::ui_state::{
-    dialog_state::DialogState, piano_roll_state::PianoRollState, timeline_state::TimelineState,
+    dialog_state::DialogState,
+    panel_layout::PanelNode,
+    piano_roll_state::PianoRollState,
+    timeline_state::TimelineState,
 };
 use knodiq_engine::{
     data_types::Beats,
@@ -12,6 +15,9 @@ use std::time::Instant;
 pub struct EditorUIState {
     /// The current dialog state.
     pub dialog_state: DialogState,
+
+    /// Panel layout tree.
+    pub panel_layout: PanelNode,
 
     /// The current timeline state.
     pub timeline_state: TimelineState,

@@ -1,3 +1,4 @@
+pub(crate) mod panel;
 pub(crate) mod piano_roll;
 pub(crate) mod playhead_calculation;
 mod project_setup;
@@ -64,19 +65,6 @@ impl EditorUi {
                 self.toolbar(ui);
             });
 
-        if self.ui_state.selected_region.is_some() {
-            egui::Panel::bottom("piano_roll")
-                .frame(
-                    egui::Frame::new()
-                        .fill(colors::primary_bg(ui.visuals().dark_mode))
-                        .inner_margin(0),
-                )
-                .min_size(300.0)
-                .show_inside(ui, |ui| {
-                    self.piano_roll(ui);
-                });
-        }
-
         egui::CentralPanel::default()
             .frame(
                 egui::Frame::new()
@@ -84,7 +72,8 @@ impl EditorUi {
                     .inner_margin(0),
             )
             .show_inside(ui, |ui| {
-                self.timeline(ui);
+                let rect = ui.available_rect_before_wrap();
+                self.render_panels(ui, rect);
             });
 
         self.track_dialog(ui);

@@ -10,8 +10,12 @@ impl EditorUi {
         let track_list_width = self.ui_state.timeline_state.track_list_width;
         let timeline_scroll_y = self.ui_state.timeline_state.timeline_scroll_y;
 
-        // Get the scroll delta
-        let scroll_delta = ui.input(|i| i.smooth_scroll_delta.y);
+        // Only scroll when the pointer is over this panel.
+        let scroll_delta = if ui.rect_contains_pointer(total_rect) {
+            ui.input(|i| i.smooth_scroll_delta.y)
+        } else {
+            0.0
+        };
         self.ui_state.timeline_state.timeline_scroll_y -= scroll_delta;
 
         // Clamp the scroll amount

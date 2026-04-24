@@ -1,5 +1,11 @@
 use std::path::PathBuf;
 
+use crate::{
+    kasl_node::KaslNode,
+    metadata::{ProjectMeta, RegionMeta, TrackMeta},
+    ui::EditorUi,
+    ui_state::dialog_state::TrackType,
+};
 use eframe::egui;
 use kasl::core::localization::format_error;
 use knodiq_engine::{
@@ -9,13 +15,6 @@ use knodiq_engine::{
         Track,
         note_track::{Note, NoteRegion, NoteTrack},
     },
-};
-
-use crate::{
-    kasl_node::KaslNode,
-    metadata::{ProjectMeta, RegionMeta, TrackMeta},
-    ui::EditorUi,
-    ui_state::dialog_state::TrackType,
 };
 
 impl EditorUi {
