@@ -66,7 +66,13 @@ impl FromBytes for NoteRegion {
         // Construct a new note region
         let mut region = NoteRegion::new(start, duration);
         region.notes = notes;
+        restore_next_note_id(&mut region);
 
         Ok(region)
     }
+}
+
+fn restore_next_note_id(region: &mut NoteRegion) {
+    let next_id = region.notes.keys().map(|id| id.0).max().map(|m| m + 1).unwrap_or(0);
+    region.set_next_note_id(next_id);
 }

@@ -3,6 +3,7 @@ pub enum PanelView {
     #[default]
     Timeline,
     PianoRoll,
+    NodeGraph,
 }
 
 impl PanelView {
@@ -10,6 +11,7 @@ impl PanelView {
         match self {
             PanelView::Timeline => "Timeline",
             PanelView::PianoRoll => "Piano Roll",
+            PanelView::NodeGraph => "Node Graph",
         }
     }
 }

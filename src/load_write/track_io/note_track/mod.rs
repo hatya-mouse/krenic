@@ -66,7 +66,13 @@ impl FromBytes for NoteTrack {
         // Construct a new track
         let mut track = NoteTrack::default();
         track.set_regions(regions);
+        restore_next_region_id(&mut track);
 
         Ok(track)
     }
+}
+
+fn restore_next_region_id(track: &mut NoteTrack) {
+    let next_id = track.get_all_regions().keys().map(|id| id.0).max().map(|m| m + 1).unwrap_or(0);
+    track.set_next_region_id(next_id);
 }

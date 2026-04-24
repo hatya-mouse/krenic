@@ -55,6 +55,12 @@ fn render_header(ui: &mut egui::Ui, view: &mut PanelView) {
                 {
                     *view = PanelView::PianoRoll;
                 }
+                if ui
+                    .selectable_label(*view == PanelView::NodeGraph, "Node Graph")
+                    .clicked()
+                {
+                    *view = PanelView::NodeGraph;
+                }
             });
         });
 }
@@ -63,6 +69,7 @@ fn render_view_content(ui: &mut egui::Ui, view: &PanelView, editor: &mut EditorU
     match view {
         PanelView::Timeline => editor.timeline(ui),
         PanelView::PianoRoll => editor.piano_roll(ui),
+        PanelView::NodeGraph => editor.node_graph(ui),
     }
 }
 

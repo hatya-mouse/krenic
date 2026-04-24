@@ -1,9 +1,10 @@
-pub(crate) mod panel;
-pub(crate) mod piano_roll;
-pub(crate) mod playhead_calculation;
+mod node_graph;
+mod panel;
+mod piano_roll;
+mod playhead_calculation;
 mod project_setup;
-pub(crate) mod timeline;
-pub(crate) mod toolbar;
+mod timeline;
+mod toolbar;
 
 use crate::{colors, metadata::ProjectMeta, ui_state::editor_state::EditorUIState};
 use eframe::egui;
