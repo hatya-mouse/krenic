@@ -1,4 +1,8 @@
-use crate::{load_write::StoredTrackMeta, metadata::RegionMeta, ui_state::dialog_state::TrackType};
+use crate::{
+    load_write::StoredTrackMeta,
+    metadata::{NodeGraphLayout, RegionMeta},
+    ui_state::dialog_state::TrackType,
+};
 use eframe::egui;
 use knodiq_engine::track::{RegionID, Track, audio_track::AudioTrack, note_track::NoteTrack};
 use std::collections::HashMap;
@@ -9,6 +13,7 @@ pub(crate) struct TrackMeta {
     pub color: egui::Color32,
     pub track_type: TrackType,
     pub regions: HashMap<RegionID, RegionMeta>,
+    pub node_graph: NodeGraphLayout,
 }
 
 impl TrackMeta {
@@ -18,10 +23,11 @@ impl TrackMeta {
             color,
             track_type,
             regions: HashMap::new(),
+            node_graph: NodeGraphLayout::default(),
         }
     }
 
-    pub fn from_track(track: &dyn Track, track_meta: &StoredTrackMeta) -> Self {
+    pub fn from_stored(track: &dyn Track, track_meta: &StoredTrackMeta) -> Self {
         // Determine track type based on the track's type
         if let Some(audio_track) = track.as_any().downcast_ref::<AudioTrack>() {
             // Get the audio regions from the track
@@ -45,6 +51,7 @@ impl TrackMeta {
                 color: track_meta.color,
                 track_type: TrackType::Audio,
                 regions,
+                node_graph: track_meta.node_graph.to_layout(),
             }
         } else if let Some(note_track) = track.as_any().downcast_ref::<NoteTrack>() {
             // Get the note regions from the track
@@ -68,6 +75,7 @@ impl TrackMeta {
                 color: track_meta.color,
                 track_type: TrackType::Note,
                 regions,
+                node_graph: track_meta.node_graph.to_layout(),
             }
         } else {
             unreachable!("There must be no tracks other than AudioTrack and NoteTrack");

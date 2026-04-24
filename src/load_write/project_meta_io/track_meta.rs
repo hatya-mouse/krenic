@@ -1,4 +1,8 @@
-use crate::load_write::{AsBytes, FromBytes, project_meta_io::StoredRegionMeta, traits::safe_read};
+use crate::load_write::{
+    AsBytes, FromBytes,
+    project_meta_io::{StoredNodeGraphLayout, StoredRegionMeta},
+    traits::safe_read,
+};
 use eframe::egui;
 use knodiq_engine::track::RegionID;
 use std::{
@@ -10,6 +14,7 @@ pub struct StoredTrackMeta {
     pub name: String,
     pub color: egui::Color32,
     pub region_metas: HashMap<RegionID, StoredRegionMeta>,
+    pub node_graph: StoredNodeGraphLayout,
 }
 
 impl StoredTrackMeta {
@@ -26,6 +31,7 @@ impl StoredTrackMeta {
             name: track_meta.name.clone(),
             color: track_meta.color,
             region_metas,
+            node_graph: StoredNodeGraphLayout::from_layout(&track_meta.node_graph),
         }
     }
 }
@@ -59,6 +65,12 @@ impl AsBytes for StoredTrackMeta {
         // Write the length of the region metadatas, and the region metadatas themselves
         bytes.extend((region_metas_bytes.len() as u64).to_le_bytes());
         bytes.extend(region_metas_bytes);
+
+        // Write the node graph layout
+        let mut node_graph_bytes = Vec::new();
+        self.node_graph.as_bytes(&mut node_graph_bytes);
+        bytes.extend((node_graph_bytes.len() as u64).to_le_bytes());
+        bytes.extend(node_graph_bytes);
     }
 }
 
@@ -114,13 +126,22 @@ impl FromBytes for StoredTrackMeta {
             region_metas.insert(region_id, region_meta);
         }
 
-        // Construct the StoredTrackMeta
-        let track_meta = Self {
+        // Read the node graph layout (falls back to default for older project files)
+        let node_graph = read_node_graph_layout(&mut cursor).unwrap_or_default();
+
+        Ok(Self {
             name,
             color,
             region_metas,
-        };
-
-        Ok(track_meta)
+            node_graph,
+        })
     }
+}
+
+fn read_node_graph_layout(cursor: &mut Cursor<&[u8]>) -> std::io::Result<StoredNodeGraphLayout> {
+    let mut len_bytes = [0u8; 8];
+    cursor.read_exact(&mut len_bytes)?;
+    let len = u64::from_le_bytes(len_bytes) as usize;
+    let layout_bytes = safe_read(cursor, len)?;
+    StoredNodeGraphLayout::from_bytes(&layout_bytes)
 }

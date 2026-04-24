@@ -1,6 +1,8 @@
+mod node_graph_layout;
 mod region_meta;
 mod track_meta;
 
+pub use node_graph_layout::StoredNodeGraphLayout;
 pub use region_meta::StoredRegionMeta;
 pub use track_meta::StoredTrackMeta;
 
