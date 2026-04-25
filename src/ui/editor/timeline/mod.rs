@@ -55,7 +55,7 @@ impl EditorUi {
         ui.painter().hline(
             ruler_bg_rect.x_range(),
             ruler_bg_rect.max.y,
-            egui::Stroke::new(1.0, egui::Color32::DARK_GRAY),
+            egui::Stroke::new(1.0, colors::separator()),
         );
 
         // Screen rect where beat markers are drawn (right side, aligned with edit panel)
@@ -100,6 +100,6 @@ impl EditorUi {
             self.ui_state.timeline_state.track_list_width += divider_resp.drag_delta().x;
         }
         ui.painter()
-            .rect_filled(divider_rect, 0.0, egui::Color32::DARK_GRAY);
+            .rect_filled(divider_rect, 0.0, colors::separator());
     }
 }

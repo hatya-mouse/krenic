@@ -2,7 +2,7 @@ use eframe::egui;
 use knodiq_engine::{graph::node_id::NodeID, mixer::TrackID};
 
 use super::node::{canvas_to_screen, input_port_pos, output_port_pos};
-use crate::ui::EditorUi;
+use crate::{colors, ui::EditorUi};
 
 impl EditorUi {
     pub(super) fn draw_graph_edge(
@@ -37,7 +37,7 @@ fn draw_bezier_edge(painter: &egui::Painter, from: egui::Pos2, to: egui::Pos2) {
     let cp1 = egui::pos2(from.x + cp_dist, from.y);
     let cp2 = egui::pos2(to.x - cp_dist, to.y);
 
-    let stroke = egui::Stroke::new(2.0, egui::Color32::from_rgb(180, 180, 180));
+    let stroke = egui::Stroke::new(2.0, colors::node_edge());
 
     let points: Vec<egui::Pos2> = (0..=24)
         .map(|i| cubic_bezier(from, cp1, cp2, to, i as f32 / 24.0))

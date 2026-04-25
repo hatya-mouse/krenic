@@ -38,7 +38,7 @@ impl EditorUi {
                             max: available.min.x + available.width(),
                         },
                         y + track_height,
-                        egui::Stroke::new(1.0, colors::region_stroke()),
+                        egui::Stroke::new(1.0, colors::border(ui.visuals().dark_mode)),
                     );
                 }
             });
@@ -135,9 +135,8 @@ impl EditorUi {
         let right_beat = ((ruler_screen_rect.max.x - available.min.x) / ppb).ceil() as i32;
         let first_label_beat = (left_beat / beats_per_label) * beats_per_label;
 
-        let fg = colors::primary_fg(dark_mode);
-        let tick_color = fg.gamma_multiply(0.45);
-        let text_color = fg.gamma_multiply(0.75);
+        let tick_color = colors::ruler_tick(dark_mode);
+        let text_color = colors::ruler_label(dark_mode);
 
         // Major ticks and labels
         let mut beat = first_label_beat;

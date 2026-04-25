@@ -20,14 +20,20 @@ pub fn canvas_to_screen(canvas_pos: egui::Pos2, pan: egui::Vec2, origin: egui::P
 pub fn input_port_pos(node_top_left: egui::Pos2, index: usize) -> egui::Pos2 {
     egui::pos2(
         node_top_left.x,
-        node_top_left.y + NODE_HEADER_HEIGHT + PORT_ROW_HEIGHT * index as f32 + PORT_ROW_HEIGHT * 0.5,
+        node_top_left.y
+            + NODE_HEADER_HEIGHT
+            + PORT_ROW_HEIGHT * index as f32
+            + PORT_ROW_HEIGHT * 0.5,
     )
 }
 
 pub fn output_port_pos(node_top_left: egui::Pos2, index: usize) -> egui::Pos2 {
     egui::pos2(
         node_top_left.x + NODE_WIDTH,
-        node_top_left.y + NODE_HEADER_HEIGHT + PORT_ROW_HEIGHT * index as f32 + PORT_ROW_HEIGHT * 0.5,
+        node_top_left.y
+            + NODE_HEADER_HEIGHT
+            + PORT_ROW_HEIGHT * index as f32
+            + PORT_ROW_HEIGHT * 0.5,
     )
 }
 
@@ -83,7 +89,7 @@ fn draw_node_body(
         node_rect,
         4.0,
         colors::tertiary_bg(dark_mode),
-        egui::Stroke::new(1.0, colors::region_stroke()),
+        egui::Stroke::new(1.0, colors::border(dark_mode)),
         egui::StrokeKind::Inside,
     );
 
@@ -91,11 +97,14 @@ fn draw_node_body(
     painter.hline(
         node_rect.min.x..=node_rect.max.x,
         separator_y,
-        egui::Stroke::new(1.0, colors::region_stroke()),
+        egui::Stroke::new(1.0, colors::border(dark_mode)),
     );
 
     painter.text(
-        egui::pos2(node_rect.center().x, node_rect.min.y + NODE_HEADER_HEIGHT * 0.5),
+        egui::pos2(
+            node_rect.center().x,
+            node_rect.min.y + NODE_HEADER_HEIGHT * 0.5,
+        ),
         egui::Align2::CENTER_CENTER,
         label,
         egui::FontId::proportional(12.0),
@@ -113,8 +122,8 @@ fn draw_ports(
     dark_mode: bool,
 ) {
     let fg = colors::primary_fg(dark_mode);
-    let input_color = egui::Color32::from_rgb(100, 160, 255);
-    let output_color = egui::Color32::from_rgb(255, 160, 100);
+    let input_color = colors::node_port_input();
+    let output_color = colors::node_port_output();
 
     for (i, name) in input_names.iter().enumerate() {
         let pos = input_port_pos(node_top_left, i);

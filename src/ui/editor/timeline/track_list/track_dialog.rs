@@ -1,4 +1,5 @@
 use crate::{
+    colors,
     components::dialog::dialog,
     ui::EditorUi,
     ui_state::dialog_state::{DialogState, TrackType},
@@ -39,7 +40,7 @@ impl EditorUi {
                         self.add_track(
                             state.selected_track_type,
                             state.name.clone(),
-                            egui::Color32::BLUE,
+                            colors::default_track_color(),
                         );
                         close = true;
                     });

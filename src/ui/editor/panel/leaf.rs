@@ -4,7 +4,7 @@ use crate::{
     ui::EditorUi,
     ui_state::panel_layout::{PanelView, SplitDir},
 };
-use eframe::egui::{self, CursorIcon, Rect, UiBuilder};
+use eframe::egui::{self, CursorIcon, Rect, UiBuilder, response};
 
 const EDGE_SIZE: f32 = 10.0;
 const MIN_NEW_PANEL: f32 = 80.0;
@@ -29,8 +29,13 @@ pub(super) fn render_leaf(
     // This ensures scroll state and widget IDs are independent per panel
     let result = ui.scope_builder(UiBuilder::new().id_salt(salt).max_rect(rect), |ui| {
         ui.set_clip_rect(rect);
+
+        // Remove the spacing between header and content
+        ui.spacing_mut().item_spacing.y = 0.0;
+
         render_header(ui, view);
         render_view_content(ui, view, editor);
+
         check_edge_drag(ui, rect)
     });
 
@@ -38,10 +43,11 @@ pub(super) fn render_leaf(
 }
 
 fn render_header(ui: &mut egui::Ui, view: &mut PanelView) {
-    egui::Frame::new()
+    let response = egui::Frame::new()
         .fill(colors::tertiary_bg(ui.visuals().dark_mode))
         .inner_margin(egui::Margin::symmetric(8, 4))
         .show(ui, |ui| {
+            ui.set_min_width(ui.available_width());
             ui.horizontal(|ui| {
                 PanelView::all().iter().for_each(|enum_view| {
                     if ui
@@ -53,6 +59,12 @@ fn render_header(ui: &mut egui::Ui, view: &mut PanelView) {
                 });
             });
         });
+
+    let stroke = ui.visuals().widgets.noninteractive.bg_stroke;
+    let rect = response.response.rect;
+
+    ui.painter()
+        .line_segment([rect.left_bottom(), rect.right_bottom()], stroke);
 }
 
 fn render_view_content(ui: &mut egui::Ui, view: &PanelView, editor: &mut EditorUi) {
@@ -90,19 +102,16 @@ fn check_single_edge(ui: &mut egui::Ui, rect: Rect, edge: Edge) -> Option<SplitA
         ui.data_mut(|d| d.insert_temp(accum_key, new_accum));
 
         // Draw edge highlight
-        let highlight = egui::Color32::from_rgba_premultiplied(100, 150, 255, 60);
-        ui.painter().rect_filled(strip, 0.0, highlight);
+        ui.painter().rect_filled(strip, 0.0, colors::panel_drag_highlight());
 
         // Draw preview of the new panel
         let preview_size = new_accum.clamp(0.0, panel_extent(edge, rect) - MIN_NEW_PANEL);
         if preview_size > 0.0 {
             let preview = new_panel_rect(rect, edge, preview_size);
-            let preview_color = egui::Color32::from_rgba_premultiplied(100, 150, 255, 40);
-            ui.painter().rect_filled(preview, 0.0, preview_color);
+            ui.painter().rect_filled(preview, 0.0, colors::panel_hover_highlight());
         }
     } else if resp.hovered() {
-        let highlight = egui::Color32::from_rgba_premultiplied(100, 150, 255, 40);
-        ui.painter().rect_filled(strip, 0.0, highlight);
+        ui.painter().rect_filled(strip, 0.0, colors::panel_hover_highlight());
     }
 
     if resp.drag_stopped() {

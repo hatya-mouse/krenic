@@ -2,7 +2,7 @@ mod file_control;
 mod playback_control;
 mod toolbar_group;
 
-use crate::{fonts::RichTextExt, ui::EditorUi, ui::editor::toolbar::toolbar_group::toolbar_group};
+use crate::{colors, fonts::RichTextExt, ui::EditorUi, ui::editor::toolbar::toolbar_group::toolbar_group};
 use eframe::egui;
 
 impl EditorUi {
@@ -14,12 +14,10 @@ impl EditorUi {
             ui.visuals_mut().widgets.inactive.weak_bg_fill = egui::Color32::TRANSPARENT;
             ui.visuals_mut().widgets.inactive.bg_stroke = egui::Stroke::NONE;
 
-            ui.visuals_mut().widgets.hovered.weak_bg_fill =
-                egui::Color32::from_rgba_unmultiplied(150, 150, 150, 50);
+            ui.visuals_mut().widgets.hovered.weak_bg_fill = colors::toolbar_button_hovered();
             ui.visuals_mut().widgets.hovered.bg_stroke = egui::Stroke::NONE;
 
-            ui.visuals_mut().widgets.active.weak_bg_fill =
-                egui::Color32::from_rgba_unmultiplied(150, 150, 150, 100);
+            ui.visuals_mut().widgets.active.weak_bg_fill = colors::toolbar_button_active();
             ui.visuals_mut().widgets.active.bg_stroke = egui::Stroke::NONE;
 
             // Draw the playback control buttons

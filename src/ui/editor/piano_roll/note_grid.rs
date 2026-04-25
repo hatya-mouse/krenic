@@ -1,7 +1,4 @@
-use crate::{
-    colors::{self, region_stroke},
-    ui::EditorUi,
-};
+use crate::{colors, ui::EditorUi};
 use eframe::egui;
 use knodiq_engine::{
     data_types::Beats,
@@ -104,7 +101,7 @@ impl EditorUi {
                 let stroke = if self.ui_state.piano_roll_state.selected_note == Some(note_id) {
                     egui::Stroke::new(2.0, colors::region_selected())
                 } else {
-                    egui::Stroke::new(1.0, colors::region_stroke())
+                    egui::Stroke::new(1.0, colors::border(ui.visuals().dark_mode))
                 };
 
                 // Draw the note
@@ -136,7 +133,7 @@ impl EditorUi {
         offset: egui::Pos2,
         scroll_content_width: f32,
     ) {
-        let grid_color_note = region_stroke();
+        let grid_color_note = colors::border(ui.visuals().dark_mode);
         let grid_color_octave = ui.visuals().window_stroke().color;
 
         let note_height = self.ui_state.piano_roll_state.note_height;

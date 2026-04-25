@@ -1,6 +1,6 @@
 use eframe::egui::Color32;
 
-// --- BASIC FOREGROUND COLORS ---
+// --- FOREGROUND ---
 
 pub(crate) fn primary_fg(dark_mode: bool) -> Color32 {
     if dark_mode {
@@ -10,7 +10,7 @@ pub(crate) fn primary_fg(dark_mode: bool) -> Color32 {
     }
 }
 
-// --- BASIC BACKGROUND COLORS ---
+// --- BACKGROUNDS ---
 
 pub(crate) fn primary_bg(dark_mode: bool) -> Color32 {
     if dark_mode {
@@ -36,7 +36,7 @@ pub(crate) fn tertiary_bg(dark_mode: bool) -> Color32 {
     }
 }
 
-// --- BUTTON COLORS ---
+// --- BUTTON ---
 
 pub(crate) fn button_bg(dark_mode: bool) -> Color32 {
     if dark_mode {
@@ -46,12 +46,87 @@ pub(crate) fn button_bg(dark_mode: bool) -> Color32 {
     }
 }
 
-// --- TIMELINE COLORS ---
-
-pub(crate) fn region_stroke() -> Color32 {
-    Color32::from_rgba_unmultiplied(0, 0, 0, 50)
+// Visuals overrides for icon-style toolbar buttons (no visible background at rest).
+pub(crate) fn toolbar_button_hovered() -> Color32 {
+    Color32::from_rgba_unmultiplied(150, 150, 150, 50)
 }
+
+pub(crate) fn toolbar_button_active() -> Color32 {
+    Color32::from_rgba_unmultiplied(150, 150, 150, 100)
+}
+
+// --- BORDER (soft, semi-transparent — for content elements) ---
+
+/// Soft border used on regions, notes, node bodies, and grid lines.
+pub(crate) fn border(dark_mode: bool) -> Color32 {
+    if dark_mode {
+        Color32::from_rgba_unmultiplied(255, 255, 255, 50)
+    } else {
+        Color32::from_rgba_unmultiplied(0, 0, 0, 50)
+    }
+}
+
+// --- SEPARATOR (solid — for UI chrome dividers) ---
+
+/// Solid divider between panel sections (ruler border, panel splitters).
+pub(crate) fn separator() -> Color32 {
+    Color32::DARK_GRAY
+}
+
+/// Separator color when the divider is hovered or dragged.
+pub(crate) fn separator_hovered() -> Color32 {
+    Color32::from_gray(140)
+}
+
+// --- PANEL INTERACTIONS ---
+
+pub(crate) fn panel_drag_highlight() -> Color32 {
+    Color32::from_rgba_premultiplied(100, 150, 255, 60)
+}
+
+pub(crate) fn panel_hover_highlight() -> Color32 {
+    Color32::from_rgba_premultiplied(100, 150, 255, 40)
+}
+
+pub(crate) fn panel_collapse_overlay() -> Color32 {
+    Color32::from_rgba_premultiplied(200, 60, 60, 80)
+}
+
+// --- RULER ---
+
+pub(crate) fn ruler_tick(dark_mode: bool) -> Color32 {
+    primary_fg(dark_mode).gamma_multiply(0.45)
+}
+
+pub(crate) fn ruler_label(dark_mode: bool) -> Color32 {
+    primary_fg(dark_mode).gamma_multiply(0.75)
+}
+
+// --- NODE GRAPH ---
+
+pub(crate) fn node_port_input() -> Color32 {
+    Color32::from_rgb(100, 160, 255)
+}
+
+pub(crate) fn node_port_output() -> Color32 {
+    Color32::from_rgb(255, 160, 100)
+}
+
+pub(crate) fn node_edge() -> Color32 {
+    Color32::from_rgb(180, 180, 180)
+}
+
+// --- TIMELINE / REGIONS ---
 
 pub(crate) fn region_selected() -> Color32 {
     Color32::WHITE
+}
+
+pub(crate) fn region_text() -> Color32 {
+    Color32::WHITE
+}
+
+/// Default color assigned to a newly created track.
+pub(crate) fn default_track_color() -> Color32 {
+    Color32::from_rgb(100, 150, 220)
 }

@@ -63,7 +63,7 @@ impl EditorUi {
             let stroke = if self.ui_state.selected_region == Some((*track_id, region_id)) {
                 egui::Stroke::new(2.0, colors::region_selected())
             } else {
-                egui::Stroke::new(1.0, colors::region_stroke())
+                egui::Stroke::new(1.0, colors::border(ui.visuals().dark_mode))
             };
 
             painter.rect(
@@ -78,7 +78,7 @@ impl EditorUi {
                 egui::Align2::LEFT_TOP,
                 &region_meta.name,
                 egui::FontId::proportional(11.0),
-                egui::Color32::WHITE,
+                colors::region_text(),
             );
         }
     }
