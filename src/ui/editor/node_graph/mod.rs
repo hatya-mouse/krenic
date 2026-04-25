@@ -1,3 +1,4 @@
+mod add_node;
 mod edge;
 mod node;
 
@@ -37,11 +38,14 @@ impl EditorUi {
         self.ensure_node_positions(track_id, input_id, output_id, &snapshots);
 
         let rect = ui.available_rect_before_wrap();
-        let (bg_response, painter) = ui.allocate_painter(rect.size(), egui::Sense::drag());
+        let (bg_response, painter) =
+            ui.allocate_painter(rect.size(), egui::Sense::drag().union(egui::Sense::click()));
 
         painter.rect_filled(rect, 0.0, colors::secondary_bg(ui.visuals().dark_mode));
 
-        let pan = self.project_meta.get_track(&track_id)
+        let pan = self
+            .project_meta
+            .get_track(&track_id)
             .map(|m| m.node_graph.pan_offset)
             .unwrap_or_default();
 
@@ -51,21 +55,53 @@ impl EditorUi {
 
         let mut any_node_dragged = false;
         for snapshot in &snapshots {
-            let Some(pos) = self.project_meta.get_track(&track_id)
+            let Some(pos) = self
+                .project_meta
+                .get_track(&track_id)
                 .and_then(|m| m.node_graph.get_node_pos(snapshot.id))
             else {
                 continue;
             };
-            let dragged = self.draw_and_interact_node(ui, &painter, track_id, snapshot, pos, pan, rect.min);
+            let dragged =
+                self.draw_and_interact_node(ui, &painter, track_id, snapshot, pos, pan, rect.min);
             if dragged {
                 any_node_dragged = true;
             }
         }
 
-        if !any_node_dragged && bg_response.dragged() {
-            if let Some(track_meta) = self.project_meta.get_track_mut(&track_id) {
-                track_meta.node_graph.pan_offset += bg_response.drag_delta();
+        if !any_node_dragged
+            && bg_response.dragged()
+            && let Some(track_meta) = self.project_meta.get_track_mut(&track_id)
+        {
+            track_meta.node_graph.pan_offset += bg_response.drag_delta();
+        }
+
+        // Save the canvas-space position of a right-click for use when the menu action fires
+        if bg_response.secondary_clicked()
+            && let Some(screen_pos) = bg_response.interact_pointer_pos()
+        {
+            self.ui_state.node_graph_add_pos = Some(egui::pos2(
+                screen_pos.x - rect.min.x - pan.x,
+                screen_pos.y - rect.min.y - pan.y,
+            ));
+        }
+
+        // Context menu
+        let mut do_add: Option<add_node::AddableNodeKind> = None;
+        bg_response.context_menu(|ui| {
+            for &kind in add_node::AddableNodeKind::all() {
+                if ui.button(kind.label()).clicked() {
+                    do_add = Some(kind);
+                    ui.close();
+                }
             }
+        });
+
+        if let Some(kind) = do_add
+            && let Some(canvas_pos) = self.ui_state.node_graph_add_pos
+        {
+            let node = kind.create(&self.project_meta, &self.project_dir);
+            self.add_node_to_graph(track_id, node, canvas_pos);
         }
     }
 

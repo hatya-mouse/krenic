@@ -4,6 +4,7 @@ use crate::ui_state::{
     piano_roll_state::PianoRollState,
     timeline_state::TimelineState,
 };
+use eframe::egui;
 use knodiq_engine::{
     data_types::Beats,
     mixer::TrackID,
@@ -36,6 +37,9 @@ pub struct EditorUIState {
 
     /// An ID of the currently selected region.
     pub selected_region: Option<(TrackID, RegionID)>,
+
+    /// Canvas-space position where the node graph context menu was opened.
+    pub node_graph_add_pos: Option<egui::Pos2>,
 }
 
 impl EditorUIState {
