@@ -81,6 +81,18 @@ impl FromBytes for Graph {
             graph.add_edge(from_id, out_idx, to_id, in_idx);
         }
 
+        restore_next_node_id(&mut graph);
         Ok(graph)
     }
+}
+
+fn restore_next_node_id(graph: &mut Graph) {
+    let next_id = graph
+        .get_node_map()
+        .keys()
+        .map(|id| id.0)
+        .max()
+        .map(|m| m + 1)
+        .unwrap_or(0);
+    graph.set_next_node_id(next_id);
 }
