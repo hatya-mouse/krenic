@@ -17,7 +17,8 @@ impl EditorUi {
             let zoom_delta = ui.input(|i| i.zoom_delta());
             if zoom_delta != 1.0 {
                 let ppb = self.ui_state.timeline_state.pixels_per_beat;
-                self.ui_state.timeline_state.pixels_per_beat = (ppb * zoom_delta).clamp(10.0, 500.0);
+                self.ui_state.timeline_state.pixels_per_beat =
+                    (ppb * zoom_delta).clamp(10.0, 500.0);
             } else {
                 // Regular scroll: vertical scroll
                 let scroll_delta = ui.input(|i| i.smooth_scroll_delta.y);
@@ -31,8 +32,11 @@ impl EditorUi {
         let content_height = track_count as f32 * track_height;
         let visible_height = total_rect.height() - RULER_HEIGHT;
         let max_scroll = (content_height - visible_height).max(0.0);
-        self.ui_state.timeline_state.timeline_scroll_y =
-            self.ui_state.timeline_state.timeline_scroll_y.clamp(0.0, max_scroll);
+        self.ui_state.timeline_state.timeline_scroll_y = self
+            .ui_state
+            .timeline_state
+            .timeline_scroll_y
+            .clamp(0.0, max_scroll);
 
         let scroll_y = self.ui_state.timeline_state.timeline_scroll_y;
 
@@ -43,10 +47,8 @@ impl EditorUi {
         );
 
         // Draw ruler background across the full width
-        let ruler_bg_rect = egui::Rect::from_min_size(
-            total_rect.min,
-            egui::vec2(total_rect.width(), RULER_HEIGHT),
-        );
+        let ruler_bg_rect =
+            egui::Rect::from_min_size(total_rect.min, egui::vec2(total_rect.width(), RULER_HEIGHT));
         ui.painter().rect_filled(
             ruler_bg_rect,
             0.0,

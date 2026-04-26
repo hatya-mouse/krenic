@@ -1,20 +1,22 @@
+use super::{HEADER_HEIGHT, NODE_PADDING, NODE_WIDTH, PORT_ROW_HEIGHT};
 use crate::{colors, metadata::ProjectMeta, ui::EditorUi, ui_state::editor_state::EditorUiState};
 use eframe::egui::{self, Sense};
 use knodiq_engine::{graph::node_id::NodeID, mixer::TrackID};
 
-const NODE_WIDTH: f32 = 180.0;
-const HEADER_HEIGHT: f32 = 28.0;
-const PORT_ROW_HEIGHT: f32 = 22.0;
-const PORT_RADIUS: f32 = 5.0;
-const PADDING: f32 = 8.0;
-
 impl EditorUi {
-    pub(super) fn draw_node(&mut self, ui: &mut egui::Ui, node_id: &NodeID) {
+    pub(super) fn draw_node(
+        &mut self,
+        ui: &mut egui::Ui,
+        node_id: &NodeID,
+        view_transform: egui::Vec2,
+    ) {
         let Some(track_id) = self.ui_state.selected_track else {
             return;
         };
 
-        let (input_len, output_len, pos, display_name) = {
+        // Gather display data from the node and its meta.
+        // Borrows end at the closing brace so we can take &mut self freely afterwards.
+        let (input_names, output_names, pos, display_name) = {
             let Some(node) = self
                 .project
                 .get_track(&track_id)
@@ -30,31 +32,36 @@ impl EditorUi {
                 return;
             };
             (
-                node.get_input_len(),
-                node.get_output_len(),
+                node.get_input_names(),
+                node.get_output_names(),
                 meta.pos,
                 meta.display_name.clone(),
             )
         };
 
-        let row_count = input_len.max(output_len).max(1);
-        let node_height = HEADER_HEIGHT + PORT_ROW_HEIGHT * row_count as f32 + PADDING;
-        let node_rect = egui::Rect::from_min_size(pos, egui::vec2(NODE_WIDTH, node_height));
+        // Calculate node geometry.
+        // pos is in canvas space; view_transform converts it to screen space.
+        let row_count = input_names.len().max(output_names.len()).max(1);
+        let node_height =
+            HEADER_HEIGHT + NODE_PADDING + PORT_ROW_HEIGHT * row_count as f32 + NODE_PADDING;
+        let node_rect =
+            egui::Rect::from_min_size(pos + view_transform, egui::vec2(NODE_WIDTH, node_height));
         let header_rect =
             egui::Rect::from_min_size(node_rect.min, egui::vec2(NODE_WIDTH, HEADER_HEIGHT));
 
+        let dark_mode = ui.visuals().dark_mode;
         let painter = ui.painter();
 
-        // Draw the background of the node
+        // Draw the node background
         painter.rect(
             node_rect,
             egui::CornerRadius::same(6),
-            colors::secondary_bg(ui.visuals().dark_mode),
-            egui::Stroke::new(1.0, colors::border(ui.visuals().dark_mode)),
+            colors::secondary_bg(dark_mode),
+            egui::Stroke::new(1.0, colors::border(dark_mode)),
             egui::StrokeKind::Outside,
         );
 
-        // Draw the header
+        // Draw the header background and its bottom border
         painter.rect_filled(
             header_rect,
             egui::CornerRadius {
@@ -63,20 +70,26 @@ impl EditorUi {
                 sw: 0,
                 se: 0,
             },
-            colors::tertiary_bg(ui.visuals().dark_mode),
+            colors::tertiary_bg(dark_mode),
         );
         painter.line_segment(
             [header_rect.left_bottom(), header_rect.right_bottom()],
-            egui::Stroke::new(1.0, colors::border(ui.visuals().dark_mode)),
+            egui::Stroke::new(1.0, colors::border(dark_mode)),
         );
+
+        // Draw the node name in the header
         painter.text(
             header_rect.center(),
             egui::Align2::CENTER_CENTER,
             display_name.as_str(),
             egui::FontId::proportional(13.0),
-            colors::primary_fg(ui.visuals().dark_mode),
+            colors::primary_fg(dark_mode),
         );
 
+        // Draw the input/output ports
+        super::port::draw_ports(painter, node_rect, &input_names, &output_names, dark_mode);
+
+        // Handle node gestures (click to select, drag to move)
         let response = ui.allocate_rect(node_rect, Sense::click_and_drag());
         Self::apply_node_gesture(
             response,
@@ -94,10 +107,12 @@ impl EditorUi {
         project_meta: &mut ProjectMeta,
         ui_state: &mut EditorUiState,
     ) {
+        // Click or drag to select the node
         if response.clicked() || response.dragged() {
             ui_state.set_selected_node(*node_id);
         }
 
+        // Drag to move the node
         if response.dragged()
             && let Some(meta) = project_meta
                 .get_track_mut(track_id)

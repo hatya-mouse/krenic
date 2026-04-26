@@ -34,7 +34,15 @@ pub(super) fn render_leaf(
         ui.spacing_mut().item_spacing.y = 0.0;
 
         render_header(ui, view);
-        render_view_content(ui, view, editor);
+
+        // Clip the content to the area below the header.
+        // Without this, painter-based content (node graph, piano roll) would draw
+        // over the header because the outer clip rect covers the full panel.
+        let content_rect = ui.available_rect_before_wrap();
+        ui.scope_builder(UiBuilder::new().max_rect(content_rect), |ui| {
+            ui.set_clip_rect(content_rect);
+            render_view_content(ui, view, editor);
+        });
 
         check_edge_drag(ui, rect)
     });

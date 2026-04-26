@@ -119,18 +119,19 @@ pub(crate) fn load_project(path: &Path) -> Result<LoadProjResult, LoadError> {
     Ok(result)
 }
 
-/// Initialize all KaslNodes in the project with their search paths and project directory.
-/// The project directory is stored so each node can read its source file at compile time.
-pub(crate) fn init_kasl_nodes(
-    project: &mut Project,
-    search_paths: &[String],
-    project_dir: &Path,
-) {
+/// Initialize all KaslNodes in the project with their search paths and project directory,
+/// then compile them so the blueprint (and port names) are ready before the first UI render.
+pub(crate) fn init_kasl_nodes(project: &mut Project, search_paths: &[String], project_dir: &Path) {
     for track in project.tracks.values_mut() {
         for node in track.get_graph_mut().get_node_map_mut().values_mut() {
             if let Some(kasl_node) = node.as_any_mut().downcast_mut::<KaslNode>() {
                 kasl_node.set_search_paths(search_paths.to_vec());
                 kasl_node.set_project_dir(project_dir.to_path_buf());
+
+                // Compile the KASL code to initialize the blueprint and port names before the first UI render
+                if let Err(errors) = kasl_node.compile() {
+                    eprintln!("KaslNode compile failed on load: {:?}", errors);
+                }
             }
         }
     }

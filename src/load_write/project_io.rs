@@ -110,6 +110,12 @@ impl FromBytes for Project {
 }
 
 fn restore_next_track_id(project: &mut Project) {
-    let next_id = project.tracks.keys().map(|id| id.0).max().map(|m| m + 1).unwrap_or(0);
+    let next_id = project
+        .tracks
+        .keys()
+        .map(|id| id.0)
+        .max()
+        .map(|m| m + 1)
+        .unwrap_or(0);
     project.set_next_track_id(next_id);
 }

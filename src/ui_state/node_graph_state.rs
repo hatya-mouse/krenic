@@ -1,7 +1,6 @@
 use eframe::egui;
 use knodiq_engine::graph::node_id::NodeID;
 
-#[derive(Default)]
 pub struct NodeGraphState {
     /// Currently being dragged edge, with the source and the mouse position.
     pub ghost_edge: Option<((NodeID, usize), egui::Pos2)>,
@@ -11,4 +10,20 @@ pub struct NodeGraphState {
     pub node_graph_add_pos: Option<egui::Pos2>,
     /// Currently selected node ID.
     pub selected_node: Option<NodeID>,
+    /// User pan, relative to the content area top-left.
+    /// Combined with content_rect.min each frame, so the view follows panel moves/resizes.
+    pub pan_offset: egui::Vec2,
+}
+
+impl Default for NodeGraphState {
+    fn default() -> Self {
+        Self {
+            ghost_edge: None,
+            dragged_edge: None,
+            node_graph_add_pos: None,
+            selected_node: None,
+            // Start with a small margin so canvas (0, 0) is visible by default
+            pan_offset: egui::vec2(50.0, 50.0),
+        }
+    }
 }

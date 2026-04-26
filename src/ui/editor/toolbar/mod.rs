@@ -2,7 +2,9 @@ mod file_control;
 mod playback_control;
 mod toolbar_group;
 
-use crate::{colors, fonts::RichTextExt, ui::EditorUi, ui::editor::toolbar::toolbar_group::toolbar_group};
+use crate::{
+    colors, fonts::RichTextExt, ui::EditorUi, ui::editor::toolbar::toolbar_group::toolbar_group,
+};
 use eframe::egui;
 
 impl EditorUi {
