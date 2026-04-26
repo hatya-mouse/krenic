@@ -47,12 +47,13 @@ struct NoteTrack {
 
 // ─── Node ────────────────────────────────────────────────────────────────────
 // kind: 0=NoteInput  1=AudioInput  2=AudioOutput  3=KaslNode
+// For KaslNode the node bytes are: [u64 kasl_path_len][kasl_path bytes]
 
 struct Node {
     u8 kind;
     if (kind == 3) {
-        u64  kasl_data_len;
-        char kasl_code[kasl_data_len];
+        u64  kasl_path_len;
+        char kasl_path[kasl_path_len];
     }
 };
 
@@ -82,17 +83,16 @@ struct Graph {
 
 // ─── Track ───────────────────────────────────────────────────────────────────
 // track_kind: 0=AudioTrack  1=NoteTrack
+// Track layout: [u64 graph_len][Graph data][u8 track_kind][u64 track_content_len][track_content bytes]
+// track_content bytes contain the serialized content for audio or note tracks.
+// (NoteTrack content itself begins with a regions_len u64 and then region entries.)
 
 struct Track {
-    u64   graph_len;
+    u64 graph_len;
     Graph graph;
-    u8    track_kind;
-    u64   track_content_len;
-    if (track_kind == 1) {
-        NoteTrack note_track;
-    } else {
-        u8 audio_track_data[track_content_len];
-    }
+    u8  track_kind;
+    u64 track_content_len;
+    u8  track_content[track_content_len];
 };
 
 struct TrackEntry {
@@ -136,20 +136,47 @@ struct Project {
     TrackEntry   tracks[while($ < addressof(tracks_len) + 8 + tracks_len)];
 };
 
-// ─── StoredProjMeta ──────────────────────────────────────────────────────────
+// ─── Project Metadata (StoredProjMeta) ───────────────────────────────────────
 
+// StoredNodeMeta: serialized as:
+// [u8 node_type][u64 display_name_len][display_name bytes][f32 pos_x][f32 pos_y]
+struct StoredNodeMeta {
+    u8  node_type;
+    u64 name_len;
+    char name[name_len];
+    float pos_x;
+    float pos_y;
+};
+
+struct StoredNodeEntry {
+    u64             node_id;
+    u64             node_data_len;
+    StoredNodeMeta  node_meta;
+};
+
+// StoredGraphMeta: serialized as:
+// [u64 nodes_bytes_len][ then repeated: (node_id:u64)(node_bytes_len:u64)(StoredNodeMeta bytes) ]
+struct StoredGraphMeta {
+    u64              nodes_len;
+    StoredNodeEntry  nodes[while($ < addressof(nodes_len) + 8 + nodes_len)];
+};
+
+// Region meta entry in track metadata
 struct RegionMetaEntry {
     u64  region_id;
     u64  region_meta_len;
     char region_name[region_meta_len];
 };
 
+// StoredTrackMeta now includes the node graph layout (length-prefixed)
 struct StoredTrackMeta {
     Color32         color;
     u64             name_len;
     char            name[name_len];
     u64             region_metas_len;
     RegionMetaEntry region_metas[while($ < addressof(region_metas_len) + 8 + region_metas_len)];
+    u64             node_graph_len;
+    StoredGraphMeta node_graph;
 };
 
 struct TrackMetaEntry {

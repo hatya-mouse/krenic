@@ -13,16 +13,12 @@ pub(super) fn draw_ports(
 ) {
     let row_count = input_names.len().max(output_names.len());
 
-    for i in 0..row_count {
+    for current_row in 0..row_count {
         // Vertical center of this port row
-        let y = node_rect.min.y
-            + HEADER_HEIGHT
-            + NODE_PADDING
-            + PORT_ROW_HEIGHT * i as f32
-            + PORT_ROW_HEIGHT / 2.0;
+        let y = calc_port_y(node_rect, current_row);
 
         // Input port on the left edge
-        if let Some(name) = input_names.get(i) {
+        if let Some(name) = input_names.get(current_row) {
             let center = egui::pos2(node_rect.min.x, y);
             painter.circle_filled(center, PORT_RADIUS, colors::node_port_input());
             painter.text(
@@ -35,7 +31,7 @@ pub(super) fn draw_ports(
         }
 
         // Output port on the right edge
-        if let Some(name) = output_names.get(i) {
+        if let Some(name) = output_names.get(current_row) {
             let center = egui::pos2(node_rect.max.x, y);
             painter.circle_filled(center, PORT_RADIUS, colors::node_port_output());
             painter.text(
@@ -47,4 +43,12 @@ pub(super) fn draw_ports(
             );
         }
     }
+}
+
+pub(super) fn calc_port_y(node_rect: egui::Rect, port_index: usize) -> f32 {
+    node_rect.min.y
+        + HEADER_HEIGHT
+        + NODE_PADDING
+        + PORT_ROW_HEIGHT * port_index as f32
+        + PORT_ROW_HEIGHT / 2.0
 }

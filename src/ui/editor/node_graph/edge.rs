@@ -7,26 +7,30 @@ use crate::{
 use eframe::egui;
 use knodiq_engine::graph::node_id::NodeID;
 
-/// Draws all edges in the graph as straight lines.
+/// Draws all edges in the graph as straight lines, skipping `dragged_edge` if set.
 pub(super) fn draw_edges(
     ui: &egui::Ui,
     painter: &egui::Painter,
     edges: &[(NodeID, usize, NodeID, usize)],
     graph_meta: &GraphMeta,
     view_transform: egui::Vec2,
+    dragged_edge: Option<(NodeID, usize, NodeID, usize)>,
 ) {
     let stroke = egui::Stroke::new(EDGE_WIDTH, colors::node_edge(ui.visuals().dark_mode));
 
-    for (from_id, out_idx, to_id, in_idx) in edges {
-        let Some(from_meta) = graph_meta.get_node_meta(from_id) else {
+    for &(from_id, out_idx, to_id, in_idx) in edges {
+        if dragged_edge == Some((from_id, out_idx, to_id, in_idx)) {
+            continue;
+        }
+        let Some(from_meta) = graph_meta.get_node_meta(&from_id) else {
             continue;
         };
-        let Some(to_meta) = graph_meta.get_node_meta(to_id) else {
+        let Some(to_meta) = graph_meta.get_node_meta(&to_id) else {
             continue;
         };
 
-        let src = output_port_pos(from_meta.pos, *out_idx, view_transform);
-        let dst = input_port_pos(to_meta.pos, *in_idx, view_transform);
+        let src = output_port_pos(from_meta.pos, out_idx, view_transform);
+        let dst = input_port_pos(to_meta.pos, in_idx, view_transform);
 
         painter.line_segment([src, dst], stroke);
     }

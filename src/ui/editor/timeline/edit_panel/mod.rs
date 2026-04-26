@@ -65,12 +65,20 @@ impl EditorUi {
                 )
             });
 
-        // Mark drag start when the button is first pressed inside the ruler.
+        // Per-panel seeking flag stored in egui temp data, keyed by ruler position
+        let seek_key = egui::Id::new("ruler_seeking").with((
+            ruler_screen_rect.min.x as i32,
+            ruler_screen_rect.min.y as i32,
+        ));
+        let seeking: bool = ui.data(|data| data.get_temp(seek_key).unwrap_or(false));
+
+        // Mark drag start when the button is first pressed inside this panel's ruler
+        // * `ui` variable here is the local one for the panel
         if primary_pressed
             && let Some(origin) = press_origin
             && ruler_screen_rect.contains(origin)
         {
-            self.ui_state.timeline_state.ruler_seeking = true;
+            ui.data_mut(|data| data.insert_temp(seek_key, true));
         }
 
         if let Some(pos) = hover_pos
@@ -79,7 +87,7 @@ impl EditorUi {
             ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
         }
 
-        if self.ui_state.timeline_state.ruler_seeking {
+        if seeking {
             if primary_down {
                 // Visual-only update during drag
                 if let Some(pos) = hover_pos {
@@ -98,11 +106,11 @@ impl EditorUi {
                         self.errors.push(AudioError::CommandFailed(command));
                     }
                 }
-                self.ui_state.timeline_state.ruler_seeking = false;
+                ui.data_mut(|data| data.remove::<bool>(seek_key));
             }
 
             if !primary_down {
-                self.ui_state.timeline_state.ruler_seeking = false;
+                ui.data_mut(|data| data.remove::<bool>(seek_key));
             }
         }
 

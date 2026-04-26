@@ -35,9 +35,9 @@ pub(super) fn render_leaf(
 
         render_header(ui, view);
 
-        // Clip the content to the area below the header.
+        // Clip the content to the area below the header
         // Without this, painter-based content (node graph, piano roll) would draw
-        // over the header because the outer clip rect covers the full panel.
+        // over the header because the outer clip rect covers the full panel
         let content_rect = ui.available_rect_before_wrap();
         ui.scope_builder(UiBuilder::new().max_rect(content_rect), |ui| {
             ui.set_clip_rect(content_rect);

@@ -51,13 +51,14 @@ impl EditorUi {
             .map(|t| t.get_graph().get_edges().clone())
             .unwrap_or_default();
 
-        // Copy ghost edge before borrowing project_meta below
+        // Copy ghost/dragged edge before borrowing project_meta below
         let ghost_edge = self.ui_state.node_graph_state.ghost_edge;
+        let dragged_edge = self.ui_state.node_graph_state.dragged_edge;
 
         // Draw edges behind nodes
         if let Some(track_meta) = self.project_meta.get_track(&track_id) {
             let painter = ui.painter();
-            edge::draw_edges(ui, painter, &edges, &track_meta.graph, view_transform);
+            edge::draw_edges(ui, painter, &edges, &track_meta.graph, view_transform, dragged_edge);
             if let Some(ghost) = ghost_edge {
                 edge::draw_ghost_edge(ui, painter, &ghost, &track_meta.graph, view_transform);
             }
