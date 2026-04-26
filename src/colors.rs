@@ -112,8 +112,12 @@ pub(crate) fn node_port_output() -> Color32 {
     Color32::from_rgb(255, 160, 100)
 }
 
-pub(crate) fn node_edge() -> Color32 {
-    Color32::from_rgb(180, 180, 180)
+pub(crate) fn node_edge(dark_mode: bool) -> Color32 {
+    if dark_mode {
+        Color32::from_rgb(200, 200, 200)
+    } else {
+        Color32::from_rgb(80, 80, 80)
+    }
 }
 
 // --- TIMELINE / REGIONS ---
