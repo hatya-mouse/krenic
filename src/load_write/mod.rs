@@ -1,6 +1,7 @@
 mod audio_ctx_io;
 mod error;
 mod graph_io;
+mod init;
 mod load_proj_res;
 mod node_io;
 mod project_io;
@@ -9,7 +10,8 @@ mod tempo_map_io;
 mod track_io;
 mod traits;
 
-use crate::{kasl_node::KaslNode, load_write::error::LoadError, metadata::ProjectMeta};
+use crate::{load_write::error::LoadError, metadata::ProjectMeta};
+pub(crate) use init::init_kasl_nodes;
 pub(crate) use load_proj_res::LoadProjResult;
 pub(crate) use project_meta_io::{StoredProjMeta, StoredTrackMeta};
 pub(crate) use traits::{AsBytes, FromBytes};
@@ -119,20 +121,3 @@ pub(crate) fn load_project(path: &Path) -> Result<LoadProjResult, LoadError> {
     Ok(result)
 }
 
-/// Initialize all KaslNodes in the project with their search paths and project directory,
-/// then compile them so the blueprint (and port names) are ready before the first UI render.
-pub(crate) fn init_kasl_nodes(project: &mut Project, search_paths: &[String], project_dir: &Path) {
-    for track in project.tracks.values_mut() {
-        for node in track.get_graph_mut().get_node_map_mut().values_mut() {
-            if let Some(kasl_node) = node.as_any_mut().downcast_mut::<KaslNode>() {
-                kasl_node.set_search_paths(search_paths.to_vec());
-                kasl_node.set_project_dir(project_dir.to_path_buf());
-
-                // Compile the KASL code to initialize the blueprint and port names before the first UI render
-                if let Err(errors) = kasl_node.compile() {
-                    eprintln!("KaslNode compile failed on load: {:?}", errors);
-                }
-            }
-        }
-    }
-}

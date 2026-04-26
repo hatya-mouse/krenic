@@ -193,12 +193,8 @@ impl EditorUi {
         // Connect the node
         let graph_input_id = graph.get_input_id();
         let graph_output_id = graph.get_output_id();
-        graph
-            .connect(&graph_input_id, "notes", &node_id, "notes")
-            .unwrap();
-        graph
-            .connect(&node_id, "sample", &graph_output_id, "audio")
-            .unwrap();
+        graph.add_edge_unchecked((graph_input_id, 0, node_id, 0));
+        graph.add_edge_unchecked((node_id, 0, graph_output_id, 0));
 
         // Add the note track to the project
         let track_id = project.add_track(Box::new(note_track));

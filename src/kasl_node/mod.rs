@@ -25,6 +25,9 @@ pub struct KaslNode {
     input_types: Vec<TypeInfo>,
     output_types: Vec<TypeInfo>,
 
+    /// Cached buffer size to calculate the size of input and output for single buffer.
+    buffer_size: usize,
+
     states: Vec<*mut ()>,
     program: Option<*const u8>,
     is_first_process: bool,
@@ -117,7 +120,12 @@ impl KaslNode {
                 blueprint
                     .get_inputs()
                     .iter()
-                    .map(|item| TypeInfo::new(item.actual_size as usize, item.align as usize))
+                    .map(|item| {
+                        TypeInfo::new(
+                            (item.actual_size as usize) * self.buffer_size,
+                            item.align as usize,
+                        )
+                    })
                     .collect()
             })
             .unwrap_or_default();
@@ -128,7 +136,12 @@ impl KaslNode {
                 blueprint
                     .get_outputs()
                     .iter()
-                    .map(|item| TypeInfo::new(item.actual_size as usize, item.align as usize))
+                    .map(|item| {
+                        TypeInfo::new(
+                            (item.actual_size as usize) * self.buffer_size,
+                            item.align as usize,
+                        )
+                    })
                     .collect()
             })
             .unwrap_or_default();
@@ -188,7 +201,10 @@ impl Node for KaslNode {
         self.output_types.get(index)
     }
 
-    fn update(&mut self, _audio_ctx: &AudioContext) {}
+    fn update(&mut self, audio_ctx: &AudioContext) {
+        self.buffer_size = audio_ctx.buffer_size;
+        self.update_type_infos();
+    }
 
     fn prepare(&mut self) -> Result<(), Box<dyn NodeError>> {
         self.is_first_process = true;
@@ -245,6 +261,7 @@ impl Clone for KaslNode {
             project_dir: self.project_dir.clone(),
             input_types: self.input_types.clone(),
             output_types: self.output_types.clone(),
+            buffer_size: self.buffer_size,
             states: Vec::new(),
             program: None,
             is_first_process: false,
