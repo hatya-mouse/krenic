@@ -269,11 +269,12 @@ impl EditorUi {
         }
 
         if move_res.dragged() {
-            // Calculate the beats from the drag amount
             let delta_beats = Beats(
-                (move_res.drag_delta().x / self.ui_state.timeline_state.pixels_per_beat) as f64,
+                (move_res.drag_delta().x / self.ui_state.piano_roll_state.pixels_per_beat) as f64,
             );
+            let delta_pitch = -move_res.drag_delta().y / self.ui_state.piano_roll_state.note_height;
             let new_start = note.start + delta_beats;
+            let new_pitch = (note.pitch + delta_pitch).clamp(0.0, 127.0);
 
             self.ui_state.set_selected_note(*note_id);
 
@@ -284,16 +285,19 @@ impl EditorUi {
                 .and_then(|track| track.get_region_mut(region_id))
             {
                 region.set_start(note_id, new_start);
+                region.set_pitch(note_id, new_pitch);
             }
-        } else if move_res.drag_stopped()
-            && let Some(new_start) = self
+        } else if move_res.drag_stopped() {
+            let committed = self
                 .project
                 .get_track(track_id)
-                .and_then(|track| track.as_any().downcast_ref::<NoteTrack>())
-                .and_then(|track| track.get_region(region_id))
-                .and_then(|region| region.get_start(note_id))
-        {
-            self.set_note_start(track_id, region_id, note_id, new_start);
+                .and_then(|t| t.as_any().downcast_ref::<NoteTrack>())
+                .and_then(|t| t.get_region(region_id))
+                .and_then(|r| Some((r.get_start(note_id)?, r.get_pitch(note_id)?)));
+            if let Some((new_start, new_pitch)) = committed {
+                self.set_note_start(track_id, region_id, note_id, new_start);
+                self.set_note_pitch(track_id, region_id, note_id, new_pitch.round());
+            }
         }
     }
 }

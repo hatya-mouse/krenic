@@ -29,6 +29,24 @@ impl EditorUi {
         self.modified_project();
     }
 
+    pub(crate) fn set_note_pitch(
+        &mut self,
+        track_id: &TrackID,
+        region_id: &RegionID,
+        note_id: &NoteID,
+        new_pitch: f32,
+    ) {
+        if let Some(region) = self
+            .project
+            .get_track_mut(track_id)
+            .and_then(|track| track.as_any_mut().downcast_mut::<NoteTrack>())
+            .and_then(|track| track.get_region_mut(region_id))
+        {
+            region.set_pitch(note_id, new_pitch);
+        }
+        self.modified_project();
+    }
+
     pub(crate) fn set_note_duration(
         &mut self,
         track_id: &TrackID,
