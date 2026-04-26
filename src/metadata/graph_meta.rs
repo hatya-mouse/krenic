@@ -28,4 +28,8 @@ impl GraphMeta {
     pub fn set_node_meta(&mut self, node_id: NodeID, node_meta: NodeMeta) {
         self.nodes.insert(node_id, node_meta);
     }
+
+    pub fn remove_node(&mut self, node_id: &NodeID) {
+        self.nodes.remove(node_id);
+    }
 }

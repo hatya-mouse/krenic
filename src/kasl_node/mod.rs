@@ -3,7 +3,7 @@ mod error;
 pub use error::KaslNodeError;
 
 use kasl::{
-    core::{KaslCompiler, ast::scope_manager::IOBlueprint, error::ErrorRecord, run_buffer},
+    core::{KaslCompiler, ast::scope_manager::IOBlueprint, run_buffer},
     cranelift_backend::CraneliftBackend,
 };
 use knodiq_engine::{
@@ -54,7 +54,7 @@ impl KaslNode {
         self.project_dir = Some(dir);
     }
 
-    pub fn compile(&mut self) -> Result<(), Vec<ErrorRecord>> {
+    pub fn compile(&mut self) -> Result<(), KaslNodeError> {
         // De-allocate the allocated states
         for (ptr, state_item) in self
             .states
@@ -76,19 +76,34 @@ impl KaslNode {
         compiler.set_search_paths(self.search_paths.iter().map(PathBuf::from).collect());
 
         // Read source code from disk at compile time so changes are always picked up
-        let code = match (&self.project_dir, &self.file_path) {
-            (Some(dir), Some(rel)) => std::fs::read_to_string(dir.join(rel)).unwrap_or_default(),
-            _ => String::default(),
+        let (Some(project_dir), Some(file_path)) = (&self.project_dir, &self.file_path) else {
+            // If the file path is not set, return
+            return Ok(());
+        };
+
+        let code = match std::fs::read_to_string(project_dir.join(file_path)) {
+            Ok(code) => code,
+            Err(err) => return Err(KaslNodeError::FileRead(err)),
         };
 
         // Parse, build and compile the source codes
-        compiler.parse(&code).map_err(|e| vec![*e])?;
-        let (blueprint, _) = compiler.build()?;
-        let func = compiler.lower_buffer(&blueprint).map_err(|err| vec![err])?;
+        compiler
+            .parse(&code)
+            .map_err(|e| KaslNodeError::Compile(vec![*e]))?;
+        let (blueprint, _) = compiler
+            .build()
+            .map_err(|err| KaslNodeError::Compile(err))?;
+        let func = compiler
+            .lower_buffer(&blueprint)
+            .map_err(|e| KaslNodeError::Compile(vec![e]))?;
 
         // Compile the program to executable binary
         let mut backend = CraneliftBackend::default();
-        self.program = Some(backend.compile(func).map_err(|_| vec![])?);
+        self.program = Some(
+            backend
+                .compile(func)
+                .map_err(|err| KaslNodeError::Backend(err))?,
+        );
 
         // Allocate the state memory based of the blueprint
         for state_item in blueprint.get_states() {
@@ -214,7 +229,7 @@ impl Node for KaslNode {
             Ok(_) => (),
             Err(records) => eprintln!("KaslNode::prepare: compile FAILED: {:?}", records),
         }
-        result.map_err(|records| -> Box<dyn NodeError> { Box::new(KaslNodeError::new(records)) })
+        result.map_err(|error| -> Box<dyn NodeError> { Box::new(error) })
     }
 
     fn process(&mut self, inputs: &[*const u8], outputs: &[*mut u8], audio_ctx: &AudioContext) {

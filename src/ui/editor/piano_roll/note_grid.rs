@@ -218,7 +218,9 @@ impl EditorUi {
         resize_rect: egui::Rect,
     ) {
         // Check for the delete key input
-        if self.ui_state.piano_roll_state.selected_note == Some(*note_id) {
+        if self.ui_state.piano_roll_state.selected_note == Some(*note_id)
+            && ui.ui_contains_pointer()
+        {
             let delete = ui.input(|i| i.key_pressed(egui::Key::Delete));
             let backspace = ui.input(|i| i.key_pressed(egui::Key::Backspace));
 

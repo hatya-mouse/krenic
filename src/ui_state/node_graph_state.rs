@@ -6,8 +6,6 @@ pub struct NodeGraphState {
     pub ghost_edge: Option<((NodeID, usize), egui::Pos2)>,
     /// The node that should disappear when dragging an edge, to avoid visual confusion.
     pub dragged_edge: Option<(NodeID, usize, NodeID, usize)>,
-    /// Canvas-space position where the node graph context menu was opened.
-    pub node_graph_add_pos: Option<egui::Pos2>,
     /// Currently selected node ID.
     pub selected_node: Option<NodeID>,
     /// User pan, relative to the content area top-left.
@@ -20,7 +18,6 @@ impl Default for NodeGraphState {
         Self {
             ghost_edge: None,
             dragged_edge: None,
-            node_graph_add_pos: None,
             selected_node: None,
             // Start with a small margin so canvas (0, 0) is visible by default
             pan_offset: egui::vec2(50.0, 50.0),

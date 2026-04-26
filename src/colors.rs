@@ -1,4 +1,4 @@
-use eframe::egui::{Color32, Stroke};
+use eframe::egui::Color32;
 
 // --- FOREGROUND ---
 

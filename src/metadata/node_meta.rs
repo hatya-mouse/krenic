@@ -26,13 +26,13 @@ impl From<u8> for NodeType {
     }
 }
 
-impl NodeType {
-    pub fn to_string(&self) -> String {
+impl std::fmt::Display for NodeType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            NodeType::NoteInput => "Note Input".to_string(),
-            NodeType::AudioInput => "Audio Input".to_string(),
-            NodeType::AudioOutput => "Audio Output".to_string(),
-            NodeType::Kasl => "KASL".to_string(),
+            NodeType::NoteInput => write!(f, "Note Input"),
+            NodeType::AudioInput => write!(f, "Audio Input"),
+            NodeType::AudioOutput => write!(f, "Audio Output"),
+            NodeType::Kasl => write!(f, "KASL"),
         }
     }
 }

@@ -1,4 +1,5 @@
 mod edge;
+mod header;
 mod node;
 mod port;
 
@@ -25,6 +26,9 @@ use knodiq_engine::{graph::node_id::NodeID, mixer::TrackID};
 
 impl EditorUi {
     pub(in crate::ui) fn node_graph(&mut self, ui: &mut egui::Ui) {
+        // Draw the node graph header
+        self.draw_node_graph_header(ui);
+
         let content_rect = ui.available_rect_before_wrap();
 
         // Allocate the full canvas rect for background interaction.

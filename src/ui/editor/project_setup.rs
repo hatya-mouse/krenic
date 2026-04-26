@@ -1,5 +1,3 @@
-use std::path::PathBuf;
-
 use crate::{
     kasl_node::KaslNode,
     metadata::{GraphMeta, NodeMeta, NodeType, ProjectMeta, RegionMeta, TrackMeta},
@@ -7,7 +5,6 @@ use crate::{
     ui_state::dialog_state::TrackType,
 };
 use eframe::egui;
-use kasl::core::localization::format_error;
 use knodiq_engine::{
     data_types::{AudioContext, Beats},
     mixer::Project,
@@ -16,6 +13,7 @@ use knodiq_engine::{
         note_track::{Note, NoteRegion, NoteTrack},
     },
 };
+use std::path::PathBuf;
 
 impl EditorUi {
     pub(crate) fn setup_project(
@@ -169,13 +167,7 @@ impl EditorUi {
         match kasl_node.compile() {
             Ok(()) => (),
             Err(err) => {
-                eprintln!(
-                    "Failed to compile the kasl code: {}",
-                    err.iter()
-                        .map(|record| format_error(record, "en"))
-                        .collect::<Vec<String>>()
-                        .join(", ")
-                );
+                eprintln!("Failed to compile the kasl code: {}", err);
                 return;
             }
         };

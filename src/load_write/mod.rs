@@ -108,9 +108,9 @@ pub(crate) fn load_project(path: &Path) -> Result<LoadProjResult, LoadError> {
         .map_err(LoadError::IoError)?;
     file.read_exact(&mut patch_bytes)
         .map_err(LoadError::IoError)?;
-    let file_major_ver = u32::from_le_bytes(major_bytes);
-    let file_minor_ver = u32::from_le_bytes(minor_bytes);
-    let file_patch_ver = u32::from_le_bytes(patch_bytes);
+    // let file_major_ver = u32::from_le_bytes(major_bytes);
+    // let file_minor_ver = u32::from_le_bytes(minor_bytes);
+    // let file_patch_ver = u32::from_le_bytes(patch_bytes);
 
     // Read the rest of the file and parse the project
     let mut project_bytes = Vec::new();
@@ -120,4 +120,3 @@ pub(crate) fn load_project(path: &Path) -> Result<LoadProjResult, LoadError> {
 
     Ok(result)
 }
-
