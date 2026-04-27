@@ -1,5 +1,5 @@
 use crate::ui_state::panel_layout::{PanelNode, SplitDir};
-use crate::{colors, ui::EditorUi};
+use crate::{theme, ui::EditorUi};
 use eframe::egui::{self, CursorIcon, Rect};
 
 const DIVIDER_SIZE: f32 = 4.0;
@@ -64,9 +64,9 @@ fn render_divider(
     let resp = ui.allocate_rect(div_rect, egui::Sense::drag());
 
     let color = if resp.hovered() || resp.dragged() {
-        colors::separator_hovered()
+        theme::separator_hovered()
     } else {
-        colors::separator()
+        theme::separator()
     };
     ui.painter().rect_filled(div_rect, 0.0, color);
 
@@ -103,7 +103,7 @@ fn render_divider(
 
 fn draw_close_overlays(ui: &mut egui::Ui, dir: SplitDir, ratio: f32, total: Rect) {
     let (f_rect, _, s_rect) = split_rects(total, dir, ratio);
-    let close_color = colors::panel_collapse_overlay();
+    let close_color = theme::panel_collapse_overlay();
     if panel_size(dir, f_rect) < MIN_COLLAPSE_SIZE {
         ui.painter().rect_filled(f_rect, 0.0, close_color);
     }

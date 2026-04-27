@@ -1,6 +1,6 @@
 use crate::{
-    colors,
     components::dialog::dialog,
+    theme,
     ui::EditorUi,
     ui_state::dialog_state::{DialogState, TrackType},
 };
@@ -40,7 +40,7 @@ impl EditorUi {
                         self.add_track(
                             state.selected_track_type,
                             state.name.clone(),
-                            colors::default_track_color(),
+                            theme::default_track_color(),
                         );
                         close = true;
                     });

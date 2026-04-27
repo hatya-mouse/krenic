@@ -1,4 +1,4 @@
-use crate::{colors, components::icon_button::icon_button, ui::EditorUi};
+use crate::{components::icon_button::icon_button, theme, ui::EditorUi};
 use eframe::egui;
 use std::fmt::Display;
 
@@ -19,7 +19,7 @@ impl EditorUi {
         let mut node_to_add: Option<AddibleNodes> = None;
 
         let response = egui::Frame::new()
-            .fill(colors::tertiary_bg(ui.visuals().dark_mode))
+            .fill(theme::tertiary_bg(ui.visuals().dark_mode))
             .inner_margin(egui::Margin::symmetric(8, 4))
             .show(ui, |ui| {
                 ui.horizontal(|ui| {

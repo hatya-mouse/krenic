@@ -1,5 +1,5 @@
 use super::{HEADER_HEIGHT, NODE_PADDING, NODE_WIDTH, PORT_RADIUS, PORT_ROW_HEIGHT};
-use crate::colors;
+use crate::theme;
 use eframe::egui;
 
 /// Returns which port on the node contains `mouse_pos`, or `None`.
@@ -41,26 +41,26 @@ pub(super) fn draw_ports(
         // Input port on the left edge
         if let Some(name) = input_names.get(current_row) {
             let center = egui::pos2(node_rect.min.x, y);
-            painter.circle_filled(center, PORT_RADIUS, colors::node_port_input());
+            painter.circle_filled(center, PORT_RADIUS, theme::node_port_input());
             painter.text(
                 egui::pos2(center.x + PORT_RADIUS + 4.0, y),
                 egui::Align2::LEFT_CENTER,
                 name,
                 egui::FontId::default(),
-                colors::primary_fg(dark_mode),
+                theme::primary_fg(dark_mode),
             );
         }
 
         // Output port on the right edge
         if let Some(name) = output_names.get(current_row) {
             let center = egui::pos2(node_rect.max.x, y);
-            painter.circle_filled(center, PORT_RADIUS, colors::node_port_output());
+            painter.circle_filled(center, PORT_RADIUS, theme::node_port_output());
             painter.text(
                 egui::pos2(center.x - PORT_RADIUS - 4.0, y),
                 egui::Align2::RIGHT_CENTER,
                 name,
                 egui::FontId::default(),
-                colors::primary_fg(dark_mode),
+                theme::primary_fg(dark_mode),
             );
         }
     }

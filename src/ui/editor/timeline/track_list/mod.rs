@@ -1,8 +1,8 @@
 mod track_dialog;
 
 use crate::{
-    colors,
     components::icon_button::icon_button,
+    theme,
     ui::EditorUi,
     ui_state::dialog_state::{AddTrackState, DialogState, TrackType},
 };
@@ -11,7 +11,7 @@ use eframe::egui;
 impl EditorUi {
     pub(super) fn track_list_panel(&mut self, ui: &mut egui::Ui) {
         egui::Frame::new()
-            .fill(colors::primary_bg(ui.visuals().dark_mode))
+            .fill(theme::primary_bg(ui.visuals().dark_mode))
             .show(ui, |ui| {
                 for track_id in &self.project_meta.track_order {
                     if let Some(track_meta) = self.project_meta.tracks.get(track_id) {

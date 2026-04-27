@@ -1,4 +1,4 @@
-use crate::colors;
+use crate::theme;
 use eframe::egui;
 
 pub(crate) fn icon_button(ui: &mut egui::Ui, image: egui::Image) -> egui::Response {
@@ -7,7 +7,7 @@ pub(crate) fn icon_button(ui: &mut egui::Ui, image: egui::Image) -> egui::Respon
         egui::Button::image(
             image
                 .fit_to_exact_size(egui::vec2(24.0, 24.0))
-                .tint(colors::primary_fg(ui.visuals().dark_mode)),
+                .tint(theme::primary_fg(ui.visuals().dark_mode)),
         )
         .corner_radius(6),
     )

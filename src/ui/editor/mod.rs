@@ -1,3 +1,4 @@
+mod inspector;
 mod node_graph;
 mod panel;
 mod piano_roll;
@@ -6,7 +7,7 @@ mod project_setup;
 mod timeline;
 mod toolbar;
 
-use crate::{colors, metadata::ProjectMeta, ui_state::editor_state::EditorUiState};
+use crate::{metadata::ProjectMeta, theme, ui_state::editor_state::EditorUiState};
 use eframe::egui;
 use knodiq_engine::{
     audio_thread::{AudioError, AudioThread, AudioThreadHandle},
@@ -30,6 +31,8 @@ pub struct EditorUi {
     pub project_meta: ProjectMeta,
     /// UI states to store the current UI state.
     pub ui_state: EditorUiState,
+    /// Whether the editor is in the debug mode.
+    debug_mode: bool,
 }
 
 impl EditorUi {
@@ -49,6 +52,7 @@ impl EditorUi {
             errors: Vec::new(),
             project_meta,
             ui_state: EditorUiState::default(),
+            debug_mode: false,
         }
     }
 
@@ -58,7 +62,7 @@ impl EditorUi {
         egui::Panel::top("toolbar")
             .frame(
                 egui::Frame::new()
-                    .fill(colors::tertiary_bg(ui.visuals().dark_mode))
+                    .fill(theme::tertiary_bg(ui.visuals().dark_mode))
                     .inner_margin(egui::Margin::symmetric(12, 0)),
             )
             .exact_size(44.0)
@@ -69,7 +73,7 @@ impl EditorUi {
         egui::CentralPanel::default()
             .frame(
                 egui::Frame::new()
-                    .fill(colors::primary_bg(ui.visuals().dark_mode))
+                    .fill(theme::primary_bg(ui.visuals().dark_mode))
                     .inner_margin(0),
             )
             .show_inside(ui, |ui| {

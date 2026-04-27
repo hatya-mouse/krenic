@@ -1,7 +1,7 @@
 use super::{HEADER_HEIGHT, NODE_WIDTH, PORT_ROW_HEIGHT};
 use crate::{
-    colors,
     metadata::GraphMeta,
+    theme,
     ui::editor::node_graph::{EDGE_WIDTH, NODE_PADDING},
 };
 use eframe::egui;
@@ -16,7 +16,7 @@ pub(super) fn draw_edges(
     view_transform: egui::Vec2,
     dragged_edge: Option<(NodeID, usize, NodeID, usize)>,
 ) {
-    let stroke = egui::Stroke::new(EDGE_WIDTH, colors::node_edge(ui.visuals().dark_mode));
+    let stroke = egui::Stroke::new(EDGE_WIDTH, theme::node_edge(ui.visuals().dark_mode));
 
     for &(from_id, out_idx, to_id, in_idx) in edges {
         if dragged_edge == Some((from_id, out_idx, to_id, in_idx)) {
@@ -52,7 +52,7 @@ pub(super) fn draw_ghost_edge(
     let src = output_port_pos(src_meta.pos, *out_idx, view_transform);
     painter.line_segment(
         [src, *mouse_pos],
-        egui::Stroke::new(EDGE_WIDTH, colors::node_edge(ui.visuals().dark_mode)),
+        egui::Stroke::new(EDGE_WIDTH, theme::node_edge(ui.visuals().dark_mode)),
     );
 }
 

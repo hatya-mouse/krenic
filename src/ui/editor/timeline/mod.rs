@@ -1,7 +1,7 @@
 mod edit_panel;
 mod track_list;
 
-use crate::{colors, components::scrolled_panel::scrolled_panel, ui::EditorUi};
+use crate::{components::scrolled_panel::scrolled_panel, theme, ui::EditorUi};
 use eframe::egui;
 
 const RULER_HEIGHT: f32 = 20.0;
@@ -52,7 +52,7 @@ impl EditorUi {
         ui.painter().rect_filled(
             ruler_bg_rect,
             0.0,
-            colors::secondary_bg(ui.visuals().dark_mode),
+            theme::secondary_bg(ui.visuals().dark_mode),
         );
 
         // Screen rect where beat markers are drawn (right side, aligned with edit panel)
@@ -91,7 +91,7 @@ impl EditorUi {
         ui.painter().hline(
             ruler_bg_rect.x_range(),
             ruler_bg_rect.max.y,
-            egui::Stroke::new(1.0, colors::separator()),
+            egui::Stroke::new(1.0, theme::separator()),
         );
 
         // Add a divider and make it draggable
@@ -104,6 +104,6 @@ impl EditorUi {
             self.ui_state.timeline_state.track_list_width += divider_resp.drag_delta().x;
         }
         ui.painter()
-            .rect_filled(divider_rect, 0.0, colors::separator());
+            .rect_filled(divider_rect, 0.0, theme::separator());
     }
 }

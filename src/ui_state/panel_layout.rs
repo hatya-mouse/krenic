@@ -4,6 +4,7 @@ pub enum PanelView {
     Timeline,
     PianoRoll,
     NodeGraph,
+    Inspector,
 }
 
 impl PanelView {
@@ -12,6 +13,7 @@ impl PanelView {
             PanelView::Timeline => "Timeline",
             PanelView::PianoRoll => "Piano Roll",
             PanelView::NodeGraph => "Node Graph",
+            PanelView::Inspector => "Inspector",
         }
     }
 
@@ -20,6 +22,7 @@ impl PanelView {
             PanelView::Timeline,
             PanelView::PianoRoll,
             PanelView::NodeGraph,
+            PanelView::Inspector,
         ]
     }
 }

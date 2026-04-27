@@ -1,4 +1,4 @@
-use crate::{colors, ui::EditorUi, ui_state::dialog_state::TrackType};
+use crate::{theme, ui::EditorUi, ui_state::dialog_state::TrackType};
 use eframe::egui;
 use knodiq_engine::{data_types::Beats, mixer::TrackID, track::RegionID};
 
@@ -61,9 +61,9 @@ impl EditorUi {
 
             // Highlight the stroke if the region is selected
             let stroke = if self.ui_state.selected_region == Some((*track_id, region_id)) {
-                egui::Stroke::new(2.0, colors::region_selected())
+                egui::Stroke::new(2.0, theme::region_selected())
             } else {
-                egui::Stroke::new(1.0, colors::border(ui.visuals().dark_mode))
+                egui::Stroke::new(1.0, theme::border(ui.visuals().dark_mode))
             };
 
             painter.rect(
@@ -78,7 +78,7 @@ impl EditorUi {
                 egui::Align2::LEFT_TOP,
                 &region_meta.name,
                 egui::FontId::proportional(11.0),
-                colors::region_text(),
+                theme::region_text(),
             );
         }
     }

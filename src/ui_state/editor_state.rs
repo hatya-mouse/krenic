@@ -32,10 +32,15 @@ pub struct EditorUiState {
     /// An instant to track the last edited time for project updating.
     pub last_edit_time: Option<Instant>,
 
+    // --- SELECTION STATE ---
     /// An ID of the currently selected track.
     pub selected_track: Option<TrackID>,
     /// An ID of the currently selected region.
     pub selected_region: Option<(TrackID, RegionID)>,
+    /// An ID of the currently selected note.
+    pub selected_note: Option<NoteID>,
+    /// Currently selected node ID.
+    pub selected_node: Option<NodeID>,
 }
 
 impl EditorUiState {
@@ -44,16 +49,16 @@ impl EditorUiState {
         self.selected_track = Some(track_id);
         self.selected_region = Some((track_id, region_id));
         // Deselect the note
-        self.piano_roll_state.selected_note = None;
+        self.selected_note = None;
     }
 
     /// Set the selected note to the given one.
     pub fn set_selected_note(&mut self, note_id: NoteID) {
-        self.piano_roll_state.selected_note = Some(note_id)
+        self.selected_note = Some(note_id)
     }
 
     /// Set the selected node to the given one.
     pub fn set_selected_node(&mut self, node_id: NodeID) {
-        self.node_graph_state.selected_node = Some(node_id);
+        self.selected_node = Some(node_id);
     }
 }

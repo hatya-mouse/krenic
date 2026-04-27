@@ -1,6 +1,6 @@
 use super::{HEADER_HEIGHT, NODE_PADDING, NODE_WIDTH, PORT_RADIUS, PORT_ROW_HEIGHT};
 use crate::{
-    colors,
+    theme,
     ui::{
         EditorUi,
         editor::node_graph::port::{calc_port_y, draw_ports},
@@ -59,15 +59,15 @@ impl EditorUi {
         let painter = ui.painter();
 
         // Draw the node background
-        let node_stroke = if self.ui_state.node_graph_state.selected_node == Some(*node_id) {
-            egui::Stroke::new(2.0, colors::region_selected())
+        let node_stroke = if self.ui_state.selected_node == Some(*node_id) {
+            egui::Stroke::new(2.0, theme::region_selected())
         } else {
-            egui::Stroke::new(1.0, colors::border(dark_mode))
+            egui::Stroke::new(1.0, theme::border(dark_mode))
         };
         painter.rect(
             node_rect,
             egui::CornerRadius::same(6),
-            colors::secondary_bg(dark_mode),
+            theme::secondary_bg(dark_mode),
             node_stroke,
             egui::StrokeKind::Outside,
         );
@@ -81,11 +81,11 @@ impl EditorUi {
                 sw: 0,
                 se: 0,
             },
-            colors::tertiary_bg(dark_mode),
+            theme::tertiary_bg(dark_mode),
         );
         painter.line_segment(
             [header_rect.left_bottom(), header_rect.right_bottom()],
-            egui::Stroke::new(1.0, colors::border(dark_mode)),
+            egui::Stroke::new(1.0, theme::border(dark_mode)),
         );
 
         // Draw the node name in the header
@@ -94,7 +94,7 @@ impl EditorUi {
             egui::Align2::CENTER_CENTER,
             display_name.as_str(),
             egui::FontId::proportional(13.0),
-            colors::primary_fg(dark_mode),
+            theme::primary_fg(dark_mode),
         );
 
         // Draw the input/output ports
@@ -135,16 +135,14 @@ impl EditorUi {
 
         // Delete the node if delete or backspace key is pressed
         // Check for the delete key input
-        if self.ui_state.node_graph_state.selected_node == Some(*node_id)
-            && ui.ui_contains_pointer()
-        {
+        if self.ui_state.selected_node == Some(*node_id) && ui.ui_contains_pointer() {
             let delete = ui.input(|i| i.key_pressed(egui::Key::Delete));
             let backspace = ui.input(|i| i.key_pressed(egui::Key::Backspace));
 
             if delete || backspace {
                 // Remove the note from the region
                 self.remove_node(track_id, node_id);
-                self.ui_state.piano_roll_state.selected_note = None;
+                self.ui_state.selected_note = None;
             }
         }
     }

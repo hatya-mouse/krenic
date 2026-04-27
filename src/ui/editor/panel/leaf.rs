@@ -1,6 +1,6 @@
 use super::SplitAction;
 use crate::{
-    colors,
+    theme,
     ui::EditorUi,
     ui_state::panel_layout::{PanelView, SplitDir},
 };
@@ -51,15 +51,12 @@ pub(super) fn render_leaf(
         ui.painter().rect_stroke(
             rect,
             0.0,
-            egui::Stroke::new(2.0, colors::border(ui.visuals().dark_mode)),
+            egui::Stroke::new(2.0, theme::border(ui.visuals().dark_mode)),
             egui::StrokeKind::Inside,
         );
     } else {
-        ui.painter().rect_filled(
-            rect,
-            0.0,
-            colors::unfocused_panel_overlay(ui.visuals().dark_mode),
-        );
+        ui.painter()
+            .rect_filled(rect, 0.0, theme::unfocused_panel_overlay());
     }
 
     result.inner
@@ -67,7 +64,7 @@ pub(super) fn render_leaf(
 
 fn render_header(ui: &mut egui::Ui, view: &mut PanelView) {
     let response = egui::Frame::new()
-        .fill(colors::tertiary_bg(ui.visuals().dark_mode))
+        .fill(theme::tertiary_bg(ui.visuals().dark_mode))
         .inner_margin(egui::Margin::symmetric(8, 4))
         .show(ui, |ui| {
             ui.set_min_width(ui.available_width());
@@ -101,6 +98,7 @@ fn render_view_content(ui: &mut egui::Ui, view: &PanelView, editor: &mut EditorU
         PanelView::Timeline => editor.timeline(ui),
         PanelView::PianoRoll => editor.piano_roll(ui),
         PanelView::NodeGraph => editor.node_graph(ui),
+        PanelView::Inspector => editor.inspector(ui),
     }
 }
 
@@ -132,18 +130,18 @@ fn check_single_edge(ui: &mut egui::Ui, rect: Rect, edge: Edge) -> Option<SplitA
 
         // Draw edge highlight
         ui.painter()
-            .rect_filled(strip, 0.0, colors::panel_drag_highlight());
+            .rect_filled(strip, 0.0, theme::panel_drag_highlight());
 
         // Draw preview of the new panel
         let preview_size = new_accum.clamp(0.0, panel_extent(edge, rect) - MIN_NEW_PANEL);
         if preview_size > 0.0 {
             let preview = new_panel_rect(rect, edge, preview_size);
             ui.painter()
-                .rect_filled(preview, 0.0, colors::panel_hover_highlight());
+                .rect_filled(preview, 0.0, theme::panel_hover_highlight());
         }
     } else if resp.hovered() {
         ui.painter()
-            .rect_filled(strip, 0.0, colors::panel_hover_highlight());
+            .rect_filled(strip, 0.0, theme::panel_hover_highlight());
     }
 
     if resp.drag_stopped() {

@@ -1,4 +1,4 @@
-use crate::{colors, ui::EditorUi};
+use crate::{theme, ui::EditorUi};
 use eframe::egui;
 use knodiq_engine::{
     data_types::Beats,
@@ -98,10 +98,10 @@ impl EditorUi {
                 );
 
                 // Highlight the selected note
-                let stroke = if self.ui_state.piano_roll_state.selected_note == Some(note_id) {
-                    egui::Stroke::new(2.0, colors::region_selected())
+                let stroke = if self.ui_state.selected_note == Some(note_id) {
+                    egui::Stroke::new(2.0, theme::region_selected())
                 } else {
-                    egui::Stroke::new(1.0, colors::border(ui.visuals().dark_mode))
+                    egui::Stroke::new(1.0, theme::border(ui.visuals().dark_mode))
                 };
 
                 // Draw the note
@@ -133,7 +133,7 @@ impl EditorUi {
         offset: egui::Pos2,
         scroll_content_width: f32,
     ) {
-        let grid_color_note = colors::border(ui.visuals().dark_mode);
+        let grid_color_note = theme::border(ui.visuals().dark_mode);
         let grid_color_octave = ui.visuals().window_stroke().color;
 
         let note_height = self.ui_state.piano_roll_state.note_height;
@@ -218,16 +218,14 @@ impl EditorUi {
         resize_rect: egui::Rect,
     ) {
         // Check for the delete key input
-        if self.ui_state.piano_roll_state.selected_note == Some(*note_id)
-            && ui.ui_contains_pointer()
-        {
+        if self.ui_state.selected_note == Some(*note_id) && ui.ui_contains_pointer() {
             let delete = ui.input(|i| i.key_pressed(egui::Key::Delete));
             let backspace = ui.input(|i| i.key_pressed(egui::Key::Backspace));
 
             if delete || backspace {
                 // Remove the note from the region
                 self.remove_note(track_id, region_id, note_id);
-                self.ui_state.piano_roll_state.selected_note = None;
+                self.ui_state.selected_note = None;
             }
         }
 

@@ -1,5 +1,5 @@
 use crate::{
-    colors,
+    theme,
     ui::{EditorUi, SplashTransition, SplashUi},
 };
 use eframe::{self, egui};
@@ -35,7 +35,7 @@ impl eframe::App for KnodiqApp {
             egui::CentralPanel::default()
                 .frame(
                     egui::Frame::new()
-                        .fill(colors::primary_bg(ui.visuals().dark_mode))
+                        .fill(theme::primary_bg(ui.visuals().dark_mode))
                         .inner_margin(0),
                 )
                 .show_inside(ui, |ui| splash.ui(ui))

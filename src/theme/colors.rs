@@ -94,7 +94,7 @@ pub(crate) fn panel_collapse_overlay() -> Color32 {
 
 // --- PANEL HIGHLIGHTING --
 
-pub(crate) fn unfocused_panel_overlay(dark_mode: bool) -> Color32 {
+pub(crate) fn unfocused_panel_overlay() -> Color32 {
     Color32::from_rgba_unmultiplied(0, 0, 0, 30)
 }
 

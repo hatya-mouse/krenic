@@ -1,7 +1,7 @@
 mod note_grid;
 mod utils;
 
-use crate::{colors, ui::EditorUi, ui_state::dialog_state::TrackType};
+use crate::{theme, ui::EditorUi, ui_state::dialog_state::TrackType};
 use eframe::egui;
 
 impl EditorUi {
@@ -26,7 +26,7 @@ impl EditorUi {
         // Draw notes
         let grid_rect = egui::Rect::from_min_max(total_rect.min, total_rect.max);
         egui::Frame::new()
-            .fill(colors::secondary_bg(ui.visuals().dark_mode))
+            .fill(theme::secondary_bg(ui.visuals().dark_mode))
             .show(ui, |ui| {
                 self.note_grid(ui, grid_rect, track_id, region_id);
             });

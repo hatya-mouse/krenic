@@ -1,6 +1,6 @@
 mod track_row;
 
-use crate::{colors, ui::EditorUi};
+use crate::{theme, ui::EditorUi};
 use eframe::egui;
 use knodiq_engine::{
     audio_thread::{AudioCommand, AudioError},
@@ -11,7 +11,7 @@ use std::time::Duration;
 impl EditorUi {
     pub(crate) fn track_edit_panel(&mut self, ui: &mut egui::Ui, edit_rect: egui::Rect) {
         egui::Frame::new()
-            .fill(colors::tertiary_bg(ui.visuals().dark_mode))
+            .fill(theme::tertiary_bg(ui.visuals().dark_mode))
             .show(ui, |ui| {
                 // Draw the playhead
                 self.playhead(ui, edit_rect);
@@ -54,7 +54,7 @@ impl EditorUi {
                             max: available.min.x + available.width(),
                         },
                         y + track_height,
-                        egui::Stroke::new(1.0, colors::border(ui.visuals().dark_mode)),
+                        egui::Stroke::new(1.0, theme::border(ui.visuals().dark_mode)),
                     );
                 }
             });
@@ -159,8 +159,8 @@ impl EditorUi {
         let right_beat = ((ruler_screen_rect.max.x - available.min.x) / ppb).ceil() as i32;
         let first_label_beat = (left_beat / beats_per_label) * beats_per_label;
 
-        let tick_color = colors::ruler_tick(dark_mode);
-        let text_color = colors::ruler_label(dark_mode);
+        let tick_color = theme::ruler_tick(dark_mode);
+        let text_color = theme::ruler_label(dark_mode);
 
         // Major ticks and labels
         let mut beat = first_label_beat;
@@ -220,7 +220,7 @@ impl EditorUi {
                 min: available.min.y,
                 max: available.max.y,
             },
-            egui::Stroke::new(2.0, colors::primary_fg(ui.visuals().dark_mode)),
+            egui::Stroke::new(2.0, theme::primary_fg(ui.visuals().dark_mode)),
         );
 
         if self.is_playing {
