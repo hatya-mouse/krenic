@@ -55,6 +55,12 @@ impl KaslNode {
     }
 
     pub fn compile(&mut self) -> Result<(), KaslNodeError> {
+        // Drop the old backend and the program
+        self.blueprint.take();
+        self.backend.take();
+        self.program.take();
+        self.states.clear();
+
         // De-allocate the allocated states
         for (ptr, state_item) in self
             .states

@@ -40,6 +40,13 @@ impl EditorUi {
             self.ui_state.node_graph_state.pan_offset += bg_response.drag_delta();
         }
 
+        // Center on a requested canvas position (e.g. "jump to random node")
+        if let Some(target) = self.ui_state.node_graph_state.jump_to_pos.take() {
+            let half_size = content_rect.size() / 2.0;
+            self.ui_state.node_graph_state.pan_offset =
+                egui::vec2(half_size.x - target.x, half_size.y - target.y);
+        }
+
         // view_transform converts canvas-space positions to screen-space each frame.
         // Adding content_rect.min ensures nodes follow panel moves and resizes automatically.
         let view_transform = content_rect.min.to_vec2() + self.ui_state.node_graph_state.pan_offset;
