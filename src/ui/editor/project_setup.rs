@@ -13,7 +13,6 @@ use knodiq_engine::{
         note_track::{Note, NoteRegion, NoteTrack},
     },
 };
-use std::path::PathBuf;
 
 impl EditorUi {
     pub(crate) fn setup_project(
@@ -162,7 +161,7 @@ impl EditorUi {
         // Create a new kasl node pointing to the relative path
         let mut kasl_node = KaslNode::new();
         kasl_node.set_search_paths(project_meta.kasl_search_paths.clone());
-        kasl_node.set_file_path(PathBuf::from("kasl/main.kasl"));
+        kasl_node.set_file_path("kasl/main.kasl".to_string());
         kasl_node.set_project_dir(project_dir.to_path_buf());
         match kasl_node.compile() {
             Ok(()) => (),

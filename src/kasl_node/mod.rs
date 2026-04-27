@@ -19,7 +19,7 @@ pub struct KaslNode {
     blueprint: Option<IOBlueprint>,
     search_paths: Vec<String>,
     /// Relative path to the KASL source file within the project directory.
-    file_path: Option<PathBuf>,
+    file_path: Option<String>,
     project_dir: Option<PathBuf>,
 
     input_types: Vec<TypeInfo>,
@@ -42,11 +42,11 @@ impl KaslNode {
         self.search_paths = paths;
     }
 
-    pub fn set_file_path(&mut self, path: PathBuf) {
+    pub fn set_file_path(&mut self, path: String) {
         self.file_path = Some(path);
     }
 
-    pub fn get_file_path(&self) -> Option<&PathBuf> {
+    pub fn get_file_path(&self) -> Option<&String> {
         self.file_path.as_ref()
     }
 
