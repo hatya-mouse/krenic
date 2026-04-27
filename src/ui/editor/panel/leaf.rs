@@ -86,8 +86,14 @@ fn render_header(ui: &mut egui::Ui, view: &mut PanelView) {
     let stroke = ui.visuals().widgets.noninteractive.bg_stroke;
     let rect = response.response.rect;
 
-    ui.painter()
-        .line_segment([rect.left_bottom(), rect.right_bottom()], stroke);
+    // Adjust the y coordinate to align with the bottom edge of the header frame
+    ui.painter().line_segment(
+        [
+            rect.left_bottom() - egui::vec2(0.0, 0.5),
+            rect.right_bottom() - egui::vec2(0.0, 0.5),
+        ],
+        stroke,
+    );
 }
 
 fn render_view_content(ui: &mut egui::Ui, view: &PanelView, editor: &mut EditorUi) {
@@ -95,6 +101,7 @@ fn render_view_content(ui: &mut egui::Ui, view: &PanelView, editor: &mut EditorU
         PanelView::Timeline => editor.timeline(ui),
         PanelView::PianoRoll => editor.piano_roll(ui),
         PanelView::NodeGraph => editor.node_graph(ui),
+        PanelView::Inspector => editor.inspector(ui),
     }
 }
 

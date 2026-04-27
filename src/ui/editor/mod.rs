@@ -1,3 +1,4 @@
+mod inspector;
 mod node_graph;
 mod panel;
 mod piano_roll;

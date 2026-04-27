@@ -54,11 +54,6 @@ impl EditorUi {
             0.0,
             colors::secondary_bg(ui.visuals().dark_mode),
         );
-        ui.painter().hline(
-            ruler_bg_rect.x_range(),
-            ruler_bg_rect.max.y,
-            egui::Stroke::new(1.0, colors::separator()),
-        );
 
         // Screen rect where beat markers are drawn (right side, aligned with edit panel)
         let ruler_screen_rect = egui::Rect::from_min_max(
@@ -91,6 +86,13 @@ impl EditorUi {
                     self.track_edit_panel(ui, edit_rect);
                 });
         });
+
+        // Draw the horizontal separator line below the ruler
+        ui.painter().hline(
+            ruler_bg_rect.x_range(),
+            ruler_bg_rect.max.y,
+            egui::Stroke::new(1.0, colors::separator()),
+        );
 
         // Add a divider and make it draggable
         let divider_rect = egui::Rect::from_min_size(

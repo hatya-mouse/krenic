@@ -90,20 +90,14 @@ impl KaslNode {
         compiler
             .parse(&code)
             .map_err(|e| KaslNodeError::Compile(vec![*e]))?;
-        let (blueprint, _) = compiler
-            .build()
-            .map_err(|err| KaslNodeError::Compile(err))?;
+        let (blueprint, _) = compiler.build().map_err(KaslNodeError::Compile)?;
         let func = compiler
             .lower_buffer(&blueprint)
             .map_err(|e| KaslNodeError::Compile(vec![e]))?;
 
         // Compile the program to executable binary
         let mut backend = CraneliftBackend::default();
-        self.program = Some(
-            backend
-                .compile(func)
-                .map_err(|err| KaslNodeError::Backend(err))?,
-        );
+        self.program = Some(backend.compile(func).map_err(KaslNodeError::Backend)?);
 
         // Allocate the state memory based of the blueprint
         for state_item in blueprint.get_states() {
