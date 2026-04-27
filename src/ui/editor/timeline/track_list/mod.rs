@@ -1,7 +1,7 @@
 mod track_dialog;
 
 use crate::{
-    components::icon_button::icon_button,
+    components::icon_button::toolbar_icon_button,
     theme,
     ui::EditorUi,
     ui_state::dialog_state::{AddTrackState, DialogState, TrackType},
@@ -29,7 +29,7 @@ impl EditorUi {
                     }
                 }
 
-                if icon_button(
+                if toolbar_icon_button(
                     ui,
                     egui::Image::new(egui::include_image!("../../../../../assets/icons/plus.svg")),
                 )

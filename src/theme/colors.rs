@@ -126,7 +126,7 @@ pub(crate) fn region_selected(dark_mode: bool) -> Color32 {
     if dark_mode {
         Color32::WHITE
     } else {
-        Color32::from_rgb(210, 210, 210)
+        Color32::from_rgb(160, 160, 160)
     }
 }
 

@@ -1,5 +1,5 @@
 use crate::{
-    components::icon_button::icon_button,
+    components::icon_button::toolbar_icon_button,
     load_write::{init_kasl_nodes, load_project_from_dir, save_project_to_dir},
     metadata::ProjectMeta,
     ui::{EditorUi, editor::toolbar::toolbar_group::toolbar_group},
@@ -10,7 +10,7 @@ use knodiq_engine::audio_thread::{AudioCommand, AudioError};
 impl EditorUi {
     pub(super) fn file_control(&mut self, ui: &mut egui::Ui) {
         toolbar_group(ui, |ui| {
-            if icon_button(
+            if toolbar_icon_button(
                 ui,
                 egui::Image::new(egui::include_image!("../../../../assets/icons/save.svg")),
             )
@@ -28,7 +28,7 @@ impl EditorUi {
                 }
             }
 
-            if icon_button(
+            if toolbar_icon_button(
                 ui,
                 egui::Image::new(egui::include_image!("../../../../assets/icons/open.svg")),
             )
@@ -69,7 +69,7 @@ impl EditorUi {
                 }
             }
 
-            if icon_button(
+            if toolbar_icon_button(
                 ui,
                 egui::Image::new(egui::include_image!(
                     "../../../../assets/icons/waveform.svg"

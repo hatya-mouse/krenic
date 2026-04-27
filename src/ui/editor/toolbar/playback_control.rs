@@ -1,5 +1,5 @@
 use crate::{
-    components::icon_button::icon_button, ui::EditorUi,
+    components::icon_button::toolbar_icon_button, ui::EditorUi,
     ui::editor::toolbar::toolbar_group::toolbar_group,
 };
 use eframe::egui;
@@ -8,7 +8,7 @@ use knodiq_engine::audio_thread::{AudioCommand, AudioError};
 impl EditorUi {
     pub(super) fn playback_control(&mut self, ui: &mut egui::Ui) {
         toolbar_group(ui, |ui| {
-            if icon_button(
+            if toolbar_icon_button(
                 ui,
                 egui::Image::new(egui::include_image!(
                     "../../../../assets/icons/backward.png"
@@ -22,7 +22,7 @@ impl EditorUi {
                 }
             }
 
-            if icon_button(
+            if toolbar_icon_button(
                 ui,
                 egui::Image::new(egui::include_image!("../../../../assets/icons/play.png")),
             )
@@ -37,7 +37,7 @@ impl EditorUi {
                 }
             }
 
-            if icon_button(
+            if toolbar_icon_button(
                 ui,
                 egui::Image::new(egui::include_image!("../../../../assets/icons/pause.png")),
             )
@@ -52,7 +52,7 @@ impl EditorUi {
                 }
             }
 
-            if icon_button(
+            if toolbar_icon_button(
                 ui,
                 egui::Image::new(egui::include_image!("../../../../assets/icons/forward.png")),
             )

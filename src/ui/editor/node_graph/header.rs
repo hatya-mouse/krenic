@@ -1,4 +1,4 @@
-use crate::{components::icon_button::icon_button, theme, ui::EditorUi};
+use crate::{components::icon_button::small_icon_button, theme, ui::EditorUi};
 use eframe::egui;
 use std::fmt::Display;
 
@@ -22,8 +22,18 @@ impl EditorUi {
             .fill(theme::tertiary_bg(ui.visuals().dark_mode))
             .inner_margin(egui::Margin::symmetric(8, 4))
             .show(ui, |ui| {
+                ui.set_min_width(ui.available_width());
+
+                ui.spacing_mut().button_padding = egui::vec2(0.0, 0.0);
+                ui.visuals_mut().widgets.inactive.weak_bg_fill = egui::Color32::TRANSPARENT;
+                ui.visuals_mut().widgets.inactive.bg_stroke = egui::Stroke::NONE;
+                ui.visuals_mut().widgets.hovered.weak_bg_fill = theme::toolbar_button_hovered();
+                ui.visuals_mut().widgets.hovered.bg_stroke = egui::Stroke::NONE;
+                ui.visuals_mut().widgets.active.weak_bg_fill = theme::toolbar_button_active();
+                ui.visuals_mut().widgets.active.bg_stroke = egui::Stroke::NONE;
+
                 ui.horizontal(|ui| {
-                    let btn = icon_button(
+                    let btn = small_icon_button(
                         ui,
                         egui::Image::new(egui::include_image!("../../../../assets/icons/plus.svg")),
                     );
