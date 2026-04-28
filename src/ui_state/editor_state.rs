@@ -71,4 +71,12 @@ impl EditorUiState {
     pub fn set_selected_node(&mut self, node_id: NodeID) {
         self.selected_node = Some(node_id);
     }
+
+    /// Deselects the currently selected track, region, note, and node.
+    pub fn deselect_all(&mut self) {
+        self.selected_track = None;
+        self.selected_region = None;
+        self.selected_note = None;
+        self.selected_node = None;
+    }
 }

@@ -24,6 +24,10 @@ impl EditorUi {
             region.remove_note(note_id);
         }
 
+        if self.ui_state.selected_note == Some(*note_id) {
+            self.ui_state.deselect_all();
+        }
+
         self.modified_project();
     }
 }

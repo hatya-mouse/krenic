@@ -22,6 +22,10 @@ impl EditorUi {
         track.get_graph_mut().remove_node(node_id);
         track_meta.graph.remove_node(node_id);
 
+        if self.ui_state.selected_node == Some(*node_id) {
+            self.ui_state.deselect_all();
+        }
+
         // Update the project
         self.modified_project();
     }

@@ -9,6 +9,11 @@ impl EditorUi {
         if let Some(track_meta) = self.project_meta.get_track_mut(track_id) {
             track_meta.remove_region(region_id);
         }
+
+        if self.ui_state.selected_region == Some((*track_id, *region_id)) {
+            self.ui_state.deselect_all();
+        }
+
         self.modified_project();
     }
 }
