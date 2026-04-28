@@ -17,7 +17,7 @@ impl EditorUi {
         track_id: &TrackID,
         node_id: &NodeID,
     ) {
-        inspector_section(ui, "Node".to_string(), |ui| {
+        inspector_section(ui, ("node_section", track_id, node_id), "Node", |ui| {
             let Some(track_meta) = self.project_meta.get_track_mut(track_id) else {
                 return;
             };

@@ -23,26 +23,31 @@ impl EditorUi {
             return;
         };
 
-        inspector_section(ui, "Region".to_string(), |ui| {
-            inspector_item(ui, "Name", |ui| {
-                text_input(ui, &mut region_meta.name);
-            });
+        inspector_section(
+            ui,
+            ("region_section", track_id, region_id),
+            "Region",
+            |ui| {
+                inspector_item(ui, "Name", |ui| {
+                    text_input(ui, &mut region_meta.name);
+                });
 
-            if self.debug_mode {
-                ui.separator();
-                inspector_item(ui, "Track ID", |ui| {
-                    ui.label(
-                        egui::RichText::new(format!("{}", track_id.0))
-                            .size(theme::normal_font_size()),
-                    );
-                });
-                inspector_item(ui, "Region ID", |ui| {
-                    ui.label(
-                        egui::RichText::new(format!("{}", region_id.0))
-                            .size(theme::normal_font_size()),
-                    );
-                });
-            }
-        });
+                if self.debug_mode {
+                    ui.separator();
+                    inspector_item(ui, "Track ID", |ui| {
+                        ui.label(
+                            egui::RichText::new(format!("{}", track_id.0))
+                                .size(theme::normal_font_size()),
+                        );
+                    });
+                    inspector_item(ui, "Region ID", |ui| {
+                        ui.label(
+                            egui::RichText::new(format!("{}", region_id.0))
+                                .size(theme::normal_font_size()),
+                        );
+                    });
+                }
+            },
+        );
     }
 }

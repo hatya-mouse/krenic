@@ -11,7 +11,7 @@ use knodiq_engine::mixer::TrackID;
 
 impl EditorUi {
     pub(super) fn track_inspector(&mut self, ui: &mut egui::Ui, track_id: &TrackID) {
-        inspector_section(ui, "Track".to_string(), |ui| {
+        inspector_section(ui, ("track_section", track_id), "Track", |ui| {
             let Some(track_meta) = self.project_meta.get_track_mut(track_id) else {
                 return;
             };

@@ -28,9 +28,9 @@ impl EditorUi {
                 ui.spacing_mut().button_padding = egui::vec2(0.0, 0.0);
                 ui.visuals_mut().widgets.inactive.weak_bg_fill = egui::Color32::TRANSPARENT;
                 ui.visuals_mut().widgets.inactive.bg_stroke = egui::Stroke::NONE;
-                ui.visuals_mut().widgets.hovered.weak_bg_fill = theme::toolbar_button_hovered();
+                ui.visuals_mut().widgets.hovered.weak_bg_fill = theme::icon_button_hovered();
                 ui.visuals_mut().widgets.hovered.bg_stroke = egui::Stroke::NONE;
-                ui.visuals_mut().widgets.active.weak_bg_fill = theme::toolbar_button_active();
+                ui.visuals_mut().widgets.active.weak_bg_fill = theme::icon_button_active();
                 ui.visuals_mut().widgets.active.bg_stroke = egui::Stroke::NONE;
 
                 ui.horizontal(|ui| {

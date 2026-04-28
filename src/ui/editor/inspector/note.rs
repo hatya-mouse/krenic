@@ -33,28 +33,33 @@ impl EditorUi {
         //     return;
         // };
 
-        inspector_section(ui, "Note".to_string(), |ui| {
-            if self.debug_mode {
-                ui.separator();
-                inspector_item(ui, "Track ID", |ui| {
-                    ui.label(
-                        egui::RichText::new(format!("{}", track_id.0))
-                            .size(theme::normal_font_size()),
-                    );
-                });
-                inspector_item(ui, "Region ID", |ui| {
-                    ui.label(
-                        egui::RichText::new(format!("{}", region_id.0))
-                            .size(theme::normal_font_size()),
-                    );
-                });
-                inspector_item(ui, "Note ID", |ui| {
-                    ui.label(
-                        egui::RichText::new(format!("{}", note_id.0))
-                            .size(theme::normal_font_size()),
-                    );
-                });
-            }
-        });
+        inspector_section(
+            ui,
+            ("note_section", track_id, region_id, note_id),
+            "Note",
+            |ui| {
+                if self.debug_mode {
+                    ui.separator();
+                    inspector_item(ui, "Track ID", |ui| {
+                        ui.label(
+                            egui::RichText::new(format!("{}", track_id.0))
+                                .size(theme::normal_font_size()),
+                        );
+                    });
+                    inspector_item(ui, "Region ID", |ui| {
+                        ui.label(
+                            egui::RichText::new(format!("{}", region_id.0))
+                                .size(theme::normal_font_size()),
+                        );
+                    });
+                    inspector_item(ui, "Note ID", |ui| {
+                        ui.label(
+                            egui::RichText::new(format!("{}", note_id.0))
+                                .size(theme::normal_font_size()),
+                        );
+                    });
+                }
+            },
+        );
     }
 }
