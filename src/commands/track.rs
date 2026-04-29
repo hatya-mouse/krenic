@@ -39,9 +39,7 @@ impl EditorUi {
         // Remove the track metadata
         self.project_meta.remove_track(track_id);
 
-        if self.ui_state.selected_track == Some(*track_id) {
-            self.ui_state.deselect_all();
-        };
+        self.ui_state.deselect_all();
 
         // Update the project on the audio thread
         self.modified_project();

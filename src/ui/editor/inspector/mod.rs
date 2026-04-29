@@ -3,10 +3,9 @@ mod note;
 mod region;
 mod track;
 
-use std::hash::Hash;
-
-use crate::{components::icon_button::small_icon_button, fonts::RichTextExt, theme, ui::EditorUi};
+use crate::{fonts::RichTextExt, theme, ui::EditorUi};
 use eframe::egui;
+use std::hash::Hash;
 
 const HEADER_HEIGHT: f32 = 32.0;
 
@@ -71,7 +70,11 @@ fn inspector_section(
                 } else {
                     egui::include_image!("../../../../assets/icons/tri_right.svg")
                 };
-                ui.add(egui::Image::new(collapse_icon).max_size(egui::vec2(20.0, 20.0)));
+                ui.add(
+                    egui::Image::new(collapse_icon)
+                        .tint(theme::primary_fg(ui.visuals().dark_mode))
+                        .max_size(egui::vec2(20.0, 20.0)),
+                );
 
                 ui.add(
                     egui::Label::new(

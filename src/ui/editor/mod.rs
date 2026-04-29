@@ -1,3 +1,4 @@
+mod error_list;
 mod inspector;
 mod node_graph;
 mod panel;

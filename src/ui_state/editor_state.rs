@@ -79,4 +79,20 @@ impl EditorUiState {
         self.selected_note = None;
         self.selected_node = None;
     }
+
+    /// Deselects the currently selected region and note.
+    pub fn deselect_region(&mut self) {
+        self.selected_region = None;
+        self.selected_note = None;
+    }
+
+    /// Deselects the currently selected note.
+    pub fn deselect_note(&mut self) {
+        self.selected_note = None;
+    }
+
+    /// Deselcts the currently selected node.
+    pub fn deselect_node(&mut self) {
+        self.selected_node = None;
+    }
 }

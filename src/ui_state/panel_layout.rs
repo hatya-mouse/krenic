@@ -7,6 +7,7 @@ pub enum PanelView {
     PianoRoll,
     NodeGraph,
     Inspector,
+    ErrorList,
 }
 
 impl Display for PanelView {
@@ -16,6 +17,7 @@ impl Display for PanelView {
             PanelView::PianoRoll => write!(f, "Piano Roll"),
             PanelView::NodeGraph => write!(f, "Node Graph"),
             PanelView::Inspector => write!(f, "Inspector"),
+            PanelView::ErrorList => write!(f, "Error List"),
         }
     }
 }
@@ -27,6 +29,7 @@ impl PanelView {
             PanelView::PianoRoll,
             PanelView::NodeGraph,
             PanelView::Inspector,
+            PanelView::ErrorList,
         ]
     }
 }

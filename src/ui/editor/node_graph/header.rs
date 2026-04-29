@@ -57,10 +57,14 @@ impl EditorUi {
                 });
             });
 
-        let stroke = ui.visuals().widgets.noninteractive.bg_stroke;
         let rect = response.response.rect;
-        ui.painter()
-            .line_segment([rect.left_bottom(), rect.right_bottom()], stroke);
+        ui.painter().line_segment(
+            [
+                rect.left_bottom() - egui::vec2(0.0, 0.5),
+                rect.right_bottom() - egui::vec2(0.0, 0.5),
+            ],
+            egui::Stroke::new(0.5, theme::border(ui.visuals().dark_mode)),
+        );
 
         // Jump to a random node's position
         if jump_to_random
