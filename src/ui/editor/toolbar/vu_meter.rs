@@ -1,6 +1,5 @@
 use crate::{components::vu_meter::vu_meter, ui::EditorUi};
 use eframe::egui;
-use ringbuf::traits::Consumer;
 
 impl EditorUi {
     pub(super) fn vu_meter(&mut self, ui: &mut egui::Ui) {

@@ -15,7 +15,7 @@ use knodiq_engine::{
     mixer::Project,
     thread::{AudioError, AudioThread, AudioThreadHandle},
 };
-use std::path::PathBuf;
+use std::{path::PathBuf, time::Duration};
 
 pub struct EditorUi {
     /// The directory where the project is saved.
@@ -88,6 +88,9 @@ impl EditorUi {
 
         self.track_dialog(ui);
         self.update_project();
+
+        // Request a repaint to update the playhead and the VU meter.
+        ui.ctx().request_repaint_after(Duration::from_millis(16));
 
         while let Ok(Err(err)) = self.thread_handle.result_rx.try_recv() {
             eprintln!("Audio thread error occurred");

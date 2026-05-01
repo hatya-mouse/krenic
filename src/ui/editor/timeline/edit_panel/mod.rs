@@ -6,7 +6,6 @@ use knodiq_engine::{
     data_types::Beats,
     thread::{AudioCommand, AudioError},
 };
-use std::time::Duration;
 
 impl EditorUi {
     pub(crate) fn track_edit_panel(&mut self, ui: &mut egui::Ui, edit_rect: egui::Rect) {
@@ -227,9 +226,5 @@ impl EditorUi {
             },
             egui::Stroke::new(2.0, theme::primary_fg(ui.visuals().dark_mode)),
         );
-
-        if self.is_playing {
-            ui.ctx().request_repaint_after(Duration::from_millis(16));
-        }
     }
 }
