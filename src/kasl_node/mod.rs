@@ -304,7 +304,7 @@ impl Clone for KaslNode {
 impl Drop for KaslNode {
     fn drop(&mut self) {
         // De-allocate the allocated states
-        deallocate_states(&mut self);
+        self.deallocate_states();
     }
 }
 
