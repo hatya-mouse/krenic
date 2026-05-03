@@ -55,27 +55,12 @@ impl KaslNode {
     }
 
     pub fn compile(&mut self) -> Result<(), KaslNodeError> {
-        // Drop the old backend and the program
+        // Clean up the old states
         self.deallocate_states();
+        // Drop the old backend and the program
         self.blueprint.take();
         self.backend.take();
         self.program.take();
-        self.states.clear();
-
-        // De-allocate the allocated states
-        for (ptr, state_item) in self
-            .states
-            .iter()
-            .zip(self.blueprint.iter().flat_map(|b| b.get_states()))
-        {
-            let layout = std::alloc::Layout::from_size_align(
-                state_item.actual_size as usize,
-                state_item.align as usize,
-            )
-            .unwrap();
-            unsafe { std::alloc::dealloc(*ptr as *mut u8, layout) };
-        }
-        self.states.clear();
 
         // Create a compiler
         let mut compiler = KaslCompiler::default();
@@ -106,16 +91,7 @@ impl KaslNode {
         let mut backend = CraneliftBackend::default();
         self.program = Some(backend.compile(func).map_err(KaslNodeError::Backend)?);
 
-        // Allocate the state memory based of the blueprint
-        for state_item in blueprint.get_states() {
-            let layout = std::alloc::Layout::from_size_align(
-                state_item.actual_size as usize,
-                state_item.align as usize,
-            )
-            .unwrap();
-            let ptr = unsafe { std::alloc::alloc_zeroed(layout) as *mut () };
-            self.states.push(ptr);
-        }
+        self.allocate_states(&blueprint);
 
         // Set the blueprint
         self.blueprint = Some(blueprint);
@@ -161,6 +137,19 @@ impl KaslNode {
                     .collect()
             })
             .unwrap_or_default();
+    }
+
+    fn allocate_states(&mut self, blueprint: &IOBlueprint) {
+        // Allocate the state memory based of the blueprint
+        for state_item in blueprint.get_states() {
+            let layout = std::alloc::Layout::from_size_align(
+                state_item.actual_size as usize,
+                state_item.align as usize,
+            )
+            .unwrap();
+            let ptr = unsafe { std::alloc::alloc_zeroed(layout) as *mut () };
+            self.states.push(ptr);
+        }
     }
 
     fn deallocate_states(&mut self) {
