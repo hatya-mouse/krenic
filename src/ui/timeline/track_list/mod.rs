@@ -1,14 +1,14 @@
 mod track_dialog;
 
 use crate::{
-    app::KnodiqApp,
+    app::KreniqApp,
     colors,
     components::icon_button::icon_button,
     ui_state::dialog_state::{AddTrackState, DialogState, TrackType},
 };
 use eframe::egui;
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(super) fn track_list_panel(&mut self, ui: &mut egui::Ui) {
         egui::Frame::new()
             .fill(colors::primary_bg(ui.visuals().dark_mode))

@@ -2,7 +2,7 @@ mod audio_track;
 mod note_track;
 
 use crate::load_write::AsBytes;
-use knodiq_engine::track::{Track, audio_track::AudioTrack, note_track::NoteTrack};
+use kreniq_engine::track::{Track, audio_track::AudioTrack, note_track::NoteTrack};
 
 impl AsBytes for dyn Track {
     fn as_bytes(&self, bytes: &mut Vec<u8>) {

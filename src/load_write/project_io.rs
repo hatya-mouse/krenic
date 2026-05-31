@@ -1,15 +1,15 @@
 use crate::load_write::AsBytes;
-use knodiq_engine::mixer::Project;
+use kreniq_engine::mixer::Project;
 use std::{fs::File, io::Write, path::Path};
 
 pub(crate) fn save_project(path: &Path, project: &Project) -> std::io::Result<()> {
     let mut file = File::create(path)?;
 
     // Write the project data to the file
-    // First write "KNODIQ" to check if the file is a Knodiq Project file
+    // First write "KNODIQ" to check if the file is a Kreniq Project file
     file.write_all("KNODIQ".as_bytes())?;
 
-    // Then write the version of Knodiq
+    // Then write the version of Kreniq
     let major_ver: u32 = env!("CARGO_PKG_VERSION_MAJOR").parse().unwrap();
     let minor_ver: u32 = env!("CARGO_PKG_VERSION_MINOR").parse().unwrap();
     let patch_ver: u32 = env!("CARGO_PKG_VERSION_PATCH").parse().unwrap();

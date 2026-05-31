@@ -1,5 +1,5 @@
-use crate::app::KnodiqApp;
-use knodiq_engine::{
+use crate::app::KreniqApp;
+use kreniq_engine::{
     mixer::TrackID,
     track::{
         RegionID,
@@ -7,7 +7,7 @@ use knodiq_engine::{
     },
 };
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(crate) fn add_note(&mut self, track_id: &TrackID, region_id: &RegionID, note: Note) {
         // Set the note's start time
         if let Some(region) = self

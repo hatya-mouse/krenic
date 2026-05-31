@@ -1,5 +1,5 @@
 use crate::load_write::{AsBytes, FromBytes};
-use knodiq_engine::{
+use kreniq_engine::{
     graph::{Graph, node_id::NodeID},
     node::Node,
 };

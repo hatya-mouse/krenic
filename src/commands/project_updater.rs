@@ -1,8 +1,8 @@
-use crate::app::KnodiqApp;
-use knodiq_engine::audio_thread::AudioCommand;
+use crate::app::KreniqApp;
+use kreniq_engine::audio_thread::AudioCommand;
 use std::time::Instant;
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(crate) fn modified_project(&mut self) {
         println!("Modified project");
         self.ui_state.last_edit_time = Some(Instant::now());

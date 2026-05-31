@@ -3,10 +3,10 @@ pub(crate) mod playhead_calculation;
 pub(crate) mod timeline;
 pub(crate) mod toolbar;
 
-use crate::{app::KnodiqApp, colors};
+use crate::{app::KreniqApp, colors};
 use eframe::{App, egui};
 
-impl App for KnodiqApp {
+impl App for KreniqApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         self.calculate_playhead();
 

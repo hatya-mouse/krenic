@@ -2170,7 +2170,7 @@ version = "0.1.2"
 source = "git+https://github.com/hatya-mouse/kasl_node#44c6e42bb84f334be63d2fe22ec4fc1557c01f5a"
 dependencies = [
  "kasl",
- "knodiq_engine",
+ "kreniq_engine",
 ]
 
 [[package]]
@@ -2191,7 +2191,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e2db585e1d738fc771bf08a151420d3ed193d9d895a36df7f6f8a9456b911ddc"
 
 [[package]]
-name = "knodiq"
+name = "kreniq"
 version = "0.1.0"
 dependencies = [
  "dirs",
@@ -2199,14 +2199,14 @@ dependencies = [
  "egui_extras",
  "kasl",
  "kasl_node",
- "knodiq_engine",
+ "kreniq_engine",
  "tempfile",
 ]
 
 [[package]]
-name = "knodiq_engine"
+name = "kreniq_engine"
 version = "0.3.15"
-source = "git+https://github.com/hatya-mouse/knodiq_engine#37bae6ee4857d9bb0268c21fbc36ab43f7e82d45"
+source = "git+https://github.com/hatya-mouse/kreniq_engine#37bae6ee4857d9bb0268c21fbc36ab43f7e82d45"
 dependencies = [
  "cpal",
  "ringbuf",

@@ -1,10 +1,10 @@
 mod note_grid;
 mod utils;
 
-use crate::{app::KnodiqApp, colors, ui_state::dialog_state::TrackType};
+use crate::{app::KreniqApp, colors, ui_state::dialog_state::TrackType};
 use eframe::egui;
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(super) fn piano_roll(&mut self, ui: &mut egui::Ui) {
         let Some((track_id, region_id)) = self.ui_state.selected_region else {
             ui.label("Select a note region to edit");

@@ -1,8 +1,8 @@
-use crate::app::KnodiqApp;
+use crate::app::KreniqApp;
 use eframe::egui;
-use knodiq_engine::data_types::Beats;
+use kreniq_engine::data_types::Beats;
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(in crate::ui::piano_roll) fn calc_note_position(
         &self,
         click_pos: egui::Pos2,

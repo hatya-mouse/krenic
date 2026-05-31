@@ -1,11 +1,11 @@
 use crate::{
-    app::KnodiqApp,
+    app::KreniqApp,
     components::dialog::dialog,
     ui_state::dialog_state::{DialogState, TrackType},
 };
 use eframe::egui;
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(crate) fn track_dialog(&mut self, ui: &egui::Ui) {
         let DialogState::AddTrack(mut state) =
             std::mem::replace(&mut self.ui_state.dialog_state, DialogState::None)

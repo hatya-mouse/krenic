@@ -1,9 +1,9 @@
 use crate::{
-    app::KnodiqApp,
+    app::KreniqApp,
     colors::{self, region_stroke},
 };
 use eframe::egui;
-use knodiq_engine::{
+use kreniq_engine::{
     data_types::Beats,
     mixer::TrackID,
     track::{
@@ -14,7 +14,7 @@ use knodiq_engine::{
 
 const NOTE_GRID_FACTOR: f32 = 6.0;
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(super) fn note_grid(
         &mut self,
         ui: &mut egui::Ui,

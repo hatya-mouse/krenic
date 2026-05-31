@@ -1,4 +1,4 @@
-use knodiq_engine::data_types::Beats;
+use kreniq_engine::data_types::Beats;
 
 pub(crate) struct RegionMeta {
     pub name: String,

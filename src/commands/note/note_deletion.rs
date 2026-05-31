@@ -1,5 +1,5 @@
-use crate::app::KnodiqApp;
-use knodiq_engine::{
+use crate::app::KreniqApp;
+use kreniq_engine::{
     mixer::TrackID,
     track::{
         RegionID,
@@ -7,7 +7,7 @@ use knodiq_engine::{
     },
 };
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(crate) fn remove_note(
         &mut self,
         track_id: &TrackID,

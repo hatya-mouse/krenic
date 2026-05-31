@@ -1,10 +1,10 @@
 mod playback_control;
 mod toolbar_group;
 
-use crate::{app::KnodiqApp, fonts::RichTextExt, ui::toolbar::toolbar_group::toolbar_group};
+use crate::{app::KreniqApp, fonts::RichTextExt, ui::toolbar::toolbar_group::toolbar_group};
 use eframe::egui;
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(super) fn toolbar(&mut self, ui: &mut egui::Ui) {
         ui.horizontal_centered(|ui| {
             ui.spacing_mut().button_padding = egui::vec2(0.0, 0.0);

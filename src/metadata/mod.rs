@@ -4,7 +4,7 @@ mod track_meta;
 pub(crate) use region_meta::RegionMeta;
 pub(crate) use track_meta::TrackMeta;
 
-use knodiq_engine::mixer::TrackID;
+use kreniq_engine::mixer::TrackID;
 use std::collections::HashMap;
 
 pub(crate) struct ProjectMeta {

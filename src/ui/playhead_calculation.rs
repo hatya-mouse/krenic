@@ -1,7 +1,7 @@
-use crate::app::KnodiqApp;
+use crate::app::KreniqApp;
 use std::sync::atomic::Ordering;
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(super) fn calculate_playhead(&mut self) {
         let playhead_sample = self.thread_handle.playhead.load(Ordering::Acquire);
 

@@ -2,7 +2,7 @@ mod kasl_node;
 
 use crate::load_write::{AsBytes, FromBytes};
 use ::kasl_node::KaslNode;
-use knodiq_engine::node::{
+use kreniq_engine::node::{
     Node,
     builtin::{AudioInputNode, AudioOutputNode, NoteInputNode},
 };

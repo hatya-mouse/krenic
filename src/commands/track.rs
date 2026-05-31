@@ -1,8 +1,8 @@
-use crate::{app::KnodiqApp, metadata::TrackMeta, ui_state::dialog_state::TrackType};
+use crate::{app::KreniqApp, metadata::TrackMeta, ui_state::dialog_state::TrackType};
 use eframe::egui;
-use knodiq_engine::track::{Track, audio_track::AudioTrack, note_track::NoteTrack};
+use kreniq_engine::track::{Track, audio_track::AudioTrack, note_track::NoteTrack};
 
-impl KnodiqApp {
+impl KreniqApp {
     /// Adds a new track to the project and the project metadata.
     pub(crate) fn add_track(&mut self, track_type: TrackType, name: String, color: egui::Color32) {
         // Create a track with the given type

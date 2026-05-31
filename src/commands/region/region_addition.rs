@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use crate::{app::KnodiqApp, metadata::RegionMeta};
-use knodiq_engine::{
+use crate::{app::KreniqApp, metadata::RegionMeta};
+use kreniq_engine::{
     data_types::Beats,
     mixer::TrackID,
     track::{
@@ -11,7 +11,7 @@ use knodiq_engine::{
     },
 };
 
-impl KnodiqApp {
+impl KreniqApp {
     /// Adds a new empty audio region to the given audio track.
     pub(crate) fn add_audio_region(&mut self, track_id: &TrackID, name: String, start: Beats) {
         let sample_rate = self.project.audio_ctx.sample_rate;

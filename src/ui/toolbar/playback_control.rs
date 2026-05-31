@@ -1,10 +1,10 @@
 use crate::{
-    app::KnodiqApp, components::icon_button::icon_button, ui::toolbar::toolbar_group::toolbar_group,
+    app::KreniqApp, components::icon_button::icon_button, ui::toolbar::toolbar_group::toolbar_group,
 };
 use eframe::egui;
-use knodiq_engine::audio_thread::{AudioCommand, error::AudioError};
+use kreniq_engine::audio_thread::{AudioCommand, error::AudioError};
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(super) fn playback_control(&mut self, ui: &mut egui::Ui) {
         toolbar_group(ui, |ui| {
             if icon_button(

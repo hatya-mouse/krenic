@@ -1,5 +1,5 @@
 [package]
-name = "knodiq"
+name = "kreniq"
 version = "0.1.0"
 edition = "2024"
 
@@ -9,5 +9,5 @@ eframe = "0.34.0"
 egui_extras = { version = "0.34.0", features = ["all_loaders"] }
 kasl = "0.2.17"
 kasl_node = { git = "https://github.com/hatya-mouse/kasl_node" }
-knodiq_engine = { git = "https://github.com/hatya-mouse/knodiq_engine" }
+kreniq_engine = { git = "https://github.com/hatya-mouse/kreniq_engine" }
 tempfile = "3.27.0"

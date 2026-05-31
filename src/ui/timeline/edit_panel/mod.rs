@@ -2,10 +2,10 @@ mod track_row;
 
 use std::time::Duration;
 
-use crate::{app::KnodiqApp, colors};
+use crate::{app::KreniqApp, colors};
 use eframe::egui;
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(crate) fn track_edit_panel(&mut self, ui: &mut egui::Ui, edit_rect: egui::Rect) {
         egui::Frame::new()
             .fill(colors::tertiary_bg(ui.visuals().dark_mode))

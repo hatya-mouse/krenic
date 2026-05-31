@@ -1,8 +1,8 @@
-use crate::{app::KnodiqApp, colors, ui_state::dialog_state::TrackType};
+use crate::{app::KreniqApp, colors, ui_state::dialog_state::TrackType};
 use eframe::egui;
-use knodiq_engine::{data_types::Beats, mixer::TrackID, track::RegionID};
+use kreniq_engine::{data_types::Beats, mixer::TrackID, track::RegionID};
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(super) fn track_row(
         &mut self,
         ui: &mut egui::Ui,

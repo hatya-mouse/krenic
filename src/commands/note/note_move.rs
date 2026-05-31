@@ -1,5 +1,5 @@
-use crate::app::KnodiqApp;
-use knodiq_engine::{
+use crate::app::KreniqApp;
+use kreniq_engine::{
     data_types::Beats,
     mixer::TrackID,
     track::{
@@ -8,7 +8,7 @@ use knodiq_engine::{
     },
 };
 
-impl KnodiqApp {
+impl KreniqApp {
     pub(crate) fn set_note_start(
         &mut self,
         track_id: &TrackID,
