@@ -1,5 +1,6 @@
 use kreniq_engine::data_types::Beats;
 
+#[derive(Debug)]
 pub(crate) struct RegionMeta {
     pub name: String,
     pub start: Beats,

@@ -1,4 +1,4 @@
-use crate::app::KreniqApp;
+use crate::ui::EditorUi;
 use kreniq_engine::{
     mixer::TrackID,
     track::{
@@ -7,7 +7,7 @@ use kreniq_engine::{
     },
 };
 
-impl KreniqApp {
+impl EditorUi {
     pub(crate) fn add_note(&mut self, track_id: &TrackID, region_id: &RegionID, note: Note) {
         // Set the note's start time
         if let Some(region) = self

@@ -1,4 +1,4 @@
-use crate::{colors, fonts::RichTextExt};
+use crate::{fonts::RichTextExt, theme};
 use eframe::egui::{self, CornerRadius, ModalResponse};
 
 pub(crate) fn dialog<T>(
@@ -16,7 +16,7 @@ pub(crate) fn dialog<T>(
             // Show the dialog title header
             let corner_radius = ui.style().visuals.window_corner_radius;
             egui::Frame::new()
-                .fill(colors::tertiary_bg(ui.visuals().dark_mode))
+                .fill(theme::tertiary_bg(ui.visuals().dark_mode))
                 .inner_margin(0)
                 .corner_radius(CornerRadius {
                     nw: corner_radius.nw,
@@ -35,8 +35,8 @@ pub(crate) fn dialog<T>(
                         .show(ui, |ui| {
                             ui.label(
                                 egui::RichText::new(title)
-                                    .size(15.0)
-                                    .color(colors::primary_fg(ui.visuals().dark_mode))
+                                    .size(theme::large_font_size())
+                                    .color(theme::primary_fg(ui.visuals().dark_mode))
                                     .bold(),
                             );
                         });

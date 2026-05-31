@@ -10,6 +10,7 @@ pub struct TimelineState {
 
     /// Pixels per beat in the timeline.
     pub pixels_per_beat: f32,
+
 }
 
 impl Default for TimelineState {

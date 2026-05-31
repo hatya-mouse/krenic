@@ -1,7 +1,9 @@
 mod kasl_node;
 
-use crate::load_write::{AsBytes, FromBytes};
-use ::kasl_node::KaslNode;
+use crate::{
+    kasl_node::KaslNode,
+    load_write::{AsBytes, FromBytes, safe_read},
+};
 use kreniq_engine::node::{
     Node,
     builtin::{AudioInputNode, AudioOutputNode, NoteInputNode},
@@ -59,14 +61,14 @@ impl FromBytes for Box<dyn Node> {
                 let mut buf = [0u8; 8];
                 cursor.read_exact(&mut buf)?;
                 let node_length = u64::from_le_bytes(buf) as usize;
-                // Get the
-                let mut node_bytes = vec![0u8; node_length];
-                cursor.read_exact(&mut node_bytes)?;
+                // Get the KASL Node data
+                let node_bytes = safe_read(&mut cursor, node_length)?;
                 // Create a new node and set the code
                 Ok(Box::new(KaslNode::from_bytes(&node_bytes)?))
             }
-            _ => Err(std::io::Error::from_raw_os_error(
-                std::io::ErrorKind::InvalidData as i32,
+            _ => Err(std::io::Error::new(
+                std::io::ErrorKind::InvalidData,
+                "Invalid node kind",
             )),
         }
     }

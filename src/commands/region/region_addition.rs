@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{app::KreniqApp, metadata::RegionMeta};
+use crate::{metadata::RegionMeta, ui::EditorUi};
 use kreniq_engine::{
     data_types::Beats,
     mixer::TrackID,
@@ -11,7 +11,7 @@ use kreniq_engine::{
     },
 };
 
-impl KreniqApp {
+impl EditorUi {
     /// Adds a new empty audio region to the given audio track.
     pub(crate) fn add_audio_region(&mut self, track_id: &TrackID, name: String, start: Beats) {
         let sample_rate = self.project.audio_ctx.sample_rate;

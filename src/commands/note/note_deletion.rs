@@ -1,4 +1,4 @@
-use crate::app::KreniqApp;
+use crate::ui::EditorUi;
 use kreniq_engine::{
     mixer::TrackID,
     track::{
@@ -7,7 +7,7 @@ use kreniq_engine::{
     },
 };
 
-impl KreniqApp {
+impl EditorUi {
     pub(crate) fn remove_note(
         &mut self,
         track_id: &TrackID,
@@ -23,6 +23,8 @@ impl KreniqApp {
         {
             region.remove_note(note_id);
         }
+
+        self.ui_state.deselect_note();
 
         self.modified_project();
     }

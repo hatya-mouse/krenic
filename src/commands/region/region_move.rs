@@ -1,7 +1,7 @@
-use crate::app::KreniqApp;
+use crate::ui::EditorUi;
 use kreniq_engine::{data_types::Beats, mixer::TrackID, track::RegionID};
 
-impl KreniqApp {
+impl EditorUi {
     pub(crate) fn move_region(
         &mut self,
         track_id: &TrackID,
