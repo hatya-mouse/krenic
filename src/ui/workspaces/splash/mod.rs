@@ -34,12 +34,15 @@ impl SplashUi {
     pub fn ui(&mut self, ui: &mut egui::Ui) -> Option<EditorTransition> {
         let mut transition = None;
 
-        egui::Panel::left("splash_controls").show_inside(ui, |ui| {
-            transition = self.splash_controls(ui);
-        });
+        ui.columns(2, |columns| {
+            let controls_transition = self.splash_controls(&mut columns[0]);
+            let list_transition = self.project_list(&mut columns[1]);
 
-        egui::Panel::right("recent_projects").show_inside(ui, |ui| {
-            transition = self.project_list(ui);
+            if let Some(controls_transition) = controls_transition {
+                transition = Some(controls_transition);
+            } else if let Some(list_transition) = list_transition {
+                transition = Some(list_transition);
+            }
         });
 
         transition
