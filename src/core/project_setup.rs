@@ -153,14 +153,14 @@ pub(crate) fn setup_project(
     std::fs::write(&kasl_path, kadent_lib).expect("Failed to write kadent.kasl");
 
     // Write the main KASL program into the project's kasl/ directory
-    let kasl_dir = project_dir.join("kasl");
+    let kasl_dir = project_dir.join("src");
     std::fs::create_dir_all(&kasl_dir).unwrap();
     std::fs::write(kasl_dir.join("main.kasl"), program).expect("Failed to write main.kasl");
 
     // Create a new kasl node pointing to the relative path
     let mut kasl_node = KaslNode::new();
     kasl_node.set_search_paths(project_meta.kasl_search_paths.clone());
-    kasl_node.set_file_path("kasl/main.kasl".to_string());
+    kasl_node.set_file_path("src/main.kasl".to_string());
     kasl_node.set_project_dir(project_dir.to_path_buf());
     match kasl_node.compile() {
         Ok(()) => (),

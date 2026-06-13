@@ -1,5 +1,5 @@
 #pragma endian little
-#pragma description "Kadent project file (.knq)"
+#pragma description "Kadent project file (.kdp)"
 
 // ─── Primitives ──────────────────────────────────────────────────────────────
 
