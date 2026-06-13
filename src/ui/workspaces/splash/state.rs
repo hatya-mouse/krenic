@@ -4,6 +4,7 @@ use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
 use std::thread;
 
+#[derive(Clone)]
 pub(crate) struct RecentProjData {
     pub name: String,
     pub path_str: String,

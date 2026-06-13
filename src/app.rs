@@ -1,6 +1,6 @@
 use crate::ui::{
     theme,
-    workspaces::{EditorTransition, EditorUi, SplashUi},
+    workspaces::{EditorUi, SplashUi},
 };
 use eframe::{self, egui};
 
@@ -14,7 +14,7 @@ impl KadentApp {
         egui_extras::install_image_loaders(&cc.egui_ctx);
         Self::setup_fonts(&cc.egui_ctx);
         Self::base_style(&cc.egui_ctx);
-        KadentApp::Splash(Box::new(SplashUi::default()))
+        KadentApp::Splash(Box::default())
     }
 
     pub(crate) fn base_style(ctx: &egui::Context) {

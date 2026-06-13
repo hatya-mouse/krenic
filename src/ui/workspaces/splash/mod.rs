@@ -4,12 +4,15 @@ pub(crate) mod state;
 
 use crate::{
     core::metadata::ProjectMeta,
-    storage::project::{init_kasl_nodes, load_project_from_dir},
+    storage::{
+        app_state::save_recent_projects,
+        project::{init_kasl_nodes, load_project_from_dir},
+    },
     ui::workspaces::splash::state::SplashUiState,
 };
 use eframe::egui;
 use kadent_engine::{data_types::AudioContext, mixer::Project};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 /// The splash screen of Kadent.
 #[derive(Default)]
@@ -42,7 +45,11 @@ impl SplashUi {
     }
 
     /// Opens the project at the given directory, returning the transition data if successful.
-    fn open_project(&mut self, project_dir: PathBuf) -> Option<EditorTransition> {
+    fn open_project(&self, project_dir: PathBuf) -> Option<EditorTransition> {
+        // Store the project to recent projects
+        self.add_and_store_recent_projects(&project_dir);
+
+        // Load the project and pass the data to the editor UI
         match load_project_from_dir(&project_dir) {
             Ok(mut proj_res) => match ProjectMeta::from_load_res(&proj_res) {
                 Ok(project_meta) => {
@@ -70,5 +77,20 @@ impl SplashUi {
                 None
             }
         }
+    }
+
+    fn add_and_store_recent_projects(&self, project_path: &Path) {
+        let mut project_paths: Vec<PathBuf> = self
+            .splash_state
+            .recent_projects
+            .lock()
+            .unwrap()
+            .iter()
+            .map(|proj| proj.path.clone())
+            .collect();
+
+        // Add the project at the start and save it
+        project_paths.insert(0, project_path.to_path_buf());
+        save_recent_projects(&project_paths);
     }
 }

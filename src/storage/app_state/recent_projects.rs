@@ -34,17 +34,13 @@ pub(crate) fn load_recent_projects() -> Vec<RecentProjData> {
         .collect()
 }
 
-pub(crate) fn save_recent_projects(recent_projects: &[RecentProjData]) {
+pub(crate) fn save_recent_projects(paths: &[PathBuf]) {
     let full_path = dirs::data_dir()
         .expect("Could not get data dir")
         .join(RECENT_PROJCETS_PATH);
     std::fs::create_dir_all(&full_path).unwrap();
 
     // Write the JSON string to the path
-    let paths: Vec<PathBuf> = recent_projects
-        .iter()
-        .map(|project| project.path.clone())
-        .collect();
     let Ok(json_string) = serde_json::to_string(&paths) else {
         return;
     };
