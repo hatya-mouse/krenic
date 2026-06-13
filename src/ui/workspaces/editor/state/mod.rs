@@ -1,6 +1,16 @@
-use crate::ui_state::{
-    dialog_state::DialogState, node_graph_state::NodeGraphState, panel_layout::PanelNode,
-    piano_roll_state::PianoRollState, timeline_state::TimelineState, toolbar_state::ToolbarState,
+mod dialog_state;
+mod node_graph_state;
+mod panel_layout;
+mod piano_roll_state;
+mod timeline_state;
+mod toolbar_state;
+
+pub(super) use dialog_state::{AddTrackState, DialogState};
+pub(super) use panel_layout::{PanelNode, PanelView, SplitDir};
+
+use crate::ui::workspaces::editor::state::{
+    node_graph_state::NodeGraphState, piano_roll_state::PianoRollState,
+    timeline_state::TimelineState, toolbar_state::ToolbarState,
 };
 use kadent_engine::{
     data_types::Beats,
@@ -11,7 +21,7 @@ use kadent_engine::{
 use std::time::Instant;
 
 #[derive(Default)]
-pub struct EditorUiState {
+pub(crate) struct EditorUiState {
     /// Panel layout tree.
     pub panel_layout: PanelNode,
 

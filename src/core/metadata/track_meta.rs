@@ -1,7 +1,6 @@
 use crate::{
     core::metadata::{GraphMeta, RegionMeta},
     storage::project::StoredTrackMeta,
-    ui_state::dialog_state::TrackType,
 };
 use eframe::egui;
 use kadent_engine::track::{RegionID, Track, audio_track::AudioTrack, note_track::NoteTrack};
@@ -14,6 +13,12 @@ pub(crate) struct TrackMeta {
     pub track_type: TrackType,
     pub regions: HashMap<RegionID, RegionMeta>,
     pub graph: GraphMeta,
+}
+
+#[derive(PartialEq, Clone, Copy, Debug)]
+pub(crate) enum TrackType {
+    Audio,
+    Note,
 }
 
 impl TrackMeta {

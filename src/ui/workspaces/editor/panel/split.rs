@@ -1,5 +1,10 @@
-use crate::ui::{theme, workspaces::EditorUi};
-use crate::ui_state::panel_layout::{PanelNode, SplitDir};
+use crate::ui::{
+    theme,
+    workspaces::{
+        EditorUi,
+        editor::state::{PanelNode, SplitDir},
+    },
+};
 use eframe::egui::{self, CursorIcon, Rect};
 
 const DIVIDER_SIZE: f32 = 4.0;

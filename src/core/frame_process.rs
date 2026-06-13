@@ -1,6 +1,12 @@
-use crate::{ui::workspaces::EditorUi, ui_state::toolbar_state::PeakHold};
+use crate::ui::workspaces::EditorUi;
 use ringbuf::traits::Consumer;
-use std::sync::atomic::Ordering;
+use std::{sync::atomic::Ordering, time::Instant};
+
+#[derive(Debug, Clone)]
+pub(crate) struct PeakHold {
+    pub value: f32,
+    pub hold_time: Instant,
+}
 
 const PEAK_HOLD_TIME: f32 = 0.5;
 

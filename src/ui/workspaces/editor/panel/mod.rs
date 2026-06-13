@@ -1,8 +1,10 @@
 mod leaf;
 mod split;
 
-use crate::ui::workspaces::EditorUi;
-use crate::ui_state::panel_layout::{PanelNode, PanelView, SplitDir};
+use crate::ui::workspaces::{
+    EditorUi,
+    editor::state::{PanelNode, PanelView, SplitDir},
+};
 use eframe::egui;
 
 struct SplitAction {

@@ -1,10 +1,10 @@
 use crate::{
+    core::metadata::TrackType,
     ui::{
         components::{dialog::dialog, text_input::text_input},
         theme,
-        workspaces::EditorUi,
+        workspaces::{EditorUi, editor::state::DialogState},
     },
-    ui_state::dialog_state::{DialogState, TrackType},
 };
 use eframe::egui;
 

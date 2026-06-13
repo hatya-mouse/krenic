@@ -3,10 +3,14 @@ pub(crate) mod inspector;
 pub(crate) mod node_graph;
 pub(crate) mod panel;
 pub(crate) mod piano_roll;
+pub mod state;
 pub(crate) mod timeline;
 pub(crate) mod toolbar;
 
-use crate::{core::metadata::ProjectMeta, ui::theme, ui_state::editor_state::EditorUiState};
+use crate::{
+    core::metadata::ProjectMeta,
+    ui::{theme, workspaces::editor::state::EditorUiState},
+};
 use eframe::egui;
 use kadent_engine::{
     data_types::AudioContext,

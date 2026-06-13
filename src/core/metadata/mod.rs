@@ -6,7 +6,7 @@ mod track_meta;
 pub(crate) use graph_meta::GraphMeta;
 pub(crate) use node_meta::{NodeMeta, NodeType};
 pub(crate) use region_meta::RegionMeta;
-pub(crate) use track_meta::TrackMeta;
+pub(crate) use track_meta::{TrackMeta, TrackType};
 
 use crate::storage::project::LoadProjResult;
 use kadent_engine::mixer::TrackID;

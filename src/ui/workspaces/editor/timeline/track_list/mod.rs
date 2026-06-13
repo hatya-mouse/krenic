@@ -1,8 +1,15 @@
 mod track_dialog;
 
 use crate::{
-    ui::{components::icon_button::toolbar_icon_button, theme, workspaces::EditorUi},
-    ui_state::dialog_state::{AddTrackState, DialogState, TrackType},
+    core::metadata::TrackType,
+    ui::{
+        components::icon_button::toolbar_icon_button,
+        theme,
+        workspaces::{
+            EditorUi,
+            editor::state::{AddTrackState, DialogState},
+        },
+    },
 };
 use eframe::egui;
 

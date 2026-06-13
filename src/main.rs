@@ -2,7 +2,6 @@ mod commands;
 mod core;
 mod storage;
 mod ui;
-mod ui_state;
 
 mod app;
 mod fonts;

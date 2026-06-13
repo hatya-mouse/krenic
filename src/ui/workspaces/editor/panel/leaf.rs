@@ -1,7 +1,10 @@
 use super::SplitAction;
-use crate::{
-    ui::{theme, workspaces::EditorUi},
-    ui_state::panel_layout::{PanelView, SplitDir},
+use crate::ui::{
+    theme,
+    workspaces::{
+        EditorUi,
+        editor::state::{PanelView, SplitDir},
+    },
 };
 use eframe::egui::{self, CursorIcon, Rect, UiBuilder};
 

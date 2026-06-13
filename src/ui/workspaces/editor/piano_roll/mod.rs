@@ -2,8 +2,8 @@ mod note_grid;
 mod utils;
 
 use crate::{
+    core::metadata::TrackType,
     ui::{theme, workspaces::EditorUi},
-    ui_state::dialog_state::TrackType,
 };
 use eframe::egui;
 

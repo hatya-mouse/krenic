@@ -1,6 +1,6 @@
 use crate::{
+    core::metadata::TrackType,
     ui::{theme, workspaces::EditorUi},
-    ui_state::dialog_state::TrackType,
 };
 use eframe::egui;
 use kadent_engine::{data_types::Beats, mixer::TrackID, track::RegionID};

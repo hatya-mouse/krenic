@@ -1,10 +1,4 @@
-use std::time::Instant;
-
-#[derive(Debug, Clone)]
-pub struct PeakHold {
-    pub value: f32,
-    pub hold_time: Instant,
-}
+use crate::core::frame_process::PeakHold;
 
 #[derive(Default)]
 pub struct ToolbarState {

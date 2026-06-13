@@ -1,4 +1,4 @@
-use crate::{ui::workspaces::EditorUi, ui_state::dialog_state::TrackType};
+use crate::{core::metadata::TrackType, ui::workspaces::EditorUi};
 use eframe::egui;
 use kadent_engine::thread::{AudioCommand, MidiCommand};
 use midir::MidiInput;

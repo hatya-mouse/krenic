@@ -1,3 +1,5 @@
+mod project_list;
+
 use crate::{
     core::{metadata::ProjectMeta, project_setup::setup_project},
     storage::project::{init_kasl_nodes, load_project_from_dir},

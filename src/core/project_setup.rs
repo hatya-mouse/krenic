@@ -1,7 +1,6 @@
-use crate::{
-    core::kasl_node::KaslNode,
-    core::metadata::{GraphMeta, NodeMeta, NodeType, ProjectMeta, RegionMeta, TrackMeta},
-    ui_state::dialog_state::TrackType,
+use crate::core::{
+    kasl_node::KaslNode,
+    metadata::{GraphMeta, NodeMeta, NodeType, ProjectMeta, RegionMeta, TrackMeta, TrackType},
 };
 use eframe::egui;
 use kadent_engine::{

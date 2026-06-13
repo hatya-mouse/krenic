@@ -1,9 +1,11 @@
+use crate::core::metadata::TrackType;
 use std::fmt::Display;
 
-#[derive(PartialEq, Clone, Copy, Debug)]
-pub enum TrackType {
-    Audio,
-    Note,
+#[derive(Default)]
+pub enum DialogState {
+    #[default]
+    None,
+    AddTrack(AddTrackState),
 }
 
 impl Display for TrackType {

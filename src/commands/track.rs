@@ -1,7 +1,6 @@
 use crate::{
-    core::metadata::{GraphMeta, TrackMeta},
+    core::metadata::{GraphMeta, TrackMeta, TrackType},
     ui::workspaces::EditorUi,
-    ui_state::dialog_state::TrackType,
 };
 use eframe::egui;
 use kadent_engine::{
