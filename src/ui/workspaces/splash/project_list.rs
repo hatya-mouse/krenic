@@ -11,7 +11,7 @@ impl SplashUi {
             };
 
             for project in recent_projects.iter() {
-                let response = egui::Frame::new()
+                let frame_response = egui::Frame::new()
                     .show(ui, |ui| {
                         ui.style_mut().spacing.item_spacing = egui::vec2(0.0, 4.0);
                         // Top: Show filename
@@ -23,6 +23,12 @@ impl SplashUi {
                         ui.add(path_label);
                     })
                     .response;
+
+                let response = ui.interact(
+                    frame_response.rect,
+                    ui.id().with(&project.path_str),
+                    egui::Sense::click(),
+                );
 
                 if response.clicked() {
                     selected_path = Some(project.path.clone());

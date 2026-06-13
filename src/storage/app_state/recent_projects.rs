@@ -2,7 +2,6 @@ use crate::{
     consts::{KADENT_DATA_DIR_NAME, RECENT_PROJCETS_PATH},
     ui::workspaces::splash::state::RecentProjData,
 };
-use eframe::egui::TextBuffer;
 use std::{
     fs::File,
     io::{Read, Write},
@@ -48,7 +47,6 @@ pub(crate) fn save_recent_projects(paths: &[PathBuf]) {
         .expect("Could not get data dir")
         .join(KADENT_DATA_DIR_NAME);
     std::fs::create_dir_all(&app_data_path).ok();
-
     let full_path = app_data_path.join(RECENT_PROJCETS_PATH);
 
     // Write the JSON string to the path
