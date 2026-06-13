@@ -8,7 +8,7 @@ pub(crate) use node_meta::{NodeMeta, NodeType};
 pub(crate) use region_meta::RegionMeta;
 pub(crate) use track_meta::TrackMeta;
 
-use crate::storage::LoadProjResult;
+use crate::storage::project::LoadProjResult;
 use kadent_engine::mixer::TrackID;
 use std::collections::HashMap;
 

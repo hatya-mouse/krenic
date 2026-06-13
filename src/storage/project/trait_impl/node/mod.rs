@@ -2,7 +2,7 @@ mod kasl_node;
 
 use crate::{
     core::kasl_node::KaslNode,
-    storage::{AsBytes, FromBytes, safe_read},
+    storage::project::{AsBytes, FromBytes, safe_read},
 };
 use kadent_engine::node::{
     Node,

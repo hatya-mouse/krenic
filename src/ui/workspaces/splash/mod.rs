@@ -1,6 +1,6 @@
 use crate::{
     core::{metadata::ProjectMeta, project_setup::setup_project},
-    storage::{init_kasl_nodes, load_project_from_dir},
+    storage::project::{init_kasl_nodes, load_project_from_dir},
     ui::workspaces::EditorUi,
 };
 use eframe::egui;

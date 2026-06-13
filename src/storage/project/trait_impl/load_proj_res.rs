@@ -1,4 +1,6 @@
-use crate::storage::{FromBytes, project_meta::StoredProjMeta, traits::safe_read};
+use crate::storage::project::{
+    FromBytes, trait_impl::project_meta::StoredProjMeta, traits::safe_read,
+};
 use kadent_engine::mixer::Project;
 use std::io::{Cursor, Read};
 

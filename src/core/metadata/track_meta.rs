@@ -1,6 +1,6 @@
 use crate::{
     core::metadata::{GraphMeta, RegionMeta},
-    storage::StoredTrackMeta,
+    storage::project::StoredTrackMeta,
     ui_state::dialog_state::TrackType,
 };
 use eframe::egui;

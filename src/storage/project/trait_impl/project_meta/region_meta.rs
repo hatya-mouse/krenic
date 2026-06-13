@@ -1,4 +1,4 @@
-use crate::storage::{AsBytes, FromBytes};
+use crate::storage::project::{AsBytes, FromBytes};
 
 pub struct StoredRegionMeta {
     pub name: String,

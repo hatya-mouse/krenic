@@ -10,7 +10,7 @@ pub use track_meta::StoredTrackMeta;
 
 use crate::{
     core::metadata::ProjectMeta,
-    storage::{AsBytes, FromBytes, traits::safe_read},
+    storage::project::{AsBytes, FromBytes, traits::safe_read},
 };
 use kadent_engine::mixer::TrackID;
 use std::{

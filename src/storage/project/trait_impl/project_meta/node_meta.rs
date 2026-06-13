@@ -4,7 +4,7 @@ use eframe::egui;
 
 use crate::{
     core::metadata::{NodeMeta, NodeType},
-    storage::{AsBytes, FromBytes},
+    storage::project::{AsBytes, FromBytes},
 };
 
 pub struct StoredNodeMeta {

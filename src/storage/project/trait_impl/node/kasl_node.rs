@@ -1,6 +1,6 @@
 use crate::{
     core::kasl_node::KaslNode,
-    storage::{AsBytes, FromBytes},
+    storage::project::{AsBytes, FromBytes},
 };
 
 impl AsBytes for KaslNode {

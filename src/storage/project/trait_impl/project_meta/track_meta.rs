@@ -1,6 +1,6 @@
-use crate::storage::{
+use crate::storage::project::{
     AsBytes, FromBytes,
-    project_meta::{StoredGraphMeta, StoredRegionMeta},
+    trait_impl::project_meta::{StoredGraphMeta, StoredRegionMeta},
     traits::safe_read,
 };
 use eframe::egui;

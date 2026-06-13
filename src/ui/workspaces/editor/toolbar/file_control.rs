@@ -1,6 +1,6 @@
 use crate::{
     core::metadata::ProjectMeta,
-    storage::{init_kasl_nodes, load_project_from_dir, save_project_to_dir},
+    storage::project::{init_kasl_nodes, load_project_from_dir, save_project_to_dir},
     ui::{
         components::icon_button::toolbar_icon_button,
         workspaces::{EditorUi, editor::toolbar::toolbar_group::toolbar_group},

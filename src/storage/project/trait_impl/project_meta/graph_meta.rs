@@ -1,6 +1,6 @@
 use crate::{
     core::metadata::GraphMeta,
-    storage::{AsBytes, FromBytes, project_meta::StoredNodeMeta},
+    storage::project::{AsBytes, FromBytes, trait_impl::project_meta::StoredNodeMeta},
 };
 use kadent_engine::graph::node_id::NodeID;
 use std::{
