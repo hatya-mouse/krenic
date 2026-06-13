@@ -1,5 +1,8 @@
 use crate::spawn_background_init;
+use crate::storage::app_state::load_recent_projects;
 use std::path::PathBuf;
+use std::sync::{Arc, Mutex};
+use std::thread;
 
 pub(crate) struct RecentProjData {
     pub name: String,
@@ -9,7 +12,7 @@ pub(crate) struct RecentProjData {
 
 pub(super) struct SplashUiState {
     /// Recently opened projects.
-    pub recent_projects: Vec<RecentProjData>,
+    pub recent_projects: Arc<Mutex<Vec<RecentProjData>>>,
 }
 
 impl Default for SplashUiState {

@@ -1,11 +1,16 @@
-use crate::ui::workspaces::{SplashTransition, SplashUi};
+use crate::ui::workspaces::{EditorTransition, SplashUi};
 use eframe::egui;
 
 impl SplashUi {
-    pub(super) fn project_list(&mut self, ui: &mut egui::Ui) -> Option<SplashTransition> {
+    pub(super) fn project_list(&mut self, ui: &mut egui::Ui) -> Option<EditorTransition> {
         let mut selected_path = None;
+
         egui::ScrollArea::vertical().show(ui, |ui| {
-            for project in &self.splash_state.recent_projects {
+            let Ok(recent_projects) = self.splash_state.recent_projects.lock() else {
+                return;
+            };
+
+            for project in recent_projects.iter() {
                 let response = egui::Frame::new()
                     .show(ui, |ui| {
                         ui.style_mut().spacing.item_spacing = egui::vec2(0.0, 4.0);

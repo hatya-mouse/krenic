@@ -4,7 +4,7 @@
 /// The value must implement `Default`. The macro returns an `Arc<Mutex<T>>` where `T` is the type of the value being initialized.
 #[macro_export]
 macro_rules! spawn_background_init {
-    (&init_expr:expr) => {{
+    ($init_expr:expr) => {{
         let data = Arc::new(Mutex::new(Default::default()));
         let data_clone = Arc::clone(&data);
 

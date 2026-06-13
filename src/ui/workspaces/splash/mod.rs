@@ -1,81 +1,48 @@
 mod project_list;
+mod splash_controls;
 pub(crate) mod state;
 
 use crate::{
-    core::{metadata::ProjectMeta, project_setup::setup_project},
+    core::metadata::ProjectMeta,
     storage::project::{init_kasl_nodes, load_project_from_dir},
-    ui::workspaces::{EditorUi, splash::state::SplashUiState},
+    ui::workspaces::splash::state::SplashUiState,
 };
 use eframe::egui;
-use kadent_engine::{
-    data_types::{AudioContext, Beats},
-    mixer::Project,
-};
+use kadent_engine::{data_types::AudioContext, mixer::Project};
 use std::path::PathBuf;
 
+/// The splash screen of Kadent.
+#[derive(Default)]
 pub struct SplashUi {
     /// The current splash UI state.
     splash_state: SplashUiState,
 }
 
-pub enum SplashTransition {
-    NewProject {
-        project_dir: PathBuf,
-        audio_ctx: AudioContext,
-        project: Project,
-        project_meta: ProjectMeta,
-    },
-    OpenProject {
-        project_dir: PathBuf,
-        audio_ctx: AudioContext,
-        project: Project,
-        project_meta: ProjectMeta,
-    },
+/// A struct that contains the data passed to the editor UI.
+pub struct EditorTransition {
+    pub project_dir: PathBuf,
+    pub audio_ctx: AudioContext,
+    pub project: Project,
+    pub project_meta: ProjectMeta,
 }
 
 impl SplashUi {
-    pub fn ui(&mut self, ui: &mut egui::Ui) -> Option<SplashTransition> {
-        ui.vertical_centered(|ui| {
-            ui.add_space(ui.available_height() / 3.0);
-            ui.heading("Kadent");
-            ui.add_space(16.0);
+    pub fn ui(&mut self, ui: &mut egui::Ui) -> Option<EditorTransition> {
+        let mut transition = None;
 
-            if ui.button("New Project").clicked()
-                && let Some(project_dir) = rfd::FileDialog::new().save_file()
-            {
-                let audio_ctx = AudioContext {
-                    channels: 2,
-                    sample_rate: 48000,
-                    buffer_size: 512,
-                    max_voices: 32,
-                };
-                let mut project = Project::new(audio_ctx.clone(), 120.0, Beats(0.0), Beats(8.0));
-                let mut project_meta = ProjectMeta {
-                    kasl_search_paths: EditorUi::system_kasl_search_paths(),
-                    ..Default::default()
-                };
-                setup_project(&project_dir, &mut project, &mut project_meta, &audio_ctx);
-                return Some(SplashTransition::NewProject {
-                    project_dir,
-                    audio_ctx,
-                    project,
-                    project_meta,
-                });
-            }
+        egui::Panel::left("splash_controls").show_inside(ui, |ui| {
+            transition = self.splash_controls(ui);
+        });
 
-            if ui.button("Open Project").clicked()
-                && let Some(project_dir) = rfd::FileDialog::new().pick_folder()
-            {
-                return self.open_project(project_dir);
-            }
+        egui::Panel::right("recent_projects").show_inside(ui, |ui| {
+            transition = self.project_list(ui);
+        });
 
-            None
-        })
-        .inner
+        transition
     }
 
     /// Opens the project at the given directory, returning the transition data if successful.
-    fn open_project(&mut self, project_dir: PathBuf) -> Option<SplashTransition> {
+    fn open_project(&mut self, project_dir: PathBuf) -> Option<EditorTransition> {
         match load_project_from_dir(&project_dir) {
             Ok(mut proj_res) => match ProjectMeta::from_load_res(&proj_res) {
                 Ok(project_meta) => {
@@ -86,7 +53,7 @@ impl SplashUi {
                     );
 
                     let audio_ctx = proj_res.project.audio_ctx.clone();
-                    Some(SplashTransition::OpenProject {
+                    Some(EditorTransition {
                         project_dir,
                         audio_ctx,
                         project: proj_res.project,

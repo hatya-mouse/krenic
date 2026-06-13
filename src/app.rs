@@ -1,6 +1,6 @@
 use crate::ui::{
     theme,
-    workspaces::{EditorUi, SplashTransition, SplashUi},
+    workspaces::{EditorTransition, EditorUi, SplashUi},
 };
 use eframe::{self, egui};
 
@@ -14,7 +14,7 @@ impl KadentApp {
         egui_extras::install_image_loaders(&cc.egui_ctx);
         Self::setup_fonts(&cc.egui_ctx);
         Self::base_style(&cc.egui_ctx);
-        KadentApp::Splash(Box::new(SplashUi))
+        KadentApp::Splash(Box::new(SplashUi::default()))
     }
 
     pub(crate) fn base_style(ctx: &egui::Context) {
@@ -46,25 +46,11 @@ impl eframe::App for KadentApp {
         };
 
         if let Some(transition) = transition {
-            let (project_dir, audio_ctx, project, project_meta) = match transition {
-                SplashTransition::NewProject {
-                    project_dir,
-                    audio_ctx,
-                    project,
-                    project_meta,
-                }
-                | SplashTransition::OpenProject {
-                    project_dir,
-                    audio_ctx,
-                    project,
-                    project_meta,
-                } => (project_dir, audio_ctx, project, project_meta),
-            };
             *self = KadentApp::Editor(Box::new(EditorUi::new(
-                project_dir,
-                audio_ctx,
-                project,
-                project_meta,
+                transition.project_dir,
+                transition.audio_ctx,
+                transition.project,
+                transition.project_meta,
             )));
         }
     }

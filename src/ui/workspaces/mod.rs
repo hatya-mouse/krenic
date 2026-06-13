@@ -2,4 +2,4 @@ pub mod editor;
 pub mod splash;
 
 pub use editor::EditorUi;
-pub use splash::{SplashTransition, SplashUi};
+pub use splash::{EditorTransition, SplashUi};
